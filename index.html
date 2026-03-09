@@ -85,41 +85,36 @@
         }
 
         /* PRIORIDADES */
-        .priority-high-border { border-left: 4px solid #f43f5e; }
-        .priority-medium-border { border-left: 4px solid #a855f7; }
-        .priority-low-border { border-left: 4px solid #06b6d4; }
+        .priority-high-border { border-left: 3px solid #f43f5e; }
+        .priority-medium-border { border-left: 3px solid #a855f7; }
+        .priority-low-border { border-left: 3px solid #06b6d4; }
 
-        .tag-high { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); }
-        .tag-medium { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.2); }
-        .tag-low { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2); }
+        .tag-high { background: rgba(244, 63, 94, 0.1); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); }
+        .tag-medium { background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.2); }
+        .tag-low { background: rgba(6, 182, 212, 0.1); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2); }
 
-        .completed-task { opacity: 0.3; filter: grayscale(1); }
+        .completed-task { opacity: 0.25; filter: grayscale(1); }
         .completed-text { text-decoration: line-through; color: #71717a; }
 
-        /* STATUS DE TEMPO (HEAT MAP) */
-        .status-fresh { color: #22d3ee; }
-        .status-stale { color: #fbbf24; }
         .status-critical { color: #f472b6; animation: pulseGlow 2s infinite; }
-
         @keyframes pulseGlow {
             0%, 100% { opacity: 1; filter: drop-shadow(0 0 2px rgba(244, 114, 182, 0.5)); }
-            50% { opacity: 0.7; filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.8)); }
+            50% { opacity: 0.7; filter: drop-shadow(0 0 6px rgba(244, 114, 182, 0.8)); }
         }
 
         /* RAMIFICAÇÕES */
         .branch-line {
-            position: absolute; left: -24px; top: -16px; bottom: 16px; width: 1px;
-            background: rgba(255, 255, 255, 0.1);
+            position: absolute; left: -20px; top: -12px; bottom: 12px; width: 1px;
+            background: rgba(255, 255, 255, 0.08);
         }
         .branch-node {
-            position: absolute; left: -24px; top: 15px; width: 12px; height: 1px;
-            background: rgba(255, 255, 255, 0.1);
+            position: absolute; left: -20px; top: 12px; width: 10px; height: 1px;
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .animate-task { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-task { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CALENDÁRIO COM ICON CENTRALIZADO VERTICALMENTE NO INPUT */
         .reminder-wrapper {
             position: relative;
             display: flex;
@@ -149,13 +144,14 @@
             content: '📅';
             position: absolute;
             right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             pointer-events: none;
             opacity: 0.4;
             font-size: 14px;
             transition: opacity 0.3s ease;
         }
 
-        /* ANIMAÇÃO ERRO SENHA */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
@@ -164,6 +160,20 @@
         .shake { animation: shake 0.2s ease-in-out 0s 2; border-color: #ef4444 !important; }
 
         button svg { pointer-events: none; } 
+
+        /* ESTILO PARA MODO EDIÇÃO */
+        .edit-mode-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+            outline: none;
+            color: #fff;
+        }
+        .edit-mode-input:focus {
+            border-color: rgba(236, 72, 153, 0.5);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-pink-500 selection:text-white">
@@ -174,11 +184,11 @@
     <div id="lock-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#030008] transition-opacity duration-700">
         <div class="max-w-md w-full px-10 text-center">
             <div class="mb-8 flex flex-col items-center">
-                <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="3C" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6">
+                <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="3C" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6 text-white">
                 <h2 class="text-[10px] font-black tracking-[0.4em] uppercase text-gray-400 italic">inicie a sessão</h2>
             </div>
             <div class="glass-card p-10 rounded-3xl border border-white/10 shadow-2xl">
-                <div class="space-y-6">
+                <div class="space-y-6 text-white">
                     <input type="password" id="password-input" placeholder="••••••••" 
                         onkeypress="if(event.key === 'Enter') checkPassword()"
                         class="w-full bg-black/40 border border-white/10 px-6 py-5 rounded-2xl text-center text-white focus:outline-none focus:border-pink-500 transition-all tracking-widest font-mono">
@@ -195,74 +205,73 @@
         <!-- NAVBAR FIXA -->
         <nav class="fixed w-full z-50 top-0 glass-header">
             <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30"></div>
-            <div class="max-w-[1400px] mx-auto px-8 py-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-5">
-                    <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="3C" class="h-9 w-9 rounded-full border border-white/10 p-0.5 shadow-2xl">
-                    <div class="flex flex-col text-left">
-                        <span class="text-[0.75rem] tracking-[0.4em] uppercase text-white font-black leading-tight">PROJETO MD</span>
-                        <span class="text-[0.5rem] tracking-[0.2em] uppercase text-gray-500 font-bold italic opacity-80 uppercase">3C_Execution_Control</span>
+            <div class="max-w-[1400px] mx-auto px-8 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-5 text-white">
+                    <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="3C" class="h-8 w-8 rounded-full border border-white/10 p-0.5 shadow-2xl text-white">
+                    <div class="flex flex-col">
+                        <span class="text-[0.65rem] tracking-[0.4em] uppercase text-white font-black leading-tight">PROJETO MD</span>
+                        <span class="text-[0.45rem] tracking-[0.2em] uppercase text-gray-500 font-bold italic opacity-80 uppercase text-white">3C_Execution_Control</span>
                     </div>
                 </div>
-                <div id="connection-status" class="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+                <div id="connection-status" class="flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5 text-white text-white">
                     <div id="status-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
-                    <span id="user-id-text" class="text-[8px] font-black text-gray-400 tracking-widest uppercase italic">Secure Connection...</span>
+                    <span id="user-id-text" class="text-[7px] font-black text-gray-400 tracking-widest uppercase italic">Secure Connection...</span>
                 </div>
             </div>
         </nav>
 
-        <div class="max-w-[1400px] mx-auto px-8 pt-24 pb-12 relative text-white">
+        <div class="max-w-[1400px] mx-auto px-8 pt-20 pb-12 relative text-white">
             
             <!-- TAGLINE ESTRATÉGICA -->
-            <div class="mt-8 mb-8 ml-4">
-                <p class="font-mono text-[9px] text-gray-400 tracking-[0.4em] uppercase flex items-center gap-4">
-                    <span class="w-12 h-[2px] bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"></span> 
+            <div class="mt-4 mb-6 ml-4">
+                <p class="font-mono text-[8px] text-gray-500 tracking-[0.4em] uppercase flex items-center gap-4">
+                    <span class="w-10 h-[1.5px] bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"></span> 
                     Strategy_Creative_Production_Bizdev
                 </p>
             </div>
 
             <!-- HEADER PRINCIPAL -->
-            <header class="mb-16 relative overflow-hidden rounded-3xl bg-white/[0.01] border border-white/[0.03] shadow-2xl flex items-center min-h-[280px]">
+            <header class="mb-12 relative overflow-hidden rounded-2xl bg-white/[0.01] border border-white/[0.03] shadow-2xl flex items-center min-h-[220px]">
                 <div class="mosaic-wrapper">
                     <div class="mosaic-container">
                         <div class="mosaic-pattern"></div>
                     </div>
                 </div>
                 
-                <div class="relative z-10 w-full px-12 py-10 flex flex-col md:flex-row justify-between items-center gap-12 text-white">
-                    <div class="max-w-2xl text-center md:text-left flex-shrink-0">
-                        <h1 class="text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-none text-white whitespace-nowrap">
+                <div class="relative z-10 w-full px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-8 text-white text-white">
+                    <div class="max-w-xl text-center md:text-left flex-shrink-0 text-white">
+                        <h1 class="text-6xl lg:text-7xl font-black tracking-tighter uppercase leading-none text-white whitespace-nowrap">
                             Workflow <span class="text-pink-500">3C</span>
                         </h1>
                     </div>
                     
-                    <div class="bg-black/85 p-8 rounded-2xl border border-white/10 min-w-[340px] backdrop-blur-xl shadow-2xl text-white">
-                        <div class="flex items-center justify-between mb-4">
-                            <p id="stats-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Efficiency_Report</p>
-                            <span id="percent-display" class="text-[10px] font-black text-pink-500">0%</span>
+                    <div class="bg-black/85 p-6 rounded-2xl border border-white/10 min-w-[300px] backdrop-blur-xl shadow-2xl text-white text-white">
+                        <div class="flex items-center justify-between mb-3 text-white">
+                            <p id="stats-text" class="text-[8px] font-black text-gray-400 uppercase tracking-[0.3em] text-white text-white">Efficiency_Report</p>
+                            <span id="percent-display" class="text-[9px] font-black text-pink-500">0%</span>
                         </div>
-                        <div class="h-1.5 w-full bg-black/50 rounded-full overflow-hidden border border-white/5">
+                        <div class="h-1 w-full bg-black/50 rounded-full overflow-hidden border border-white/5 text-white">
                             <div id="overall-progress" class="h-full bg-gradient-to-r from-pink-500 via-purple-600 to-emerald-500 transition-all duration-1000 shadow-[0_0_15px_rgba(236,72,153,0.3)]" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <!-- COMMAND CENTER (FORMULÁRIO INTEGRADO) -->
-            <div class="glass-card p-1 rounded-3xl mb-16 shadow-[0_30px_60px_rgba(0,0,0,0.7)] overflow-hidden">
-                <div class="bg-[#050508]/95 p-10 rounded-3xl">
+            <!-- COMMAND CENTER -->
+            <div class="glass-card p-1 rounded-2xl mb-12 shadow-[0_20px_40px_rgba(0,0,0,0.6)] overflow-hidden">
+                <div class="bg-[#050508]/95 p-8 rounded-2xl">
                     <div class="space-y-8">
-                        <!-- LINHA 1: AÇÃO + PRIORIDADE -->
                         <div class="flex flex-col lg:flex-row items-stretch gap-5">
-                            <div class="flex-grow flex flex-col gap-3">
+                            <div class="flex-grow flex flex-col gap-3 text-white">
                                 <label class="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2 italic">Ação Principal</label>
                                 <input type="text" id="main-task-input" placeholder="O que vamos criar hoje?" 
                                     class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-6 text-white focus:outline-none command-input transition-all font-bold tracking-tight text-xl h-[72px]">
                             </div>
                             
-                            <div class="min-w-[200px] flex flex-col gap-3">
+                            <div class="min-w-[200px] flex flex-col gap-3 text-white">
                                 <label class="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2 italic">Prioridade</label>
                                 <div class="relative h-[72px]">
-                                    <select id="priority-select" class="w-full h-full appearance-none bg-black/40 border border-white/10 rounded-xl px-6 text-xs font-black uppercase text-gray-400 focus:outline-none cursor-pointer hover:border-white/20 transition-all">
+                                    <select id="priority-select" class="w-full h-full appearance-none bg-black/40 border border-white/10 rounded-xl px-6 text-xs font-black uppercase text-gray-400 focus:outline-none cursor-pointer hover:border-white/20 transition-all text-white">
                                         <option value="high">HIGH</option>
                                         <option value="medium" selected>MEDIUM</option>
                                         <option value="low">LOW</option>
@@ -272,25 +281,23 @@
                             </div>
                         </div>
                         
-                        <!-- LINHA 2: CONTEXTO + AGENDAMENTO -->
-                        <div class="flex flex-col lg:flex-row items-stretch gap-6">
-                            <div class="flex-grow flex flex-col gap-3">
+                        <div class="flex flex-col lg:flex-row items-stretch gap-6 text-white">
+                            <div class="flex-grow flex flex-col gap-3 text-white">
                                 <label class="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2 italic">Contexto Estratégico</label>
                                 <textarea id="main-desc-input" placeholder="Detalhes estratégicos, links de referência e metas da missão..." 
-                                    class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-base text-white focus:outline-none command-input transition-all min-h-[140px] resize-none"></textarea>
+                                    class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-base text-white focus:outline-none command-input transition-all min-h-[140px] resize-none text-white"></textarea>
                             </div>
                             
-                            <div class="min-w-[300px] flex flex-col gap-3">
+                            <div class="min-w-[280px] flex flex-col gap-3 text-white">
                                 <label class="text-[9px] font-black uppercase tracking-widest text-gray-500 ml-2 italic">Agendar Push Notification</label>
                                 <div class="reminder-wrapper flex-grow">
                                     <input type="datetime-local" id="reminder-input" 
-                                        class="bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold text-white focus:outline-none focus:border-pink-500 transition-all w-full h-full cursor-pointer">
+                                        class="bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold text-white focus:outline-none focus:border-pink-500 transition-all w-full h-full cursor-pointer text-white">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- LINHA 3: BOTÃO EXPANDIDO (FULL WIDTH) -->
-                        <div class="pt-4">
+                        <div class="pt-4 text-white">
                             <button onclick="addMainTask()" class="w-full btn-launch bg-white text-black font-black uppercase text-[11px] tracking-[0.4em] rounded-xl hover:bg-pink-500 hover:text-white active:scale-[0.99] transition-all h-[72px] shadow-2xl">
                                 Criar Tarefa
                             </button>
@@ -300,50 +307,50 @@
             </div>
 
             <!-- FILTROS -->
-            <div class="flex flex-wrap justify-between items-center gap-8 mb-12 border-b border-white/5 pb-8 text-white">
-                <div class="flex gap-12 text-[11px] font-black uppercase tracking-[0.3em] text-gray-600">
+            <div class="flex flex-wrap justify-between items-center gap-6 mb-8 border-b border-white/5 pb-6 text-white">
+                <div class="flex gap-10 text-[10px] font-black uppercase tracking-[0.3em] text-gray-600">
                     <button onclick="setFilter('all')" class="hover:text-pink-500 transition-all filter-btn active-filter text-pink-500 relative">
-                        Visão Geral <span class="absolute -bottom-9 left-0 right-0 h-[3px] bg-pink-500 rounded-full"></span>
+                        Visão Geral <span class="absolute -bottom-[27px] left-0 right-0 h-[2.5px] bg-pink-500 rounded-full"></span>
                     </button>
                     <button onclick="setFilter('pending')" class="hover:text-pink-500 transition-all filter-btn relative">Pendentes</button>
                     <button onclick="setFilter('completed')" class="hover:text-pink-500 transition-all filter-btn relative">Finalizadas</button>
                 </div>
-                <div class="flex items-center gap-4 text-[10px] font-bold text-gray-600 uppercase tracking-widest italic opacity-60">
+                <div class="flex items-center gap-4 text-[9px] font-bold text-gray-600 uppercase tracking-widest italic opacity-60">
                     <span id="sync-status">Cloud Sync Ready</span>
-                    <div class="w-1.5 h-1.5 rounded-full bg-gray-800"></div>
+                    <div class="w-1 h-1 rounded-full bg-gray-800 text-white"></div>
                     <span id="sync-time">---</span>
                 </div>
             </div>
 
             <!-- LISTA DE TAREFAS -->
-            <div id="task-list" class="space-y-10 min-h-[400px]">
-                <div class="glass-card h-36 rounded-3xl opacity-5"></div>
+            <div id="task-list" class="space-y-6 min-h-[300px] text-white">
+                <div class="glass-card h-24 rounded-2xl opacity-5"></div>
             </div>
 
             <!-- ESTADO VAZIO -->
-            <div id="empty-state" class="hidden text-center py-40 opacity-10">
-                <div class="inline-block p-10 rounded-full border-2 border-dashed border-white/20 mb-8">
-                    <i data-lucide="check-circle-2" class="w-20 h-20 mx-auto"></i>
+            <div id="empty-state" class="hidden text-center py-32 opacity-10 text-white">
+                <div class="inline-block p-8 rounded-full border-2 border-dashed border-white/20 mb-6">
+                    <i data-lucide="check-circle-2" class="w-16 h-16 mx-auto text-white"></i>
                 </div>
-                <p class="text-3xl font-black uppercase tracking-[0.5em]">Sem pendências</p>
+                <p class="text-2xl font-black uppercase tracking-[0.5em] text-white">Sem pendências</p>
             </div>
         </div>
 
-        <!-- RODAPÉ INSTITUCIONAL -->
-        <footer class="py-16 bg-black border-t border-white/5 text-center mt-20 relative z-10">
-            <img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" alt="3C" class="h-10 mx-auto opacity-70 mb-6 grayscale hover:grayscale-0 transition-all duration-700">
-            <p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2 text-white">Confidencial &copy; 2026 3C Gaming BizDev</p>
-            <p class="text-[8px] text-gray-700 uppercase tracking-[0.1em] italic opacity-40">Workflow Management System v1.8.8</p>
+        <!-- RODAPÉ -->
+        <footer class="py-12 bg-black border-t border-white/5 text-center mt-12 relative z-10 text-white">
+            <img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" alt="3C" class="h-8 mx-auto opacity-70 mb-4 grayscale hover:grayscale-0 transition-all duration-700 text-white">
+            <p class="text-[9px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-1">Confidencial &copy; 2026 3C Gaming BizDev</p>
+            <p class="text-[7px] text-gray-700 uppercase tracking-[0.1em] italic opacity-40">Workflow Management System v1.9.5</p>
         </footer>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="fixed bottom-12 right-12 transform translate-y-40 opacity-0 transition-all duration-700 z-[200]">
-        <div class="glass-card px-8 py-6 rounded-2xl border-l-4 border-pink-500 flex items-center gap-6 shadow-2xl backdrop-blur-2xl">
-            <div class="p-3 bg-pink-500 rounded-full text-white"><i data-lucide="zap" class="w-5 h-5"></i></div>
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-8 right-8 transform translate-y-32 opacity-0 transition-all duration-500 z-[200]">
+        <div class="glass-card px-6 py-4 rounded-xl border-l-4 border-pink-500 flex items-center gap-4 shadow-2xl backdrop-blur-2xl text-white">
+            <div class="p-2 bg-pink-500 rounded-full text-white text-white"><i data-lucide="zap" class="w-4 h-4 text-white"></i></div>
             <div>
-                <p id="toast-msg" class="text-[11px] font-black uppercase tracking-[0.2em] text-white"></p>
-                <p class="text-[9px] text-gray-500 uppercase tracking-widest mt-1">Sincronização Cloud Completa</p>
+                <p id="toast-msg" class="text-[10px] font-black uppercase tracking-[0.2em] text-white"></p>
+                <p class="text-[8px] text-gray-500 uppercase tracking-widest mt-0.5 text-white">Sincronização Cloud Completa</p>
             </div>
         </div>
     </div>
@@ -355,6 +362,7 @@
 
         let db, auth, currentUser;
         let tasks = [];
+        let editingId = null;
         let currentFilter = 'all';
         let isCloudMode = false;
         const ACCESS_PASSWORD = "3c2026"; 
@@ -396,9 +404,9 @@
 
         function useLocalMode() {
             isCloudMode = false;
-            document.getElementById('user-id-text').innerText = "OFFLINE DATABASE";
+            document.getElementById('user-id-text').innerText = "LOCAL CACHE";
             document.getElementById('status-dot').className = "w-1.5 h-1.5 rounded-full bg-pink-500";
-            const saved = localStorage.getItem('3c_tasks_v18');
+            const saved = localStorage.getItem('3c_tasks_v20');
             if (saved) tasks = JSON.parse(saved);
             renderTasks();
         }
@@ -459,12 +467,11 @@
         };
 
         window.toggleExpand = async (id) => {
-            const taskId = id.toString();
-            const task = tasks.find(t => t.id === taskId);
+            const task = tasks.find(t => t.id === id.toString());
             if (!task) return;
             if (isCloudMode && currentUser) {
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'workflow-md-master-v2';
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), { expanded: !task.expanded });
+                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id.toString()), { expanded: !task.expanded });
             } else {
                 task.expanded = !task.expanded;
                 saveLocal();
@@ -501,6 +508,40 @@
             }
         };
 
+        window.startEdit = (id) => {
+            editingId = id.toString();
+            renderTasks();
+        };
+
+        window.saveEdit = async (id) => {
+            const newTitle = document.getElementById(`edit-title-${id}`).value.trim();
+            const newDesc = document.getElementById(`edit-desc-${id}`).value.trim();
+            const newReminderStr = document.getElementById(`edit-reminder-${id}`).value;
+            const newReminderAt = newReminderStr ? new Date(newReminderStr).getTime() : null;
+            
+            if (!newTitle) return;
+
+            if (isCloudMode && currentUser) {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'workflow-md-master-v2';
+                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id.toString()), { 
+                    text: newTitle, 
+                    description: newDesc,
+                    reminderAt: newReminderAt,
+                    reminderSent: false // Reset reminder sent status on edit
+                });
+            } else {
+                const task = tasks.find(t => t.id === id.toString());
+                task.text = newTitle;
+                task.description = newDesc;
+                task.reminderAt = newReminderAt;
+                task.reminderSent = false;
+                saveLocal();
+            }
+            editingId = null;
+            renderTasks();
+            triggerToast("Alterações Guardadas");
+        };
+
         window.addMainTask = async () => {
             const titleInput = document.getElementById('main-task-input');
             const descInput = document.getElementById('main-desc-input');
@@ -524,7 +565,7 @@
                 saveLocal();
             }
             titleInput.value = ''; descInput.value = ''; reminderInput.value = '';
-            triggerToast("Tarefa Criada");
+            triggerToast("Tarefa Protocolada");
         };
 
         window.addSubTask = async (pId) => {
@@ -550,12 +591,12 @@
                 btn.querySelector('span')?.remove();
             });
             event.target.classList.add('text-pink-500');
-            event.target.insertAdjacentHTML('beforeend', '<span class="absolute -bottom-9 left-0 right-0 h-[3px] bg-pink-500 rounded-full"></span>');
+            event.target.insertAdjacentHTML('beforeend', `<span class="absolute -bottom-[27px] left-0 right-0 h-[2.5px] bg-pink-500 rounded-full"></span>`);
             renderTasks();
         };
 
         function saveLocal() {
-            localStorage.setItem('3c_tasks_v18', JSON.stringify(tasks));
+            localStorage.setItem('3c_tasks_v20', JSON.stringify(tasks));
             renderTasks();
         }
 
@@ -579,83 +620,111 @@
 
         function generateHTML(t) {
             const subtasks = t.subtasks || [];
+            const isEditing = editingId === t.id.toString();
             const p = subtasks.length ? Math.round((subtasks.filter(s => s.completed).length / subtasks.length) * 100) : (t.completed ? 100 : 0);
             const diff = Math.floor(Math.abs(Date.now() - t.createdAt) / (1000 * 60 * 60 * 24));
-            const statusClass = diff < 3 ? 'status-fresh' : diff < 6 ? 'status-stale' : 'status-critical';
+            const statusClass = diff < 3 ? 'text-cyan-400' : diff < 6 ? 'text-amber-400' : 'status-critical';
             const isC = t.completed;
             const tagColor = `tag-${t.priority}`;
             const borderPrio = `priority-${t.priority}-border`;
             const reminderDate = t.reminderAt ? new Date(t.reminderAt).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}) : null;
+            const isoReminder = t.reminderAt ? new Date(t.reminderAt).toISOString().slice(0, 16) : '';
 
             return `
-                <div class="glass-card rounded-3xl overflow-hidden animate-task ${isC ? 'completed-task' : borderPrio}">
-                    <div class="p-10 text-white">
-                        <div class="flex items-start gap-10">
-                            <button onclick="toggleTask('${t.id}')" class="mt-2 hover:scale-110 transition-transform active:scale-90">
-                                <i data-lucide="${isC ? 'check-circle-2' : 'circle'}" class="w-10 h-10 ${isC ? 'text-emerald-500' : 'text-white/10'}"></i>
+                <div class="glass-card rounded-2xl overflow-hidden animate-task ${isC ? 'completed-task' : borderPrio}">
+                    <div class="p-5 text-white">
+                        <div class="flex items-start gap-6">
+                            <button onclick="toggleTask('${t.id}')" class="mt-1 hover:scale-110 transition-transform active:scale-90 text-white text-white text-white">
+                                <i data-lucide="${isC ? 'check-circle-2' : 'circle'}" class="w-7 h-7 ${isC ? 'text-emerald-500' : 'text-white/10'}"></i>
                             </button>
                             <div class="flex-grow text-white">
-                                <div class="flex flex-wrap items-center gap-5 mb-5 text-white">
-                                    <h3 class="font-black text-2xl uppercase tracking-tighter ${isC ? 'completed-text' : 'text-white'} text-white">${t.text}</h3>
-                                    <span class="px-4 py-1 text-[9px] font-black uppercase tracking-[0.2em] rounded-full ${tagColor}">${t.priority}</span>
+                                <div class="flex flex-wrap items-center gap-3 mb-2 text-white">
+                                    ${isEditing ? 
+                                        `<input type="text" id="edit-title-${t.id}" value="${t.text}" class="edit-mode-input font-bold text-lg">` :
+                                        `<h3 class="font-black text-xl uppercase tracking-tighter ${isC ? 'completed-text' : 'text-white'} text-white">${t.text}</h3>`
+                                    }
+                                    <span class="px-3 py-0.5 text-[8px] font-black uppercase tracking-[0.2em] rounded-full ${tagColor}">${t.priority}</span>
                                     ${reminderDate ? `
-                                        <span class="flex items-center gap-2 px-3 py-1 bg-pink-500/10 text-pink-500 text-[9px] font-black uppercase tracking-widest rounded-full border border-pink-500/20">
-                                            <i data-lucide="bell" class="w-3 h-3"></i> ${reminderDate}
+                                        <span class="flex items-center gap-1.5 px-2 py-0.5 bg-pink-500/10 text-pink-500 text-[8px] font-black uppercase tracking-widest rounded-full border border-pink-500/20 text-white">
+                                            <i data-lucide="bell" class="w-2.5 h-2.5 text-white"></i> ${reminderDate}
                                         </span>
                                     ` : ''}
                                 </div>
-                                ${t.description ? `<p class="text-base text-gray-400 mb-8 max-w-4xl leading-relaxed text-left">${t.description}</p>` : ''}
-                                <div class="flex flex-wrap items-center gap-12 text-white">
-                                    <div class="flex items-center gap-3 text-[11px] font-bold text-gray-600 uppercase tracking-widest">
-                                        <i data-lucide="calendar" class="w-4 h-4 text-white"></i> ${new Date(t.createdAt).toLocaleDateString('pt-BR')}
+                                
+                                <div class="mb-4 text-white">
+                                    ${isEditing ? 
+                                        `<div class="flex flex-col gap-4 mt-3">
+                                            <textarea id="edit-desc-${t.id}" class="edit-mode-input text-xs h-20 resize-none">${t.description || ''}</textarea>
+                                            <div class="flex flex-col gap-2">
+                                                <label class="text-[8px] font-black uppercase tracking-widest text-gray-500 italic">Editar Lembrete</label>
+                                                <div class="reminder-wrapper w-fit min-w-[200px]">
+                                                    <input type="datetime-local" id="edit-reminder-${t.id}" value="${isoReminder}" class="edit-mode-input text-xs">
+                                                </div>
+                                            </div>
+                                        </div>` :
+                                        (t.description ? `<p class="text-xs text-gray-400 max-w-4xl leading-relaxed text-left line-clamp-2">${t.description}</p>` : '')
+                                    }
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-6 text-white">
+                                    <div class="flex items-center gap-2 text-[9px] font-bold text-gray-500 uppercase tracking-widest text-white">
+                                        <i data-lucide="calendar" class="w-3 h-3 text-white text-white"></i> ${new Date(t.createdAt).toLocaleDateString('pt-BR')}
                                     </div>
-                                    <div class="flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] ${statusClass}">
-                                        <i data-lucide="clock-3" class="w-4 h-4"></i> ${diff === 0 ? 'CRIADO HOJE' : `${diff} DIAS EM ABERTO`}
+                                    <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] ${statusClass}">
+                                        <i data-lucide="clock-3" class="w-3 h-3 text-white text-white"></i> ${diff === 0 ? 'HOJE' : `${diff} DIAS`}
                                     </div>
                                     ${subtasks.length > 0 ? `
-                                        <div class="flex items-center gap-5 text-white">
-                                            <div class="h-1.5 w-40 bg-black/40 rounded-full overflow-hidden border border-white/5 text-white">
-                                                <div class="h-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.5)] text-white" style="width: ${p}%"></div>
+                                        <div class="flex items-center gap-3 text-white">
+                                            <div class="h-1 w-24 bg-black/40 rounded-full overflow-hidden border border-white/5 text-white text-white">
+                                                <div class="h-full bg-pink-500" style="width: ${p}%"></div>
                                             </div>
-                                            <span class="text-[11px] font-black text-pink-500 italic tracking-widest text-white">${p}% PERFORMANCE</span>
+                                            <span class="text-[9px] font-black text-pink-500 italic tracking-widest">${p}%</span>
                                         </div>
                                     ` : ''}
                                 </div>
                             </div>
-                            <div class="flex items-center gap-4 text-white">
-                                <button onclick="toggleExpand('${t.id}')" class="p-4 hover:bg-white/5 rounded-2xl transition-all">
-                                    <i data-lucide="${t.expanded ? 'minus' : 'plus'}" class="w-6 h-6 text-gray-500"></i>
+                            <div class="flex items-center gap-2 text-white">
+                                ${isEditing ? 
+                                    `<button onclick="saveEdit('${t.id}')" class="p-2 bg-emerald-500/20 rounded-lg hover:bg-emerald-500/40 transition-all text-white">
+                                        <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+                                    </button>` :
+                                    `<button onclick="startEdit('${t.id}')" class="p-2 hover:bg-white/5 rounded-lg transition-all text-white">
+                                        <i data-lucide="pencil" class="w-4 h-4 text-gray-500 hover:text-white text-white"></i>
+                                    </button>`
+                                }
+                                <button onclick="toggleExpand('${t.id}')" class="p-2 hover:bg-white/5 rounded-lg transition-all text-white text-white">
+                                    <i data-lucide="${t.expanded ? 'minus' : 'plus'}" class="w-4 h-4 text-gray-500 hover:text-white text-white"></i>
                                 </button>
-                                <button onclick="deleteTask('${t.id}')" class="p-4 hover:bg-red-500/20 rounded-2xl transition-all group">
-                                    <i data-lucide="trash-2" class="w-6 h-6 text-gray-500 group-hover:text-red-500"></i>
+                                <button onclick="deleteTask('${t.id}')" class="p-2 hover:bg-red-500/20 rounded-lg transition-all group text-white text-white text-white">
+                                    <i data-lucide="trash-2" class="w-4 h-4 text-gray-500 group-hover:text-red-500 text-white"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                     ${t.expanded ? `
-                        <div class="bg-black/30 p-12 pt-8 space-y-8">
-                            <div class="h-px bg-white/5"></div>
-                            <div class="space-y-6 ml-14 relative text-white">
+                        <div class="bg-black/30 p-6 pt-4 space-y-6 text-white text-white">
+                            <div class="h-px bg-white/5 text-white"></div>
+                            <div class="space-y-4 ml-10 relative">
                                 ${subtasks.map(s => `
-                                    <div class="flex items-center gap-6 group relative">
-                                        <div class="branch-line"></div>
-                                        <div class="branch-node"></div>
-                                        <button onclick="toggleTask('${s.id}', true, '${t.id}')" class="hover:scale-110 transition-transform active:scale-90 z-10 text-white">
-                                            <i data-lucide="${s.completed ? 'check-square' : 'square'}" class="w-6 h-6 ${s.completed ? 'text-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : 'text-white/10'}"></i>
+                                    <div class="flex items-center gap-4 group relative text-white">
+                                        <div class="branch-line text-white"></div>
+                                        <div class="branch-node text-white text-white"></div>
+                                        <button onclick="toggleTask('${s.id}', true, '${t.id}')" class="hover:scale-110 transition-transform active:scale-90 z-10 text-white text-white">
+                                            <i data-lucide="${s.completed ? 'check-square' : 'square'}" class="w-4 h-4 ${s.completed ? 'text-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : 'text-white/10'}"></i>
                                         </button>
-                                        <span class="text-sm ${s.completed ? 'completed-text italic' : 'text-gray-300 font-bold'} flex-grow tracking-tight text-white">${s.text}</span>
-                                        <button onclick="deleteTask('${s.id}', true, '${t.id}')" class="opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <i data-lucide="x" class="w-4 h-4 text-gray-700 hover:text-red-500"></i>
+                                        <span class="text-xs ${s.completed ? 'completed-text italic' : 'text-gray-300 font-bold'} flex-grow tracking-tight text-white text-white">${s.text}</span>
+                                        <button onclick="deleteTask('${s.id}', true, '${t.id}')" class="opacity-0 group-hover:opacity-100 transition-opacity text-white text-white">
+                                            <i data-lucide="x" class="w-3.5 h-3.5 text-gray-600 hover:text-red-500 text-white"></i>
                                         </button>
                                     </div>
                                 `).join('')}
                             </div>
-                            <div class="ml-14 mt-10 flex gap-6 text-white text-white">
-                                <input type="text" id="sub-input-${t.id}" placeholder="Ramificar ação..." 
-                                    class="bg-transparent border-b border-white/10 text-base py-3 flex-grow focus:outline-none focus:border-pink-500 transition-all font-medium text-gray-400 text-white"
+                            <div class="ml-10 mt-6 flex gap-6 text-white text-white text-white text-white">
+                                <input type="text" id="sub-input-${t.id}" placeholder="Ramificar..." 
+                                    class="bg-transparent border-b border-white/10 text-xs py-2 flex-grow focus:outline-none focus:border-pink-500 transition-all font-medium text-gray-400 text-white text-white"
                                     onkeypress="if(event.key === 'Enter') addSubTask('${t.id}')">
-                                <button onclick="addSubTask('${t.id}')" class="bg-white/5 p-4 rounded-2xl hover:bg-white/10 transition-all text-white text-white">
-                                    <i data-lucide="plus" class="w-6 h-6 text-white text-white"></i>
+                                <button onclick="addSubTask('${t.id}')" class="bg-white/5 p-2 rounded-lg hover:bg-white/10 transition-all text-white text-white text-white">
+                                    <i data-lucide="plus" class="w-4 h-4 text-white text-white text-white"></i>
                                 </button>
                             </div>
                         </div>
@@ -664,7 +733,6 @@
             `;
         }
 
-        // --- MONITOR DE LEMBRETES ---
         setInterval(() => {
             const now = new Date().getTime();
             tasks.forEach(task => {
@@ -697,8 +765,8 @@
         function triggerToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = msg;
-            t.classList.remove('translate-y-40', 'opacity-0');
-            setTimeout(() => t.classList.add('translate-y-40', 'opacity-0'), 3500);
+            t.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3500);
         }
 
         init();
