@@ -1,206 +1,98 @@
 <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js'
-        import { getFirestore, collection, doc, onSnapshot, setDoc, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js'
-
-        let db, auth, currentUser;
+        // 1. CONFIGURAÇÕES INICIAIS
         let tasks = [];
         let editingId = null;
         let currentFilter = 'all';
-        let isCloudMode = false;
         const ACCESS_PASSWORD = "3c2026"; 
 
-        // --- SISTEMA DE ÁUDIO DINÂMICO SARCÁSTICO ---
-        function playMemeSound(tituloTarefa = "") {
+        // --- SISTEMA DE ÁUDIO DINÂMICO ---
+        window.playMemeSound = function(tituloTarefa = "") {
             try {
                 window.speechSynthesis.cancel();
-
-                // Lista de esporros engraçados
                 const prefixos = [
                     "Vai trabalhar vagabundo! Você tem que ",
                     "Para de ser herdeiro e vai logo ",
                     "O boleto não se paga sozinho! Vai agora ",
                     "Larga esse celular e foca em ",
                     "Status de hoje: pobre! Anda logo e vai ",
-                    "A herança não veio, então mexe esse corpo para "
+                    "Seu futuro self está passando fome porque você não quer "
                 ];
 
                 const prefixoAleatorio = prefixos[Math.floor(Math.random() * prefixos.length)];
                 const mensagemCompleta = prefixoAleatorio + (tituloTarefa || "fazer suas obrigações");
-
                 const utterance = new SpeechSynthesisUtterance(mensagemCompleta);
-                utterance.lang = "pt-BR";
                 
-                // Configuração da Voz (Busca feminina ou ajusta tom)
+                utterance.lang = "pt-BR";
                 const voices = window.speechSynthesis.getVoices();
                 const femaleVoice = voices.find(v => v.lang.includes('pt') && 
-                    (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('maria') || 
-                     v.name.toLowerCase().includes('luciana') || v.name.toLowerCase().includes('victoria') || 
-                     v.name.toLowerCase().includes('francisca')));
+                    (v.name.toLowerCase().includes('maria') || v.name.toLowerCase().includes('luciana') || v.name.toLowerCase().includes('victoria')));
                 
-                if (femaleVoice) {
-                    utterance.voice = femaleVoice;
-                } else {
-                    utterance.pitch = 1.3; // Simula voz feminina se não houver nativa
-                }
+                if (femaleVoice) utterance.voice = femaleVoice;
+                else utterance.pitch = 1.3;
                 
-                utterance.rate = 1.1; // Levemente apressada
+                utterance.rate = 1.1;
                 window.speechSynthesis.speak(utterance);
-            } catch(e) {
-                console.error("Erro na síntese de voz:", e);
-            }
+            } catch(e) { console.error(e); }
         }
 
-        // --- SISTEMA DE FAVICON PREMIUM ---
-        function updateFavicon(hasPending) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 64; canvas.height = 64;
-            const ctx = canvas.getContext('2d');
-            
-            const logoImg = new Image();
-            logoImg.crossOrigin = "anonymous";
-            logoImg.src = "https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg";
-            
-            logoImg.onload = () => {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(32, 32, 30, 0, Math.PI * 2);
-                ctx.clip();
-                ctx.drawImage(logoImg, 0, 0, 64, 64);
-                ctx.restore();
-
-                if (hasPending) {
-                    ctx.fillStyle = '#ff0000';
-                    ctx.shadowBlur = 4;
-                    ctx.shadowColor = "rgba(0,0,0,0.5)";
-                    ctx.beginPath(); ctx.arc(52, 12, 10, 0, Math.PI * 2); ctx.fill();
-                    ctx.strokeStyle = '#030008'; ctx.lineWidth = 3; ctx.stroke();
-                }
-                
-                const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-                link.type = 'image/x-icon'; link.rel = 'shortcut icon';
-                link.href = canvas.toDataURL("image/x-icon");
-                document.getElementsByTagName('head')[0].appendChild(link);
-            };
-        }
-
-        // --- INICIALIZAÇÃO E FIREBASE ---
-        const init = async () => {
-            window.speechSynthesis.onvoiceschanged = () => {};
-            
-            try {
-                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                    const firebaseConfig = JSON.parse(__firebase_config);
-                    const app = initializeApp(firebaseConfig);
-                    auth = getAuth(app);
-                    db = getFirestore(app);
-                    isCloudMode = true;
-                    onAuthStateChanged(auth, (user) => {
-                        currentUser = user;
-                        if (user) {
-                            document.getElementById('user-id-text').innerText = `ID: ${user.uid.substring(0, 12)}`;
-                            document.getElementById('status-dot').className = "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
-                            setupSync();
-                        }
-                    });
-                } else { useLocalMode(); }
-            } catch (err) { useLocalMode(); }
-        };
-
-        function useLocalMode() {
-            isCloudMode = false;
-            const saved = localStorage.getItem('3c_tasks_v26_premium');
-            if (saved) tasks = JSON.parse(saved);
-            renderTasks();
-        }
-
-        function setupSync() {
-            const appId = 'workflow-md-master-v2';
-            const tasksCol = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks');
-            onSnapshot(tasksCol, (snap) => {
-                tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                tasks.sort((a, b) => b.createdAt - a.createdAt);
-                renderTasks();
-                document.getElementById('sync-time').innerText = new Date().toLocaleTimeString('pt-BR');
-            });
-        }
-
-        // --- INTERFACE E LOGICA DE TAREFAS ---
+        // --- FUNÇÕES DE INTERFACE ---
         window.checkPassword = () => {
-            if(document.getElementById('password-input').value === ACCESS_PASSWORD) {
-                const lock = document.getElementById('lock-screen'), main = document.getElementById('main-content');
-                lock.style.opacity = '0';
-                setTimeout(() => { lock.style.display = 'none'; main.classList.remove('hidden'); setTimeout(() => main.style.opacity = '1', 50); }, 700);
+            const input = document.getElementById('password-input');
+            if(input.value === ACCESS_PASSWORD) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('main-content').style.opacity = '1';
+                renderTasks();
             } else {
-                const input = document.getElementById('password-input');
-                input.classList.add('shake'); input.value = ''; setTimeout(() => input.classList.remove('shake'), 400);
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 400);
+                input.value = '';
             }
         };
 
-        window.addMainTask = async () => {
-            const titleInput = document.getElementById('main-task-input'), descInput = document.getElementById('main-desc-input'), reminderInput = document.getElementById('reminder-input');
-            const title = titleInput.value.trim();
-            if (!title) return;
+        window.addMainTask = () => {
+            const titleInput = document.getElementById('main-task-input');
+            const descInput = document.getElementById('main-desc-input');
+            const priority = document.getElementById('priority-select').value;
+            const reminderInput = document.getElementById('reminder-input');
+
+            if (!titleInput.value.trim()) return;
+
             const newTask = {
-                text: title, description: descInput.value, priority: document.getElementById('priority-select').value,
-                completed: false, expanded: false, createdAt: Date.now(),
+                id: Date.now().toString(),
+                text: titleInput.value,
+                description: descInput.value,
+                priority: priority,
+                completed: false,
+                createdAt: Date.now(),
                 reminderAt: reminderInput.value ? new Date(reminderInput.value).getTime() : null,
-                reminderSent: false, subtasks: []
+                reminderSent: false
             };
-            if (isCloudMode && currentUser) {
-                const appId = 'workflow-md-master-v2';
-                await setDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', Date.now().toString()), newTask);
-            } else {
-                newTask.id = Date.now().toString(); tasks.unshift(newTask); saveLocal();
-            }
+
+            tasks.unshift(newTask);
+            saveLocal();
+            playMemeSound(newTask.text);
             titleInput.value = ''; descInput.value = ''; reminderInput.value = '';
-            playMemeSound(title); // Fala ao criar
         };
 
-        window.toggleTask = async (id) => {
-            const tId = id.toString();
-            const t = tasks.find(x => x.id === tId);
-            const newState = !t.completed;
-            if (isCloudMode && currentUser) {
-                const appId = 'workflow-md-master-v2';
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', tId), { completed: newState });
-            } else {
-                t.completed = newState;
-                saveLocal();
-            }
+        window.toggleTask = (id) => {
+            const t = tasks.find(x => x.id === id);
+            if (t) t.completed = !t.completed;
+            saveLocal();
         };
 
-        window.deleteTask = async (id) => {
-            if (isCloudMode && currentUser) {
-                const appId = 'workflow-md-master-v2';
-                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id.toString()));
-            } else {
-                tasks = tasks.filter(x => x.id !== id.toString());
-                saveLocal();
-            }
+        window.deleteTask = (id) => {
+            tasks = tasks.filter(x => x.id !== id);
+            saveLocal();
         };
 
-        window.startEdit = (id) => { editingId = id.toString(); renderTasks(); };
-        
-        window.saveEdit = async (id) => {
-            const title = document.getElementById(`edit-title-${id}`).value;
-            const desc = document.getElementById(`edit-desc-${id}`).value;
-            if (isCloudMode && currentUser) {
-                const appId = 'workflow-md-master-v2';
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id.toString()), { text: title, description: desc });
-            } else {
-                const t = tasks.find(x => x.id === id.toString());
-                t.text = title; t.description = desc;
-                saveLocal();
-            }
+        window.startEdit = (id) => { editingId = id; renderTasks(); };
+        window.saveEdit = (id) => {
+            const t = tasks.find(x => x.id === id);
+            t.text = document.getElementById(`edit-title-${id}`).value;
+            t.description = document.getElementById(`edit-desc-${id}`).value;
             editingId = null;
-            renderTasks();
-        };
-
-        window.toggleExpand = (id) => {
-            const t = tasks.find(x => x.id === id.toString());
-            t.expanded = !t.expanded;
-            renderTasks();
+            saveLocal();
         };
 
         window.setFilter = (f) => {
@@ -208,65 +100,77 @@
             renderTasks();
         };
 
-        window.testAlert = () => {
-            playMemeSound("o teste de sistema");
-        };
+        window.testAlert = () => playMemeSound("testar o sistema");
 
-        function saveLocal() { localStorage.setItem('3c_tasks_v26_premium', JSON.stringify(tasks)); renderTasks(); }
+        function saveLocal() {
+            localStorage.setItem('3c_tasks_v26', JSON.stringify(tasks));
+            renderTasks();
+        }
 
         function renderTasks() {
-            const container = document.getElementById('task-list'), empty = document.getElementById('empty-state');
-            const filtered = tasks.filter(t => currentFilter === 'pending' ? !t.completed : currentFilter === 'completed' ? t.completed : true);
+            const container = document.getElementById('task-list');
+            const filtered = tasks.filter(t => 
+                currentFilter === 'pending' ? !t.completed : 
+                currentFilter === 'completed' ? t.completed : true
+            );
             
-            if (!filtered.length) { container.innerHTML = ''; empty.classList.remove('hidden'); }
-            else { empty.classList.add('hidden'); container.innerHTML = filtered.map(t => generateHTML(t)).join(''); }
+            container.innerHTML = filtered.map(t => `
+                <div class="glass-card rounded-2xl p-4 mb-4 border-l-4 ${t.completed ? 'opacity-40 border-gray-600' : (t.priority === 'high' ? 'border-pink-600' : 'border-cyan-600')}">
+                    <div class="flex justify-between items-start">
+                        <div class="flex gap-4">
+                            <button onclick="toggleTask('${t.id}')">
+                                <i data-lucide="${t.completed ? 'check-circle' : 'circle'}" class="w-6 h-6"></i>
+                            </button>
+                            <div>
+                                ${editingId === t.id ? 
+                                    `<input id="edit-title-${t.id}" class="bg-black/20 border border-white/10 rounded p-1 mb-2" value="${t.text}">` : 
+                                    `<h3 class="font-bold uppercase ${t.completed ? 'line-through' : ''}">${t.text}</h3>`}
+                                
+                                ${editingId === t.id ? 
+                                    `<textarea id="edit-desc-${t.id}" class="bg-black/20 border border-white/10 rounded p-1 w-full text-xs">${t.description}</textarea>` : 
+                                    `<p class="text-xs text-gray-400">${t.description || ''}</p>`}
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="playMemeSound('${t.text}')" class="p-1 hover:bg-white/10 rounded"><i data-lucide="volume-2" class="w-4 h-4 text-pink-500"></i></button>
+                            ${editingId === t.id ? 
+                                `<button onclick="saveEdit('${t.id}')"><i data-lucide="save" class="w-4 h-4 text-green-500"></i></button>` : 
+                                `<button onclick="startEdit('${t.id}')"><i data-lucide="pencil" class="w-4 h-4 text-gray-500"></i></button>`}
+                            <button onclick="deleteTask('${t.id}')"><i data-lucide="trash" class="w-4 h-4 text-red-800"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Atualiza progresso
+            const total = tasks.length;
+            const done = tasks.filter(x => x.completed).length;
+            const p = total ? Math.round((done / total) * 100) : 0;
+            document.getElementById('overall-progress').style.width = p + '%';
+            document.getElementById('percent-display').innerText = p + '%';
             
-            const total = tasks.length, concl = tasks.filter(x => x.completed).length;
-            const p = total ? Math.round((concl / total) * 100) : 0;
-            document.getElementById('overall-progress').style.width = `${p}%`;
-            document.getElementById('percent-display').innerText = `${p}%`;
-            
-            updateFavicon(tasks.some(t => !t.completed));
             lucide.createIcons();
         }
 
-        function generateHTML(t) {
-            const isEditing = editingId === t.id.toString();
-            const reminderDate = t.reminderAt ? new Date(t.reminderAt).toLocaleString('pt-BR') : null;
+        // --- INICIALIZAÇÃO ---
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('3c_tasks_v26');
+            if (saved) tasks = JSON.parse(saved);
+            
+            // Corrige o bug do Lucide que às vezes não carrega ícones dinâmicos
+            setTimeout(() => lucide.createIcons(), 500);
+        });
 
-            return `
-                <div class="glass-card rounded-2xl overflow-hidden mb-4 ${t.completed ? 'completed-task' : `priority-${t.priority}-border`}">
-                    <div class="p-4">
-                        <div class="flex items-start gap-4">
-                            <button onclick="toggleTask('${t.id}')"><i data-lucide="${t.completed ? 'check-circle-2' : 'circle'}" class="w-6 h-6 ${t.completed ? 'text-emerald-500' : 'text-white/10'}"></i></button>
-                            <div class="flex-grow">
-                                ${isEditing ? `<input type="text" id="edit-title-${t.id}" value="${t.text}" class="edit-mode-input mb-2">` : `<h3 class="font-black uppercase ${t.completed ? 'completed-text' : ''}">${t.text}</h3>`}
-                                ${isEditing ? `<textarea id="edit-desc-${t.id}" class="edit-mode-input text-xs">${t.description || ''}</textarea>` : `<p class="text-[11px] text-gray-400">${t.description || ''}</p>`}
-                                ${reminderDate ? `<span class="text-[8px] text-pink-500 font-bold uppercase mt-2 block">🔔 ${reminderDate}</span>` : ''}
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="playMemeSound('${t.text}')" class="p-2 hover:bg-white/5 rounded-lg"><i data-lucide="volume-2" class="w-4 h-4 text-pink-500"></i></button>
-                                ${isEditing ? `<button onclick="saveEdit('${t.id}')"><i data-lucide="check" class="w-4 h-4 text-emerald-500"></i></button>` : `<button onclick="startEdit('${t.id}')"><i data-lucide="pencil" class="w-4 h-4 text-gray-500"></i></button>`}
-                                <button onclick="deleteTask('${t.id}')"><i data-lucide="trash-2" class="w-4 h-4 text-gray-500"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        // --- MONITOR DE REMINDERS (CHECA A CADA 5 SEG) ---
+        // Checagem de Lembretes
         setInterval(() => {
             const now = Date.now();
-            tasks.forEach(task => {
-                if (!task.completed && task.reminderAt && !task.reminderSent && now >= task.reminderAt) {
-                    document.getElementById('alert-title').innerText = task.text;
-                    document.getElementById('browser-alert').style.display = 'block';
-                    playMemeSound(task.text);
-                    task.reminderSent = true;
-                    if (!isCloudMode) saveLocal();
+            tasks.forEach(t => {
+                if (!t.completed && t.reminderAt && !t.reminderSent && now >= t.reminderAt) {
+                    t.reminderSent = true;
+                    playMemeSound(t.text);
+                    alert("🚨 HORA DE TRABALHAR: " + t.text);
+                    saveLocal();
                 }
             });
         }, 5000);
-
-        init();
     </script>
