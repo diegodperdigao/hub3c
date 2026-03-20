@@ -428,7 +428,6 @@
         };
 
         window.addMainTask = async () => {
-            if (!currentUser) return;
             const titleInput = document.getElementById('main-task-input');
             const descInput = document.getElementById('main-desc-input');
             const priorityInput = document.getElementById('priority-select');
@@ -441,45 +440,64 @@
                 return;
             }
 
-            try {
-                const tasksRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks');
-                await addDoc(tasksRef, {
-                    title: title,
-                    desc: descInput.value.trim(),
-                    priority: priorityInput.value,
-                    reminder: reminderInput.value,
-                    completed: false,
-                    createdAt: Date.now()
-                });
+            const newTask = {
+                title: title,
+                desc: descInput.value.trim(),
+                priority: priorityInput.value,
+                reminder: reminderInput.value,
+                completed: false,
+                createdAt: Date.now()
+            };
 
-                titleInput.value = '';
-                descInput.value = '';
-                reminderInput.value = '';
-            } catch (error) {
-                console.error("Erro ao adicionar tarefa:", error);
+            if (isCloudMode && currentUser) {
+                try {
+                    const tasksRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks');
+                    await addDoc(tasksRef, newTask);
+                } catch (error) {
+                    console.error("Erro ao adicionar tarefa:", error);
+                }
+            } else {
+                // Modo Offline (GitHub Pages)
+                newTask.id = Math.random().toString(36).substring(2, 11);
+                tasks.unshift(newTask);
+                renderTasks();
             }
+
+            titleInput.value = '';
+            descInput.value = '';
+            reminderInput.value = '';
         };
 
         window.deleteTask = async (id) => {
-            if (!currentUser) return;
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id));
-            } catch (error) {
-                console.error("Erro ao deletar tarefa:", error);
+            if (isCloudMode && currentUser) {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id));
+                } catch (error) {
+                    console.error("Erro ao deletar tarefa:", error);
+                }
+            } else {
+                // Modo Offline
+                tasks = tasks.filter(t => t.id !== id);
+                renderTasks();
             }
         };
 
         window.toggleComplete = async (id) => {
-            if (!currentUser) return;
             const task = tasks.find(t => t.id === id);
             if (!task) return;
 
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), {
-                    completed: !task.completed
-                });
-            } catch (error) {
-                console.error("Erro ao atualizar tarefa:", error);
+            if (isCloudMode && currentUser) {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), {
+                        completed: !task.completed
+                    });
+                } catch (error) {
+                    console.error("Erro ao atualizar tarefa:", error);
+                }
+            } else {
+                // Modo Offline
+                task.completed = !task.completed;
+                renderTasks();
             }
         };
 
@@ -495,7 +513,6 @@
         };
 
         window.saveEdit = async (id) => {
-            if (!currentUser) return;
             const titleInput = document.getElementById(`edit-title-${id}`);
             const descInput = document.getElementById(`edit-desc-${id}`);
             const reminderInput = document.getElementById(`edit-reminder-${id}`);
@@ -506,20 +523,35 @@
                 return;
             }
 
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), {
-                    title: titleInput.value.trim(),
-                    desc: descInput.value.trim(),
-                    reminder: reminderInput ? reminderInput.value : ""
-                });
+            const newTitle = titleInput.value.trim();
+            const newDesc = descInput.value.trim();
+            const newReminder = reminderInput ? reminderInput.value : "";
+
+            if (isCloudMode && currentUser) {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), {
+                        title: newTitle,
+                        desc: newDesc,
+                        reminder: newReminder
+                    });
+                    editingId = null;
+                } catch (error) {
+                    console.error("Erro ao salvar edição:", error);
+                }
+            } else {
+                // Modo Offline
+                const task = tasks.find(t => t.id === id);
+                if (task) {
+                    task.title = newTitle;
+                    task.desc = newDesc;
+                    task.reminder = newReminder;
+                }
                 editingId = null;
-            } catch (error) {
-                console.error("Erro ao salvar edição:", error);
+                renderTasks();
             }
         };
 
         window.addSubtask = async (taskId) => {
-            if (!currentUser) return;
             const input = document.getElementById(`subtask-input-${taskId}`);
             const title = input.value.trim();
             if (!title) return;
@@ -535,18 +567,24 @@
 
             const updatedSubtasks = [...(task.subtasks || []), newSubtask];
 
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
-                    subtasks: updatedSubtasks
-                });
+            if (isCloudMode && currentUser) {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
+                        subtasks: updatedSubtasks
+                    });
+                    input.value = '';
+                } catch (error) {
+                    console.error("Erro ao adicionar sub-tarefa:", error);
+                }
+            } else {
+                // Modo Offline
+                task.subtasks = updatedSubtasks;
                 input.value = '';
-            } catch (error) {
-                console.error("Erro ao adicionar sub-tarefa:", error);
+                renderTasks();
             }
         };
 
         window.toggleSubtask = async (taskId, subtaskId) => {
-            if (!currentUser) return;
             const task = tasks.find(t => t.id === taskId);
             if (!task) return;
 
@@ -554,28 +592,39 @@
                 st.id === subtaskId ? { ...st, completed: !st.completed } : st
             );
 
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
-                    subtasks: updatedSubtasks
-                });
-            } catch (error) {
-                console.error("Erro ao alternar sub-tarefa:", error);
+            if (isCloudMode && currentUser) {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
+                        subtasks: updatedSubtasks
+                    });
+                } catch (error) {
+                    console.error("Erro ao alternar sub-tarefa:", error);
+                }
+            } else {
+                // Modo Offline
+                task.subtasks = updatedSubtasks;
+                renderTasks();
             }
         };
 
         window.deleteSubtask = async (taskId, subtaskId) => {
-            if (!currentUser) return;
             const task = tasks.find(t => t.id === taskId);
             if (!task) return;
 
             const updatedSubtasks = (task.subtasks || []).filter(st => st.id !== subtaskId);
 
-            try {
-                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
-                    subtasks: updatedSubtasks
-                });
-            } catch (error) {
-                console.error("Erro ao deletar sub-tarefa:", error);
+            if (isCloudMode && currentUser) {
+                try {
+                    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
+                        subtasks: updatedSubtasks
+                    });
+                } catch (error) {
+                    console.error("Erro ao deletar sub-tarefa:", error);
+                }
+            } else {
+                // Modo Offline
+                task.subtasks = updatedSubtasks;
+                renderTasks();
             }
         };
         // ------------------------------------------
@@ -760,11 +809,14 @@
                             });
                         }
                     });
+                } else {
+                     throw new Error("Fora do Canvas. Sem credenciais do Firebase.");
                 }
             } catch (error) {
-                console.error("Erro ao inicializar:", error);
-                document.getElementById('sync-status').innerText = "Modo Offline";
+                console.warn("Rodando no GitHub Pages: O banco de dados em nuvem interno foi desativado.");
+                document.getElementById('sync-status').innerText = "OFFLINE (GitHub Pages)";
                 document.getElementById('status-dot').classList.replace('bg-gray-500', 'bg-red-500');
+                renderTasks(); // Renderiza interface limpa para funcionamento offline
             }
         };
 
