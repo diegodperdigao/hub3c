@@ -388,7 +388,10 @@
                     <div id="closure-result-card" class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl hidden fade-content mb-12">
                         <div class="bg-emerald-500/10 px-10 py-8 border-b border-emerald-500/20 flex justify-between items-center">
                             <div><h2 class="text-xl font-black uppercase tracking-widest text-emerald-400">Extrato Consolidado</h2><p id="closure-meta" class="text-sm text-gray-400 mt-2 font-mono">Afiliado: --- | Período: ---</p></div>
-                            <button onclick="window.exportClosureCSV()" class="px-6 py-3 bg-emerald-500 text-white font-black uppercase text-xs tracking-[0.2em] rounded-xl hover:bg-emerald-600 transition-all flex items-center gap-2"><i data-lucide="download" class="w-5 h-5"></i> Exportar Extrato CSV</button>
+                            <div class="flex items-center gap-3">
+                                <button onclick="window.exportClosureCSV()" class="px-6 py-3 bg-white/10 text-white font-black uppercase text-xs tracking-[0.2em] rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"><i data-lucide="download" class="w-5 h-5"></i> Exportar CSV</button>
+                                <button onclick="window.saveClosureToHistory()" class="px-6 py-3 bg-pink-500 text-white font-black uppercase text-xs tracking-[0.2em] rounded-xl hover:bg-pink-600 transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(236,72,153,0.3)]"><i data-lucide="save" class="w-5 h-5"></i> Registrar Fechamento</button>
+                            </div>
                         </div>
                         <div class="p-10">
                             <div class="overflow-x-auto custom-scrollbar mb-10">
@@ -640,6 +643,25 @@
                         <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">Lucro 3C Gerado</p><p id="profile-profit" class="text-xl font-mono font-bold text-emerald-400 mt-1">R$ 0</p></div>
                     </div>
                 </div>
+                
+                <div class="mt-2 border-t border-white/10 pt-6">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-3 flex items-center gap-2"><i data-lucide="receipt" class="w-4 h-4"></i> Histórico de Fechamentos (Pagamentos)</h3>
+                    <div class="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-white/5 text-[9px] uppercase tracking-widest text-gray-400">
+                                <tr>
+                                    <th class="p-3 font-bold whitespace-nowrap">Período</th>
+                                    <th class="p-3 font-bold text-right whitespace-nowrap">Valor (R$)</th>
+                                    <th class="p-3 font-bold text-center whitespace-nowrap">Status</th>
+                                    <th class="p-3 font-bold text-center whitespace-nowrap">Nota Fiscal (Anexo)</th>
+                                    <th class="p-3 font-bold text-center whitespace-nowrap">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="profile-payments-tbody" class="text-xs font-mono"></tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div>
                     <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2 justify-between">
                         <span>Acordos e Margens (Deals)</span>
@@ -786,7 +808,8 @@
             },
             affiliates: [], 
             dailyReports: [],
-            auditLogs: [] 
+            auditLogs: [],
+            payments: []
         };
 
         const MD_BASE_CONFIG = {
@@ -877,6 +900,7 @@
                                     window.dataStore.affiliates = parsed.affiliates || [];
                                     window.dataStore.dailyReports = parsed.dailyReports || [];
                                     window.dataStore.auditLogs = parsed.auditLogs || [];
+                                    window.dataStore.payments = parsed.payments || [];
                                     
                                     // Se o app MD estiver aberto, atualizar as views
                                     const dashApp = document.getElementById('dashboard-app');
@@ -1154,6 +1178,7 @@
                     window.dataStore.affiliates = parsed.affiliates || [];
                     window.dataStore.dailyReports = parsed.dailyReports || [];
                     window.dataStore.auditLogs = parsed.auditLogs || [];
+                    window.dataStore.payments = parsed.payments || [];
                 } catch(e) { console.error("Erro ao carregar MD Local Storage", e); }
             }
         };
@@ -1603,6 +1628,9 @@
 
             const modal = document.getElementById('modal-affiliate-profile');
             modal.classList.remove('hidden'); setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            
+            // CARREGAR HISTÓRICO DE PAGAMENTOS
+            window.renderPaymentHistory(affId);
         };
 
         window.initFechamentoUI = () => {
@@ -1684,8 +1712,8 @@
 
                 totalQftdsGlobal += sumQftd; totalNetRevGlobal += sumRev; totalCommGlobal += brandComm;
 
-                const color = window.getBrandConfig(brand).color;
-                const myDeal = aff.deals[brand] || { cpa: 0, rs: 0 };
+                const color = (window.getBrandConfig(brand) || {color:'#fff'}).color;
+                const myDeal = (aff.deals && aff.deals[brand]) ? aff.deals[brand] : { cpa: 0, rs: 0 };
                 const isTiered = window.dataStore.brands[brand] && window.dataStore.brands[brand].type === 'tiered';
                 const dealStr = isTiered ? `L1: R$ ${myDeal.cpa_l1||myDeal.cpa||0} / ${myDeal.rs}%` : `R$ ${myDeal.cpa} / ${myDeal.rs}%`;
 
@@ -1698,6 +1726,15 @@
             document.getElementById('closure-total').innerText = window.formatCurrency(totalCommGlobal);
             document.getElementById('closure-summary').innerText = `${totalQftdsGlobal} QFTDs Gerados | Receita (Net Rev): ${window.formatCurrency(totalNetRevGlobal)}`;
             document.getElementById('closure-meta').innerText = `Afiliado: ${aff.name} | Período: ${startDateStr.split('-').reverse().join('/')} até ${endDateStr.split('-').reverse().join('/')}`;
+
+            // ARMAZENAR DADOS PARA O BOTÃO SALVAR
+            window.currentPendingClosure = {
+                affiliateId: aff.id,
+                affiliateName: aff.name,
+                startDate: startDateStr,
+                endDate: endDateStr,
+                totalAmount: totalCommGlobal
+            };
 
             const resCard = document.getElementById('closure-result-card');
             resCard.classList.remove('hidden', 'fade-content'); void resCard.offsetWidth; resCard.classList.add('fade-content');
@@ -1734,6 +1771,94 @@
             link.setAttribute("download", `Extrato_${affName.replace(/\s+/g, '_')}.csv`);
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
         };
+
+        // --- NOVAS FUNÇÕES DE PAGAMENTO (NF / HISTÓRICO) ---
+        window.saveClosureToHistory = () => {
+            if(!window.currentPendingClosure) return window.showToast("Nenhum fechamento calculado.");
+            if(!window.dataStore.payments) window.dataStore.payments = [];
+            
+            const closure = {
+                id: Math.random().toString(36).substring(2, 11),
+                ...window.currentPendingClosure,
+                status: 'pending', // pending, paid
+                invoiceUrl: '',
+                createdAt: Date.now()
+            };
+            
+            window.dataStore.payments.push(closure);
+            window.saveMDData();
+            window.logAction('Fechamento Registrado', `Registado fechamento para ${closure.affiliateName} no valor de R$ ${closure.totalAmount}`);
+            
+            window.showToast("Fechamento registado! Pode anexar a Nota Fiscal no Perfil do Afiliado.", "success");
+            window.currentPendingClosure = null;
+            document.getElementById('closure-result-card').classList.add('hidden');
+        };
+
+        window.renderPaymentHistory = (affId) => {
+            const tbody = document.getElementById('profile-payments-tbody');
+            if(!tbody) return;
+
+            const payments = (window.dataStore.payments || []).filter(p => p.affiliateId === affId).sort((a, b) => b.createdAt - a.createdAt);
+
+            if(payments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-5 text-center text-gray-500 italic">Nenhum fechamento registrado para este afiliado.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = payments.map(p => {
+                const statusBadge = p.status === 'paid' 
+                    ? `<span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-lg text-[9px] font-black uppercase tracking-widest cursor-pointer hover:bg-emerald-500/30 transition-all border border-emerald-500/30" onclick="window.togglePaymentStatus('${p.id}')"><i data-lucide="check-circle-2" class="w-3 h-3 inline pb-0.5"></i> Pago</span>`
+                    : `<span class="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-lg text-[9px] font-black uppercase tracking-widest cursor-pointer hover:bg-amber-500/30 transition-all border border-amber-500/30" onclick="window.togglePaymentStatus('${p.id}')"><i data-lucide="clock" class="w-3 h-3 inline pb-0.5"></i> Pendente</span>`;
+                
+                const invoiceBtn = p.invoiceUrl 
+                    ? `<div class="flex items-center justify-center gap-2"><a href="${p.invoiceUrl}" target="_blank" class="text-blue-400 hover:text-blue-300 flex items-center justify-center gap-1 font-bold"><i data-lucide="external-link" class="w-4 h-4"></i> Ver N.F.</a> <button onclick="window.updateInvoice('${p.id}')" class="text-gray-500 hover:text-white" title="Alterar Link"><i data-lucide="pencil" class="w-3 h-3"></i></button></div>`
+                    : `<button onclick="window.updateInvoice('${p.id}')" class="text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-1 mx-auto bg-white/5 px-3 py-1.5 rounded-lg border border-white/10"><i data-lucide="link" class="w-3 h-3"></i> Anexar Link</button>`;
+
+                return `
+                    <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                        <td class="p-4 text-gray-300">${p.startDate.split('-').reverse().join('/')} até ${p.endDate.split('-').reverse().join('/')}</td>
+                        <td class="p-4 text-right text-white font-bold text-sm">${window.formatCurrency(p.totalAmount)}</td>
+                        <td class="p-4 text-center">${statusBadge}</td>
+                        <td class="p-4 text-center">${invoiceBtn}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="window.deletePayment('${p.id}', '${affId}')" class="p-2 text-gray-500 hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10" title="Excluir Registro"><i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            lucide.createIcons();
+        };
+
+        window.togglePaymentStatus = (payId) => {
+            const pay = window.dataStore.payments.find(p => p.id === payId);
+            if(pay) {
+                pay.status = pay.status === 'paid' ? 'pending' : 'paid';
+                window.saveMDData();
+                window.renderPaymentHistory(pay.affiliateId);
+            }
+        };
+
+        window.updateInvoice = (payId) => {
+            const url = prompt("Cole aqui o Link/URL da Nota Fiscal (Google Drive, DropBox, PDF Web, etc):");
+            if(url !== null && url.trim() !== '') {
+                const pay = window.dataStore.payments.find(p => p.id === payId);
+                if(pay) {
+                    pay.invoiceUrl = url.trim();
+                    window.saveMDData();
+                    window.renderPaymentHistory(pay.affiliateId);
+                    window.showToast("Nota Fiscal anexada com sucesso!", "success");
+                }
+            }
+        };
+
+        window.deletePayment = (payId, affId) => {
+            window.showConfirm("Deseja realmente excluir este registro de fechamento do histórico?", () => {
+                window.dataStore.payments = window.dataStore.payments.filter(p => p.id !== payId);
+                window.saveMDData();
+                window.renderPaymentHistory(affId);
+            });
+        };
+        // --- FIM NOVAS FUNÇÕES ---
 
         window.openConfigModal = () => {
             const listContainer = document.getElementById('brands-config-list');
@@ -2332,275 +2457,222 @@
             logoImg.src = "https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg";
             
             logoImg.onload = () => {
-                ctx.save(); ctx.beginPath(); ctx.arc(32, 32, 30, 0, Math.PI * 2); ctx.clip();
-                ctx.drawImage(logoImg, 0, 0, 64, 64); ctx.restore();
+                ctx.save(); ctx.beginPath(); ctx.arc(32, 32, 30, 0, Math.PI * 2); ctx
+<!-- ... existing code ... -->
+            const logoImg = new Image();
+            logoImg.crossOrigin = "anonymous";
+            logoImg.src = "https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg";
+            
+            logoImg.onload = () => {
+                ctx.save(); 
+                ctx.beginPath(); 
+                ctx.arc(32, 32, 30, 0, Math.PI * 2); 
+                ctx.clip();
+                ctx.drawImage(logoImg, 0, 0, 64, 64);
+                ctx.restore();
 
-                if (hasPending) {
-                    ctx.fillStyle = '#ff0000'; ctx.shadowBlur = 4; ctx.shadowColor = "rgba(0,0,0,0.5)";
-                    ctx.beginPath(); ctx.arc(52, 12, 10, 0, Math.PI * 2); ctx.fill();
-                    ctx.strokeStyle = '#030008'; ctx.lineWidth = 3; ctx.stroke();
-                }
-                
-                const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-                link.type = 'image/x-icon'; link.rel = 'shortcut icon';
-                link.href = canvas.toDataURL("image/x-icon");
-                document.getElementsByTagName('head')[0].appendChild(link);
-            };
-        };
+                // Desenhar a bolinha de notificação rosa se houver pendências
+                if (hasPending) {
+                    ctx.beginPath(); 
+                    ctx.arc(52, 12, 12, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#ec4899'; 
+                    ctx.fill();
+                    ctx.lineWidth = 2; 
+                    ctx.strokeStyle = '#030008'; 
+                    ctx.stroke();
+                }
 
-        window.setFilter = (filter) => {
-            window.currentFilter = filter;
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('text-pink-500', 'active-filter');
-                const span = btn.querySelector('span');
-                if(span) span.remove();
-            });
-            const activeBtn = Array.from(buttons).find(b => {
-                if(filter === 'all' && b.innerText.includes('Visão Geral')) return true;
-                if(filter === 'pending' && b.innerText.includes('Pendentes')) return true;
-                if(filter === 'completed' && b.innerText.includes('Finalizadas')) return true;
-                return false;
-            });
-            if (activeBtn) {
-                activeBtn.classList.add('text-pink-500', 'active-filter');
-                activeBtn.innerHTML += `<span class="absolute -bottom-9 left-0 right-0 h-[3px] bg-pink-500 rounded-full"></span>`;
-            }
-            window.renderTasks();
-        };
+                const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+                link.type = 'image/x-icon'; 
+                link.rel = 'shortcut icon';
+                link.href = canvas.toDataURL();
+                document.getElementsByTagName('head')[0].appendChild(link);
+            };
+        };
 
-        window.addMainTask = async () => {
-            const titleInput = document.getElementById('main-task-input');
-            const descInput = document.getElementById('main-desc-input');
-            const priorityInput = document.getElementById('priority-select');
-            const reminderInput = document.getElementById('reminder-input');
+        window.updateProgress = () => {
+            if(!window.tasks) return;
+            const total = window.tasks.length;
+            const completed = window.tasks.filter(t => t.completed).length;
+            const pct = total === 0 ? 0 : Math.round((completed / total) * 100);
+            
+            const bar = document.getElementById('overall-progress');
+            const display = document.getElementById('percent-display');
+            if (bar) bar.style.width = `${pct}%`;
+            if (display) display.innerText = `${pct}%`;
 
-            const title = titleInput.value.trim();
-            if (!title) { titleInput.classList.add('shake'); setTimeout(() => titleInput.classList.remove('shake'), 400); return; }
+            const hasPending = total > completed;
+            window.updateFavicon(hasPending);
+            
+            const dot = document.getElementById('notif-dot');
+            if(dot) {
+                if(hasPending) dot.classList.remove('hidden');
+                else dot.classList.add('hidden');
+            }
+        };
 
-            const newTask = { title: title, desc: descInput.value.trim(), priority: priorityInput.value, reminder: reminderInput.value, completed: false, createdAt: Date.now() };
+        window.renderTasks = () => {
+            const list = document.getElementById('task-list');
+            const emptyState = document.getElementById('work-empty-state');
+            if(!list || !emptyState) return;
 
-            if (window.isCloudMode && wfCurrentUser) {
-                try {
-                    const tasksRef = collection(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks');
-                    await addDoc(tasksRef, newTask);
-                } catch (error) { console.error("Erro:", error); }
-            } else {
-                newTask.id = Math.random().toString(36).substring(2, 11);
-                window.tasks.unshift(newTask);
-                window.saveToLocalStorageWF();
-                window.renderTasks();
-            }
+            let filtered = (window.tasks || []);
+            if (window.currentFilter === 'pending') filtered = filtered.filter(t => !t.completed);
+            if (window.currentFilter === 'completed') filtered = filtered.filter(t => t.completed);
 
-            titleInput.value = ''; descInput.value = ''; reminderInput.value = '';
-        };
+            if (filtered.length === 0) {
+                list.innerHTML = ''; 
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                list.innerHTML = filtered.map(t => {
+                    const prioColor = t.priority === 'high' ? 'text-pink-500' : (t.priority === 'medium' ? 'text-purple-500' : 'text-cyan-500');
+                    const prioBg = t.priority === 'high' ? 'bg-pink-500/10 border-pink-500/20' : (t.priority === 'medium' ? 'bg-purple-500/10 border-purple-500/20' : 'bg-cyan-500/10 border-cyan-500/20');
+                    const prioBorder = t.priority === 'high' ? 'border-l-pink-500' : (t.priority === 'medium' ? 'border-l-purple-500' : 'border-l-cyan-500');
+                    
+                    const isDone = t.completed ? 'completed-task' : '';
+                    const titleDone = t.completed ? 'completed-text' : 'text-white';
+                    
+                    let remHtml = '';
+                    if (t.reminder) {
+                        const d = new Date(t.reminder);
+                        remHtml = `<div class="flex items-center gap-1 mt-3 text-[10px] font-bold text-gray-500 bg-white/5 px-2 py-1 rounded inline-flex"><i data-lucide="bell" class="w-3 h-3"></i> ${d.toLocaleDateString('pt-BR')} às ${d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</div>`;
+                    }
 
-        window.deleteTask = async (id) => {
-            if (window.isCloudMode && wfCurrentUser) {
-                try { await deleteDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', id)); } 
-                catch (error) { console.error("Erro:", error); }
-            } else {
-                window.tasks = window.tasks.filter(t => t.id !== id);
-                window.saveToLocalStorageWF(); window.renderTasks();
-            }
-        };
+                    return `
+                    <div class="glass-card p-6 rounded-2xl border-l-4 ${prioBorder} ${isDone} transition-all hover:border-white/20 animate-task relative group">
+                        <div class="flex items-start gap-4">
+                            <button onclick="window.toggleTask('${t.id}')" class="mt-1 flex-shrink-0 text-gray-400 hover:text-pink-500 transition-colors">
+                                <i data-lucide="${t.completed ? 'check-circle-2' : 'circle'}" class="w-6 h-6 ${t.completed ? 'text-pink-500' : ''}"></i>
+                            </button>
+                            <div class="flex-grow">
+                                <div class="flex flex-wrap items-center gap-3 mb-2">
+                                    <h3 class="text-lg font-black uppercase tracking-tight ${titleDone}">${t.title}</h3>
+                                    <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded border ${prioColor} ${prioBg}">${t.priority}</span>
+                                </div>
+                                ${t.desc ? `<p class="text-sm text-gray-400 leading-relaxed max-w-3xl">${t.desc.replace(/\n/g, '<br>')}</p>` : ''}
+                                ${remHtml}
+                            </div>
+                            <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onclick="window.deleteTask('${t.id}')" class="p-2 text-gray-500 hover:text-red-500 transition-colors rounded-xl hover:bg-white/5" title="Excluir Tarefa">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
+            lucide.createIcons();
+            window.updateProgress();
+        };
 
-        window.toggleComplete = async (id) => {
-            const task = window.tasks.find(t => t.id === id);
-            if (!task) return;
-            if (window.isCloudMode && wfCurrentUser) {
-                try { await updateDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', id), { completed: !task.completed }); } 
-                catch (error) { console.error("Erro:", error); }
-            } else {
-                task.completed = !task.completed; window.saveToLocalStorageWF(); window.renderTasks();
-            }
-        };
+        window.addMainTask = async () => {
+            const titleInput = document.getElementById('main-task-input');
+            const descInput = document.getElementById('main-desc-input');
+            const prioInput = document.getElementById('priority-select');
+            const remInput = document.getElementById('reminder-input');
+            
+            const title = titleInput.value.trim();
+            if(!title) return window.showToast("Dê um nome para sua missão, guerreiro.");
 
-        window.startEdit = (id) => { window.editingId = id; window.renderTasks(); };
-        window.cancelEdit = () => { window.editingId = null; window.renderTasks(); };
+            const newTask = {
+                id: Math.random().toString(36).substring(2, 11),
+                title,
+                desc: descInput.value.trim(),
+                priority: prioInput.value,
+                reminder: remInput.value || null,
+                completed: false,
+                createdAt: Date.now()
+            };
 
-        window.saveEdit = async (id) => {
-            const titleInput = document.getElementById(`edit-title-${id}`);
-            const descInput = document.getElementById(`edit-desc-${id}`);
-            const reminderInput = document.getElementById(`edit-reminder-${id}`);
-            
-            if (!titleInput.value.trim()) { titleInput.classList.add('shake'); setTimeout(() => titleInput.classList.remove('shake'), 400); return; }
+            window.tasks.unshift(newTask);
 
-            const newTitle = titleInput.value.trim(), newDesc = descInput.value.trim(), newReminder = reminderInput ? reminderInput.value : "";
+            if (window.isCloudMode && wfCurrentUser) {
+                try {
+                    await setDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', newTask.id), newTask);
+                    window.showToast("Missão lançada na nuvem!", "success");
+                } catch(e) {
+                    console.error("Erro Nuvem WF", e);
+                    window.saveToLocalStorageWF();
+                    window.showToast("Salvo offline (Erro Nuvem).", "success");
+                }
+            } else {
+                window.saveToLocalStorageWF();
+                window.showToast("Missão lançada localmente!", "success");
+            }
 
-            if (window.isCloudMode && wfCurrentUser) {
-                try {
-                    await updateDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', id), { title: newTitle, desc: newDesc, reminder: newReminder });
-                    window.editingId = null;
-                } catch (error) { console.error("Erro:", error); }
-            } else {
-                const task = window.tasks.find(t => t.id === id);
-                if (task) { task.title = newTitle; task.desc = newDesc; task.reminder = newReminder; }
-                window.editingId = null; window.saveToLocalStorageWF(); window.renderTasks();
-            }
-        };
+            titleInput.value = ''; descInput.value = ''; remInput.value = '';
+            window.renderTasks();
+        };
 
-        window.addSubtask = async (taskId) => {
-            const input = document.getElementById(`subtask-input-${taskId}`);
-            const title = input.value.trim();
-            if (!title) return;
+        window.toggleTask = async (id) => {
+            const task = window.tasks.find(t => t.id === id);
+            if(!task) return;
+            
+            task.completed = !task.completed;
+            window.renderTasks();
 
-            const task = window.tasks.find(t => t.id === taskId);
-            if (!task) return;
+            if (window.isCloudMode && wfCurrentUser) {
+                try {
+                    await updateDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', id), { completed: task.completed });
+                } catch(e) {
+                    window.saveToLocalStorageWF();
+                }
+            } else {
+                window.saveToLocalStorageWF();
+            }
+        };
 
-            const newSubtask = { id: Math.random().toString(36).substring(2, 11), title: title, completed: false };
-            const updatedSubtasks = [...(task.subtasks || []), newSubtask];
+        window.deleteTask = async (id) => {
+            window.showConfirm("Excluir essa tarefa do histórico?", async () => {
+                window.tasks = window.tasks.filter(t => t.id !== id);
+                window.renderTasks();
 
-            if (window.isCloudMode && wfCurrentUser) {
-                try {
-                    await updateDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', taskId), { subtasks: updatedSubtasks });
-                    input.value = '';
-                } catch (error) { console.error("Erro:", error); }
-            } else {
-                task.subtasks = updatedSubtasks; input.value = ''; window.saveToLocalStorageWF(); window.renderTasks();
-            }
-        };
+                if (window.isCloudMode && wfCurrentUser) {
+                    try {
+                        await deleteDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', id));
+                    } catch(e) {
+                        window.saveToLocalStorageWF();
+                    }
+                } else {
+                    window.saveToLocalStorageWF();
+                }
+                window.showToast("Tarefa erradicada.", "success");
+            });
+        };
 
-        window.toggleSubtask = async (taskId, subtaskId) => {
-            const task = window.tasks.find(t => t.id === taskId);
-            if (!task) return;
+        window.setFilter = (f) => {
+            window.currentFilter = f;
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('text-pink-500', 'active-filter');
+                const span = b.querySelector('span');
+                if(span) span.remove();
+            });
+            const activeBtn = Array.from(document.querySelectorAll('.filter-btn')).find(b => {
+                if(f === 'all' && b.innerText.includes('Visão Geral')) return true;
+                if(f === 'pending' && b.innerText.includes('Pendentes')) return true;
+                if(f === 'completed' && b.innerText.includes('Finalizadas')) return true;
+                return false;
+            });
+            if(activeBtn) {
+                activeBtn.classList.add('text-pink-500', 'active-filter');
+                activeBtn.innerHTML += `<span class="absolute -bottom-9 left-0 right-0 h-[3px] bg-pink-500 rounded-full"></span>`;
+            }
+            window.renderTasks();
+        };
 
-            const updatedSubtasks = (task.subtasks || []).map(st => st.id === subtaskId ? { ...st, completed: !st.completed } : st);
+        // =========================================
+        // BOOTSTRAP INICIAL DO SISTEMA TODO
+        // =========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            setTimeout(() => {
+                const ls = document.getElementById('lock-screen');
+                if(ls) ls.style.opacity = '1';
+                window.initFirebaseSystem();
+            }, 500);
+        });
 
-            if (window.isCloudMode && wfCurrentUser) {
-                try { await updateDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', taskId), { subtasks: updatedSubtasks }); } 
-                catch (error) { console.error("Erro:", error); }
-            } else {
-                task.subtasks = updatedSubtasks; window.saveToLocalStorageWF(); window.renderTasks();
-            }
-        };
-
-        window.deleteSubtask = async (taskId, subtaskId) => {
-            const task = window.tasks.find(t => t.id === taskId);
-            if (!task) return;
-
-            const updatedSubtasks = (task.subtasks || []).filter(st => st.id !== subtaskId);
-
-            if (window.isCloudMode && wfCurrentUser) {
-                try { await updateDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', taskId), { subtasks: updatedSubtasks }); } 
-                catch (error) { console.error("Erro:", error); }
-            } else {
-                task.subtasks = updatedSubtasks; window.saveToLocalStorageWF(); window.renderTasks();
-            }
-        };
-
-        window.renderTasks = () => {
-            const list = document.getElementById('task-list');
-            const emptyState = document.getElementById('work-empty-state');
-            if(!list) return;
-            
-            let filteredTasks = window.tasks;
-            if (window.currentFilter === 'all' || window.currentFilter === 'pending') filteredTasks = window.tasks.filter(t => !t.completed);
-            else if (window.currentFilter === 'completed') filteredTasks = window.tasks.filter(t => t.completed);
-
-            if (filteredTasks.length === 0) {
-                list.innerHTML = ''; emptyState.classList.remove('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                list.innerHTML = filteredTasks.map(task => {
-                    const borderClass = task.priority === 'high' ? 'priority-high-border' : task.priority === 'medium' ? 'priority-medium-border' : 'priority-low-border';
-                    const tagClass = task.priority === 'high' ? 'tag-high' : task.priority === 'medium' ? 'tag-medium' : 'tag-low';
-                    const completedClass = task.completed ? 'completed-task' : '';
-                    const textClass = task.completed ? 'completed-text' : 'text-white';
-
-                    let pendingTag = '';
-                    if (!task.completed && task.createdAt) {
-                        const daysPending = Math.floor((Date.now() - task.createdAt) / (1000 * 60 * 60 * 24));
-                        let timeClass = 'text-gray-400 bg-white/5 border-white/10';
-                        if (daysPending >= 2 && daysPending <= 4) timeClass = 'text-orange-400 bg-orange-500/10 border-orange-500/20';
-                        else if (daysPending >= 5) timeClass = 'text-red-500 bg-red-500/10 border-red-500/20';
-                        const dayText = daysPending === 0 ? 'Hoje' : daysPending === 1 ? '1 dia' : `${daysPending} dias`;
-                        pendingTag = `<span class="text-[9px] font-bold px-2 py-1 rounded-md border ${timeClass} flex items-center gap-1 transition-colors"><i data-lucide="timer" class="w-3 h-3"></i> ${dayText}</span>`;
-                    }
-
-                    if (window.editingId === task.id) {
-                        return `
-                            <div class="glass-card p-6 rounded-2xl animate-task ${borderClass} flex flex-col gap-4">
-                                <input type="text" id="edit-title-${task.id}" value="${task.title.replace(/"/g, '&quot;')}" class="edit-mode-input text-xl font-bold">
-                                <textarea id="edit-desc-${task.id}" class="edit-mode-input text-sm min-h-[80px]">${(task.desc || '').replace(/</g, '&lt;')}</textarea>
-                                <div class="flex items-center gap-3">
-                                    <label class="text-[10px] uppercase font-bold text-gray-500 tracking-widest">Lembrete:</label>
-                                    <div class="reminder-wrapper relative w-full">
-                                        <input type="datetime-local" id="edit-reminder-${task.id}" value="${task.reminder || ''}" class="edit-mode-input text-xs w-full cursor-pointer">
-                                    </div>
-                                </div>
-                                <div class="flex justify-end gap-3 mt-2">
-                                    <button onclick="window.cancelEdit()" class="px-4 py-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all">Cancelar</button>
-                                    <button onclick="window.saveEdit('${task.id}')" class="px-4 py-2 bg-pink-500 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-pink-600 transition-all">Salvar</button>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    const subtasksHTML = (task.subtasks || []).map(st => `
-                        <div class="flex items-center gap-3 group mt-2">
-                            <button onclick="window.toggleSubtask('${task.id}', '${st.id}')" class="w-4 h-4 rounded border ${st.completed ? 'bg-pink-500 border-pink-500 text-white' : 'border-white/20 hover:border-pink-500'} flex items-center justify-center transition-all shrink-0">
-                                ${st.completed ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
-                            </button>
-                            <span class="text-xs ${st.completed ? 'text-gray-500 line-through' : 'text-gray-300'} flex-grow break-words">${st.title}</span>
-                            <button onclick="window.deleteSubtask('${task.id}', '${st.id}')" class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-pink-500 transition-opacity shrink-0"><i data-lucide="x" class="w-3 h-3"></i></button>
-                        </div>
-                    `).join('');
-
-                    return `
-                        <div class="glass-card p-6 rounded-2xl animate-task ${borderClass} ${completedClass} flex flex-col md:flex-row gap-6 items-start md:items-center">
-                            <div class="flex-grow w-full">
-                                <div class="flex items-center gap-3 mb-3 flex-wrap">
-                                    <span class="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${tagClass}">${task.priority}</span>
-                                    ${task.reminder ? `<span class="text-[9px] font-bold text-gray-400 bg-white/5 px-2 py-1 rounded-md border border-white/5"><i data-lucide="clock" class="w-3 h-3 inline pb-0.5"></i> ${new Date(task.reminder).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</span>` : ''}
-                                    ${pendingTag}
-                                </div>
-                                <h3 class="text-xl font-bold ${textClass} mb-2 break-words">${task.title}</h3>
-                                ${task.desc ? `<p class="text-sm text-gray-400 line-clamp-2 break-words mt-1">${task.desc}</p>` : ''}
-                                
-                                <div class="mt-4 pt-4 border-t border-white/5 w-full">
-                                    <div class="space-y-1 mb-3">${subtasksHTML}</div>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="subtask-input-${task.id}" placeholder="Adicionar sub-tarefa..." class="edit-mode-input text-xs flex-grow" onkeypress="if(event.key === 'Enter') window.addSubtask('${task.id}')">
-                                        <button onclick="window.addSubtask('${task.id}')" class="p-2 bg-white/5 hover:bg-pink-500 hover:text-white rounded-lg transition-all text-gray-400 shrink-0"><i data-lucide="plus" class="w-4 h-4"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3 shrink-0 self-end md:self-auto mt-4 md:mt-0 flex-wrap justify-end">
-                                <button onclick="window.startEdit('${task.id}')" class="p-3 rounded-xl bg-white/5 hover:bg-blue-500/20 hover:text-blue-500 border border-white/5 transition-all text-gray-400" title="Editar Tarefa"><i data-lucide="pencil" class="w-5 h-5"></i></button>
-                                <button onclick="window.toggleComplete('${task.id}')" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-500 border border-white/5 transition-all ${task.completed ? 'text-emerald-500 bg-emerald-500/10' : 'text-gray-400'}"><i data-lucide="check" class="w-5 h-5"></i></button>
-                                <button onclick="window.deleteTask('${task.id}')" class="p-3 rounded-xl bg-white/5 hover:bg-pink-500/20 hover:text-pink-500 border border-white/5 transition-all text-gray-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-            lucide.createIcons();
-            
-            const total = window.tasks.length;
-            const completed = window.tasks.filter(t => t.completed).length;
-            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
-            
-            const progEl = document.getElementById('overall-progress');
-            if(progEl) progEl.style.width = `${percentage}%`;
-            const percEl = document.getElementById('percent-display');
-            if(percEl) percEl.innerText = `${percentage}%`;
-
-            const hasPending = window.tasks.some(t => !t.completed);
-            window.updateFavicon(hasPending);
-            
-            const dotEl = document.getElementById('notif-dot');
-            if(dotEl) {
-                if(hasPending) dotEl.classList.remove('hidden');
-                else dotEl.classList.add('hidden');
-            }
-        };
-
-        window.addEventListener('load', () => {
-            lucide.createIcons();
-            window.initFirebaseSystem(); // Inicia a conexão com a nuvem ao carregar a página
-        });
-
-    </script>
+    </script>
 </body>
 </html>
