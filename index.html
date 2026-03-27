@@ -698,9 +698,16 @@
                     <p class="text-[10px] text-gray-500 mb-4 italic">Configure a margem primária da operação (O que a casa paga para a 3C).</p>
                     <div id="brands-config-list" class="space-y-4 max-h-[35vh] overflow-y-auto custom-scrollbar pr-2"></div>
                 </div>
+                
+                <div class="bg-blue-500/10 p-5 rounded-2xl border border-blue-500/20 mt-6">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i data-lucide="cloud"></i> Sincronização em Nuvem</h3>
+                    <p class="text-[10px] text-gray-400 mb-4 italic">Se os seus dados não aparecerem no telemóvel, clique abaixo no computador onde eles estão guardados para forçar o envio para a nuvem.</p>
+                    <button onclick="window.forceCloudSync(event)" class="w-full bg-blue-500 text-white font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-blue-600 transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2"><i data-lucide="cloud-upload" class="w-4 h-4"></i> Forçar Envio Local -> Nuvem</button>
+                </div>
+
                 <div class="bg-black/30 p-5 rounded-2xl border border-white/10 mt-6">
-                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i data-lucide="hard-drive" class="w-4 h-4"></i> Segurança de Dados (Backup)</h3>
-                    <p class="text-[10px] text-gray-500 mb-4 italic">Faça o download do seu banco de dados para não perder a operação caso limpe o cache do navegador ou troque de computador.</p>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-2"><i data-lucide="hard-drive" class="w-4 h-4"></i> Segurança de Dados (Backup)</h3>
+                    <p class="text-[10px] text-gray-500 mb-4 italic">Faça o download do seu banco de dados para backup local ou importe um arquivo JSON.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button onclick="window.exportBackup()" class="w-full bg-white/10 text-white font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-white/20 transition-all border border-white/10 flex items-center justify-center gap-2"><i data-lucide="download-cloud" class="w-4 h-4"></i> Exportar Backup (JSON)</button>
                         <div>
@@ -1805,6 +1812,44 @@
 
         window.triggerImport = () => document.getElementById('import-file').click();
 
+        window.forceCloudSync = async (event) => {
+            if (!window.isCloudMode || !wfCurrentUser) return window.showToast("Erro: Nuvem não está conectada.");
+            
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Enviando...';
+            btn.disabled = true;
+            
+            try {
+                // 1. Forçar envio da Base de Dados MD (Afiliados, Lançamentos, etc)
+                const mdRef = doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'md_store', 'main');
+                await setDoc(mdRef, window.dataStore);
+                
+                // 2. Migrar Tarefas Locais (Workflow) para a Nuvem
+                const savedTasks = localStorage.getItem('workflow3c_tasks');
+                if (savedTasks) {
+                    const localTasks = JSON.parse(savedTasks);
+                    const cloudTaskIds = window.tasks.map(t => t.id); // Tarefas que já estão na nuvem
+                    
+                    for (const task of localTasks) {
+                        // Envia apenas as tarefas que ainda não estão na nuvem para evitar duplicados
+                        if (!cloudTaskIds.includes(task.id)) {
+                            await setDoc(doc(wfDb, 'artifacts', wfAppId, 'public', 'data', 'tasks', task.id), task);
+                        }
+                    }
+                }
+                
+                window.showToast("Dados enviados para a nuvem com sucesso!", "success");
+            } catch(e) {
+                console.error(e);
+                window.showToast("Erro ao sincronizar com a nuvem.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        };
+
         window.importBackup = (event) => {
             const file = event.target.files[0];
             if (!file) return;
@@ -1813,10 +1858,11 @@
                 try {
                     const parsed = JSON.parse(e.target.result);
                     if(parsed.brands && parsed.affiliates && parsed.dailyReports) {
-                        window.showConfirm("ATENÇÃO: Isso vai apagar os dados atuais e substituir pelo backup. Continuar?", () => {
+                        window.showConfirm("ATENÇÃO: Isso vai apagar os dados atuais e substituir pelo backup. Continuar?", async () => {
                             window.dataStore = parsed;
-                            window.saveMDData(); window.initMDTabs(); window.switchMDEnvironment('Visão Geral');
-                            window.showToast("Backup restaurado com sucesso!", "success"); window.closeModals();
+                            await window.saveMDData(); // AGORA AGUARDA O ENVIO PARA A NUVEM
+                            window.initMDTabs(); window.switchMDEnvironment('Visão Geral');
+                            window.showToast("Backup restaurado e salvo na nuvem!", "success"); window.closeModals();
                         });
                     } else { window.showToast("Arquivo de backup inválido."); }
                 } catch(err) { window.showToast("Erro ao ler o arquivo JSON."); }
