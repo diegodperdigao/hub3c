@@ -20,30 +20,39 @@
         .mosaic-container { position: absolute; top: -25%; left: -25%; width: 150%; height: 150%; transform: perspective(1000px) rotateX(15deg) rotateY(-5deg) rotateZ(2deg); }
         .mosaic-pattern { width: 100%; height: 100%; background-size: 150px; background-repeat: repeat; animation: panMosaic 60s linear infinite; transition: background-image 0.5s ease; }
         @keyframes panMosaic { from { background-position: 0px 0px; } to { background-position: -300px -300px; } }
+        
         .glass-header { background: rgba(5, 5, 10, 0.95); backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .glass-card { background: rgba(15, 15, 20, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .edit-mode-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px 12px; border-radius: 8px; width: 100%; outline: none; color: #fff; transition: border-color 0.3s ease; }
         .edit-mode-input:focus { border-color: var(--theme-color); }
         .form-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.15em; color: #6b7280; font-style: italic; margin-left: 0.5rem; }
+        
         button svg { pointer-events: none; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .shake { animation: shake 0.2s ease-in-out 0s 2; border-color: #ef4444 !important; }
+        
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 10px; opacity: 0.5; }
+        
         .table-row-hover:hover { background-color: rgba(255,255,255,0.02); }
         .card-hover { transition: all 0.3s ease; cursor: pointer; }
         .card-hover:hover { transform: translateY(-5px); border-color: var(--theme-color); box-shadow: 0 10px 30px var(--theme-color-glow); }
+        
         .theme-text { color: var(--theme-color); }
         .theme-border { border-color: var(--theme-color); }
         .theme-bg { background-color: var(--theme-color); }
         .theme-shadow { box-shadow: 0 0 15px var(--theme-color-glow); }
         .theme-glow { background: radial-gradient(circle, var(--theme-color-glow) 0%, transparent 70%); }
         .active-tab { background: rgba(255,255,255,0.1); border-bottom: 2px solid var(--theme-color); color: #fff; }
+        
         .fade-content { animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         input[type="date"]::-webkit-calendar-picker-indicator, input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.5; transition: opacity 0.2s; }
         input[type="date"]::-webkit-calendar-picker-indicator:hover, input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+        
+        /* WORKFLOW SPECIFIC CLASSES */
         .command-input:focus { border-color: rgba(236, 72, 153, 0.4); background: rgba(0, 0, 0, 0.85); color: #fff; }
         .command-input::placeholder { color: #a1a1aa !important; opacity: 1; }
         .priority-high-border { border-left: 3px solid #f43f5e; }
@@ -53,33 +62,44 @@
         .completed-text { text-decoration: line-through; color: #71717a; }
         .animate-task { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
         .reminder-wrapper { position: relative; display: flex; align-items: center; }
         input[type="datetime-local"] { padding-right: 45px !important; width: 100%; }
         input[type="datetime-local"]::-webkit-calendar-picker-indicator { background: transparent; bottom: 0; color: transparent; cursor: pointer; height: auto; left: 0; position: absolute; right: 0; top: 0; width: auto; z-index: 10; }
         .reminder-wrapper::after { content: '📅'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none; opacity: 0.4; font-size: 14px; }
+        
         #browser-alert { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; width: 90%; max-width: 550px; background: rgba(20, 20, 25, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #ec4899; padding: 24px; border-radius: 24px; box-shadow: 0 40px 80px rgba(0,0,0,0.9); animation: meetPop 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
         @keyframes meetPop { from { opacity: 0; transform: translate(-50%, -40px); } to { opacity: 1; transform: translate(-50%, 0); } }
     </style>
 </head>
 <body class="antialiased selection:bg-pink-500 selection:text-white">
-    <div class="bg-fluid"></div><div class="bg-noise"></div>
+    <div class="bg-fluid"></div>
+    <div class="bg-noise"></div>
 
+    <!-- TOAST NOTIFICATIONS E ALERTAS -->
     <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
     <div id="browser-alert">
         <div class="flex items-center gap-6 text-white">
-            <div class="p-4 bg-pink-500/20 rounded-full border border-pink-500/30"><i data-lucide="bell" class="w-8 h-8 text-pink-500 animate-bounce"></i></div>
+            <div class="p-4 bg-pink-500/20 rounded-full border border-pink-500/30">
+                <i data-lucide="bell" class="w-8 h-8 text-pink-500 animate-bounce"></i>
+            </div>
             <div class="flex-grow">
-                <p id="alert-prefix" class="text-[9px] font-black uppercase tracking-[0.3em] text-pink-500 mb-1 italic">Notificação</p>
+                <p id="alert-prefix" class="text-[9px] font-black uppercase tracking-[0.3em] text-pink-500 mb-1 italic">Vai trabalhar vagabundo!</p>
                 <h3 id="alert-title" class="text-xl font-black uppercase leading-tight tracking-tight">Título da Tarefa</h3>
             </div>
-            <button onclick="document.getElementById('browser-alert').style.display='none'" class="p-3 hover:bg-white/5 rounded-2xl transition-all"><i data-lucide="x" class="w-6 h-6 text-gray-500"></i></button>
+            <button onclick="document.getElementById('browser-alert').style.display='none'" class="p-3 hover:bg-white/5 rounded-2xl transition-all">
+                <i data-lucide="x" class="w-6 h-6 text-gray-500"></i>
+            </button>
         </div>
     </div>
 
+    <!-- MODAL DE CONFIRMAÇÃO (COMPARTILHADO) -->
     <div id="modal-confirm" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6" onclick="if(event.target === this) window.closeConfirm()">
         <div class="glass-card w-full max-w-sm p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col text-center">
-            <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30 mx-auto mb-4"><i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i></div>
+            <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30 mx-auto mb-4">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i>
+            </div>
             <h2 class="text-lg font-black uppercase tracking-widest mb-2 text-white">Atenção!</h2>
             <p id="confirm-msg" class="text-xs text-gray-400 mb-6"></p>
             <div class="flex gap-4">
@@ -89,70 +109,112 @@
         </div>
     </div>
 
-    <!-- TELA DE BLOQUEIO / LOGIN -->
+    <!-- TELA DE BLOQUEIO / LOGIN UNIFICADO -->
     <div id="lock-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#030008] transition-opacity duration-700">
         <div class="max-w-md w-full px-10 text-center">
             <div class="mb-8 flex flex-col items-center">
-                <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6 shadow-2xl">
+                <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="3C" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6 shadow-2xl">
                 <h2 class="text-[10px] font-black tracking-[0.4em] uppercase text-gray-400 italic">Hub 3C System</h2>
             </div>
-            <div class="glass-card p-10 rounded-3xl border border-white/10 shadow-2xl space-y-6">
-                <input type="password" id="password-input" placeholder="Conectando..." disabled onkeypress="if(event.key === 'Enter') window.checkPassword()" class="w-full bg-black/40 border border-white/10 px-6 py-5 rounded-2xl text-center text-white focus:outline-none focus:border-pink-500 transition-all tracking-widest font-mono disabled:opacity-50">
-                <button id="btn-login" onclick="window.checkPassword()" disabled class="w-full bg-white text-black font-black uppercase text-[10px] tracking-[0.3em] py-5 rounded-2xl hover:bg-pink-500 hover:text-white transition-all active:scale-95 disabled:opacity-50">Aguarde...</button>
+            <div class="glass-card p-10 rounded-3xl border border-white/10 shadow-2xl">
+                <div class="space-y-6">
+                    <input type="password" id="password-input" placeholder="Conectando ao servidor..." disabled
+                        onkeypress="if(event.key === 'Enter') window.checkPassword()"
+                        class="w-full bg-black/40 border border-white/10 px-6 py-5 rounded-2xl text-center text-white focus:outline-none focus:border-pink-500 transition-all tracking-widest font-mono disabled:opacity-50">
+                    <button id="btn-login" onclick="window.checkPassword()" disabled class="w-full bg-white text-black font-black uppercase text-[10px] tracking-[0.3em] py-5 rounded-2xl hover:bg-pink-500 hover:text-white transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Aguarde...
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- TELA DE SELEÇÃO DE MÓDULO -->
     <div id="app-selection" class="fixed inset-0 z-[90] flex items-center justify-center bg-[#030008] transition-opacity duration-700 hidden opacity-0 flex-col px-4">
-        <div class="mb-16 flex flex-col items-center"><img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6 shadow-[0_0_20px_rgba(236,72,153,0.3)]"><h2 class="text-xs font-black tracking-[0.4em] uppercase text-gray-400 italic">Selecione o Módulo</h2></div>
+        <div class="mb-16 flex flex-col items-center">
+            <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6 shadow-[0_0_20px_rgba(236,72,153,0.3)]">
+            <h2 class="text-xs font-black tracking-[0.4em] uppercase text-gray-400 italic">Selecione o Módulo de Trabalho</h2>
+        </div>
+        
         <div class="flex flex-col md:flex-row gap-6 w-full max-w-4xl">
+            <!-- DASHBOARD MD -->
             <div onclick="window.launchApp('dashboard-app')" class="glass-card flex-1 p-10 rounded-3xl border border-white/10 hover:border-pink-500/50 hover:shadow-[0_0_30px_rgba(236,72,153,0.2)] transition-all cursor-pointer group text-center flex flex-col items-center justify-center min-h-[280px]">
-                <div class="w-20 h-20 rounded-full bg-pink-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-pink-500/20"><i data-lucide="bar-chart-2" class="w-10 h-10 text-pink-500"></i></div>
-                <h3 class="text-2xl font-black uppercase tracking-widest text-white mb-2">Operação MD</h3><p class="text-[10px] text-gray-500 uppercase tracking-widest">Dashboard & Extratos</p>
+                <div class="w-20 h-20 rounded-full bg-pink-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-pink-500/20">
+                    <i data-lucide="bar-chart-2" class="w-10 h-10 text-pink-500"></i>
+                </div>
+                <h3 class="text-2xl font-black uppercase tracking-widest text-white mb-2">Operação MD</h3>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Dashboard & Extratos</p>
             </div>
+            
+            <!-- WORKFLOW 3C -->
             <div onclick="window.launchApp('workflow-main-content')" class="glass-card flex-1 p-10 rounded-3xl border border-white/10 hover:border-purple-500/50 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] transition-all cursor-pointer group text-center flex flex-col items-center justify-center min-h-[280px]">
-                <div class="w-20 h-20 rounded-full bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-purple-500/20"><i data-lucide="check-square" class="w-10 h-10 text-purple-500"></i></div>
-                <h3 class="text-2xl font-black uppercase tracking-widest text-white mb-2">Workflow 3C</h3><p class="text-[10px] text-gray-500 uppercase tracking-widest">Gestão de Tarefas</p>
+                <div class="w-20 h-20 rounded-full bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-purple-500/20">
+                    <i data-lucide="check-square" class="w-10 h-10 text-purple-500"></i>
+                </div>
+                <h3 class="text-2xl font-black uppercase tracking-widest text-white mb-2">Workflow 3C</h3>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Gestão de Tarefas</p>
             </div>
         </div>
     </div>
 
-    <!-- MÓDULO 1: DASHBOARD OPERAÇÃO MD -->
+
+    <!-- ========================================== -->
+    <!-- MÓDULO 1: DASHBOARD OPERAÇÃO MD            -->
+    <!-- ========================================== -->
     <div id="dashboard-app" class="hidden opacity-0 transition-opacity duration-1000 relative z-10">
         <nav class="fixed w-full z-50 top-0 glass-header">
             <div class="absolute top-0 left-0 right-0 h-[2px] theme-bg opacity-30 transition-colors duration-500"></div>
             <div class="max-w-[1400px] mx-auto px-8 py-3 flex justify-between items-center text-white">
-                <div class="flex items-center gap-5 cursor-pointer group" onclick="window.switchMDEnv('Visão Geral')">
-                    <img id="nav-logo" src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" class="h-8 w-8 rounded-full border border-white/10 p-0.5 shadow-2xl object-cover transition-all group-hover:scale-110">
-                    <div class="flex flex-col"><span class="text-[0.65rem] tracking-[0.4em] uppercase font-black leading-tight group-hover:text-pink-400 transition-colors">OPERAÇÃO MD</span><span class="text-[0.45rem] tracking-[0.2em] text-gray-500 font-bold italic uppercase">3C_Execution_Control</span></div>
+                <div class="flex items-center gap-5 cursor-pointer group" onclick="window.switchMDEnv('Visão Geral')" title="Ir para Visão Geral">
+                    <img id="nav-logo" src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="Logo" class="h-8 w-8 rounded-full border border-white/10 p-0.5 shadow-2xl object-cover transition-all duration-500 group-hover:scale-110">
+                    <div class="flex flex-col">
+                        <span class="text-[0.65rem] tracking-[0.4em] uppercase font-black leading-tight group-hover:text-pink-400 transition-colors">OPERAÇÃO MD</span>
+                        <span class="text-[0.45rem] tracking-[0.2em] text-gray-500 font-bold italic opacity-80 uppercase">3C_Execution_Control</span>
+                    </div>
                 </div>
+                
                 <div class="flex items-center gap-4 md:gap-6">
-                    <button id="nav-afiliados" onclick="window.switchMDEnv('Afiliados')" class="p-2 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="users" class="w-4 h-4"></i> <span class="hidden sm:inline">Afiliados</span></button>
+                    <button id="nav-afiliados" onclick="window.switchMDEnv('Afiliados')" class="p-2 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest" title="Gestão de Afiliados">
+                        <i data-lucide="users" class="w-4 h-4"></i> <span class="hidden sm:inline">Afiliados</span>
+                    </button>
+
                     <div class="relative group">
-                        <button class="p-2 text-gray-400 group-hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="layout-grid" class="w-4 h-4"></i> <span class="hidden sm:inline">Casas</span> <i data-lucide="chevron-down" class="w-3 h-3 opacity-50"></i></button>
+                        <button class="p-2 text-gray-400 group-hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest" title="Acessar Casas Parceiras">
+                            <i data-lucide="layout-grid" class="w-4 h-4"></i> <span class="hidden sm:inline">Casas</span> <i data-lucide="chevron-down" class="w-3 h-3 opacity-50"></i>
+                        </button>
                         <div class="absolute top-full right-0 w-full h-4"></div>
                         <div class="absolute right-0 top-[calc(100%+0.5rem)] w-56 bg-[#0a0a0f] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[200] flex flex-col py-2" id="header-brands-dropdown"></div>
                     </div>
-                    <button onclick="window.openModal('modal-config')" class="p-2 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="settings" class="w-4 h-4"></i> <span class="hidden sm:inline">Configuração</span></button>
-                    <button onclick="window.returnToSelection()" class="p-2 text-gray-400 hover:text-pink-500 transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="grid" class="w-4 h-4"></i></button>
-                    <div class="hidden md:flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5"><div id="status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div><span id="md-sync-status" class="text-[7px] font-black tracking-widest uppercase italic text-gray-400">Offline</span></div>
+
+                    <button onclick="window.openConfigModal()" class="p-2 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest" title="Configurar Operação e Casas Parceiras">
+                        <i data-lucide="settings" class="w-4 h-4"></i> <span class="hidden sm:inline">Configuração</span>
+                    </button>
+                    
+                    <button onclick="window.returnToSelection()" class="p-2 text-gray-400 hover:text-pink-500 transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest" title="Trocar Módulo">
+                        <i data-lucide="grid" class="w-4 h-4"></i>
+                    </button>
+
+                    <div class="hidden md:flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5">
+                        <div id="status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                        <span id="md-sync-status" class="text-[7px] font-black tracking-widest uppercase italic text-gray-400">Offline (Local)</span>
+                    </div>
                 </div>
             </div>
         </nav>
 
         <div class="max-w-[1400px] mx-auto px-4 sm:px-8 pt-32 pb-20 relative text-white">
             <div class="flex gap-4 mb-10 border-b border-white/10 pb-4 overflow-x-auto custom-scrollbar" id="brand-tabs-container"></div>
-            
             <div id="dynamic-view-wrapper" class="fade-content">
                 <header class="mb-12 relative overflow-hidden rounded-3xl bg-white/[0.01] border border-white/[0.03] shadow-2xl flex items-center min-h-[220px]">
                     <div class="mosaic-wrapper"><div class="mosaic-container"><div id="dynamic-mosaic" class="mosaic-pattern"></div></div></div>
                     <div class="relative z-10 w-full p-8 md:p-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <div><h1 id="brand-title" class="text-4xl md:text-5xl font-black uppercase tracking-tighter flex items-center gap-4">VISÃO GERAL</h1><p id="brand-subtitle" class="text-xs text-gray-400 mt-2 font-mono tracking-widest uppercase">Resultado consolidado da operação</p></div>
+                        <div>
+                            <h1 id="brand-title" class="text-4xl md:text-5xl font-black uppercase tracking-tighter flex items-center gap-4">VISÃO GERAL</h1>
+                            <p id="brand-subtitle" class="text-xs text-gray-400 mt-2 font-mono tracking-widest uppercase">Resultado consolidado da operação</p>
+                        </div>
                     </div>
                 </header>
 
-                <!-- TAB: DASHBOARD GERAL E MARCAS -->
                 <div id="standard-module">
                     <div class="flex flex-wrap justify-between items-end gap-8 mb-12">
                         <div class="flex flex-wrap gap-4 items-end bg-black/40 p-6 rounded-2xl border border-white/5 shadow-lg">
@@ -164,8 +226,9 @@
                                 <button onclick="window.setDateRange('all')" class="px-4 py-3 bg-white/5 hover:bg-white/10 rounded-lg text-[10px] font-bold uppercase tracking-widest text-gray-300 transition-all border border-white/10 whitespace-nowrap">Todo Período</button>
                             </div>
                         </div>
+
                         <div class="flex flex-wrap gap-3">
-                            <button onclick="window.openModal('modal-history'); window.renderHistoryTable();" class="px-5 py-4 bg-white/5 text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-xl transition-all border border-white/10 hover:bg-white/10 flex items-center gap-2"><i data-lucide="list" class="w-4 h-4"></i> Lançamentos</button>
+                            <button onclick="window.openHistoryModal()" class="px-5 py-4 bg-white/5 text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-xl transition-all border border-white/10 hover:bg-white/10 flex items-center gap-2"><i data-lucide="list" class="w-4 h-4"></i> Lançamentos</button>
                             <button onclick="window.switchMDEnv('Afiliados')" class="px-5 py-4 bg-white text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-xl hover:bg-gray-200 transition-all shadow-lg flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Gerenciar</button>
                             <button onclick="window.openDailyDataModal()" class="px-5 py-4 theme-bg text-white font-black uppercase text-[10px] tracking-[0.2em] rounded-xl transition-all theme-shadow hover:brightness-110 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4"></i> Lançar Dados</button>
                         </div>
@@ -175,60 +238,76 @@
                         <div class="glass-card p-8 rounded-2xl border-l-4 theme-border relative overflow-hidden group min-h-[160px] flex flex-col justify-center">
                             <div class="absolute -right-10 -top-10 w-40 h-40 theme-glow opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none"></div>
                             <h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> QFTDs (Qualificados)</h3>
-                            <p id="kpi-qftds" class="text-5xl font-mono font-black text-white mt-2 tracking-tight">0</p><p id="kpi-ftds" class="text-sm text-gray-500 mt-3 font-bold">0 FTDs Totais</p>
+                            <p id="kpi-qftds" class="text-5xl font-mono font-black text-white mt-2 tracking-tight">0</p>
+                            <p id="kpi-ftds" class="text-sm text-gray-500 mt-3 font-bold">0 FTDs Totais</p>
                         </div>
                         <div class="glass-card p-8 rounded-2xl border-l-4 border-l-blue-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center">
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(59,130,246,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none"></div>
-                            <h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Depósitos</h3>
-                            <p id="kpi-deposits" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Volume depositado</p>
+                            <h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Depósitos (BRL)</h3>
+                            <p id="kpi-deposits" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight">R$ 0,00</p>
+                            <p class="text-sm text-gray-500 mt-3">Volume depositado</p>
                         </div>
                         <div class="glass-card p-8 rounded-2xl border-l-4 border-l-red-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center">
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(239,68,68,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none"></div>
                             <h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4"></i> Comissão Afiliados</h3>
-                            <p id="kpi-aff-comm" class="text-4xl font-mono font-bold text-red-400 mt-2 tracking-tight">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">A pagar na fatura</p>
+                            <p id="kpi-aff-comm" class="text-4xl font-mono font-bold text-red-400 mt-2 tracking-tight">R$ 0,00</p>
+                            <p class="text-sm text-gray-500 mt-3">A pagar na fatura</p>
                         </div>
                         <div class="glass-card p-8 rounded-2xl border-l-4 border-l-emerald-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center">
                             <div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(16,185,129,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 transition-opacity pointer-events-none"></div>
                             <h3 class="text-[11px] uppercase font-black tracking-widest text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4"></i> Margem 3C</h3>
-                            <p id="kpi-profit" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight">R$ 0,00</p><p id="kpi-gross" class="text-sm text-emerald-200/50 mt-3">Receita Bruta: R$ 0,00</p>
+                            <p id="kpi-profit" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight">R$ 0,00</p>
+                            <p id="kpi-gross" class="text-sm text-emerald-200/50 mt-3">Receita Bruta: R$ 0,00</p>
                         </div>
                     </div>
 
                     <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
-                        <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center"><h2 id="table-title" class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 theme-text"></i> Performance</h2><span class="text-[9px] text-gray-500 italic uppercase tracking-widest">No período</span></div>
+                        <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center">
+                            <h2 id="table-title" class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 theme-text"></i> Performance por Afiliado (Top Ranking)</h2>
+                            <span class="text-[9px] text-gray-500 italic uppercase tracking-widest">No período selecionado</span>
+                        </div>
                         <div class="overflow-x-auto custom-scrollbar">
                             <table class="w-full text-left border-collapse min-w-[1000px]">
                                 <thead>
                                     <tr class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-400">
-                                        <th class="px-6 py-5 font-bold whitespace-nowrap">Afiliado</th>
+                                        <th class="px-6 py-5 font-bold whitespace-nowrap">Ranking / Afiliado</th>
                                         <th id="th-deal" class="px-6 py-5 font-bold text-center whitespace-nowrap">Deal Afiliado</th>
-                                        <th class="px-6 py-5 font-bold text-center">FTDs</th>
-                                        <th class="px-6 py-5 font-bold text-center">QFTDs</th>
-                                        <th class="px-6 py-5 font-bold text-right">Depósitos</th>
-                                        <th class="px-6 py-5 font-bold text-right">Net Rev</th>
-                                        <th class="px-6 py-5 font-bold text-right text-red-400">Comissão Gerada</th>
-                                        <th class="px-6 py-5 font-bold text-right text-emerald-400">Lucro 3C</th>
-                                        <th class="px-6 py-5 font-bold text-center">Ações</th>
+                                        <th class="px-6 py-5 font-bold text-center whitespace-nowrap">FTDs</th>
+                                        <th class="px-6 py-5 font-bold text-center whitespace-nowrap">QFTDs</th>
+                                        <th class="px-6 py-5 font-bold text-right whitespace-nowrap">Depósitos</th>
+                                        <th class="px-6 py-5 font-bold text-right whitespace-nowrap">Net Rev</th>
+                                        <th class="px-6 py-5 font-bold text-right text-red-400 whitespace-nowrap">Comissão Gerada</th>
+                                        <th class="px-6 py-5 font-bold text-right text-emerald-400 whitespace-nowrap">Lucro 3C</th>
+                                        <th class="px-6 py-5 font-bold text-center whitespace-nowrap">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody id="affiliates-table-body" class="text-sm"></tbody>
                             </table>
                         </div>
-                        <div id="md-empty-state" class="hidden text-center py-24 opacity-30"><i data-lucide="folder-open" class="w-20 h-20 mx-auto mb-6 theme-text"></i><p class="text-2xl font-black uppercase tracking-widest">Sem dados</p></div>
+                        <div id="md-empty-state" class="hidden text-center py-24 opacity-30">
+                            <i data-lucide="folder-open" class="w-20 h-20 mx-auto mb-6 theme-text"></i>
+                            <p class="text-2xl font-black uppercase tracking-widest">Nenhum dado neste período</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- TAB: AFILIADOS / CRM -->
                 <div id="crm-module" class="hidden">
                     <div class="flex justify-between items-center mb-8">
-                        <div class="bg-black/40 p-2 rounded-xl border border-white/5 flex items-center w-full max-w-md"><i data-lucide="search" class="w-5 h-5 text-gray-500 ml-3"></i><input type="text" id="search-affiliate" placeholder="Buscar afiliado..." class="bg-transparent border-none text-white px-4 py-2 w-full focus:outline-none" oninput="window.renderAffiliatesCRM()"></div>
-                        <button onclick="window.openAffiliateModal()" class="px-6 py-3 bg-pink-500 text-white font-black uppercase text-xs tracking-widest rounded-xl hover:bg-pink-600 transition-all shadow-[0_0_15px_rgba(236,72,153,0.3)] flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i> Novo Afiliado</button>
+                        <div class="bg-black/40 p-2 rounded-xl border border-white/5 flex items-center w-full max-w-md">
+                            <i data-lucide="search" class="w-5 h-5 text-gray-500 ml-3"></i>
+                            <input type="text" id="search-affiliate" placeholder="Buscar afiliado pelo nome..." class="bg-transparent border-none text-white px-4 py-2 w-full focus:outline-none" oninput="window.renderAffiliatesCRM()">
+                        </div>
+                        <button onclick="window.openAffiliateModal()" class="px-6 py-3 bg-pink-500 text-white font-black uppercase text-xs tracking-widest rounded-xl hover:bg-pink-600 transition-all shadow-[0_0_15px_rgba(236,72,153,0.3)] flex items-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Novo Afiliado
+                        </button>
                     </div>
                     <div id="crm-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>
-                    <div id="crm-empty-state" class="hidden text-center py-24 opacity-30"><i data-lucide="users" class="w-20 h-20 mx-auto mb-6 text-pink-500"></i><p class="text-2xl font-black uppercase tracking-widest">Nenhum encontrado</p></div>
+                    <div id="crm-empty-state" class="hidden text-center py-24 opacity-30">
+                        <i data-lucide="users" class="w-20 h-20 mx-auto mb-6 text-pink-500"></i>
+                        <p class="text-2xl font-black uppercase tracking-widest">Nenhum afiliado encontrado</p>
+                    </div>
                 </div>
 
-                <!-- TAB: FECHAMENTOS E FATURAS -->
                 <div id="fechamento-module" class="hidden">
                     <div class="glass-card p-10 rounded-3xl border border-white/10 shadow-2xl mb-12">
                         <h2 class="text-2xl font-black uppercase tracking-widest mb-8 border-b border-white/10 pb-5 flex items-center gap-3"><i data-lucide="file-check" class="w-6 h-6 text-emerald-400"></i> Gerador de Faturas (Extrato)</h2>
@@ -268,161 +347,380 @@
 
                     <!-- HISTÓRICO GLOBAL DE FECHAMENTOS (ACORDEÃO) -->
                     <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
-                        <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center"><h2 class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-emerald-400"></i> Histórico de Pagamentos por Afiliado</h2></div>
+                        <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center">
+                            <h2 class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-emerald-400"></i> Histórico de Pagamentos por Afiliado</h2>
+                        </div>
                         <div id="grouped-payments-container" class="p-6 space-y-4"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <footer class="py-16 border-t border-white/5 text-center mt-20 text-white relative z-10 bg-black/50"><img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" class="h-10 mx-auto opacity-70 mb-6 grayscale hover:grayscale-0 transition-all"><p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2">Confidencial &copy; 2026 3C Gaming</p><button onclick="window.openModal('modal-audit')" class="absolute right-6 bottom-6 p-3 text-gray-700 hover:text-gray-400 hover:bg-white/5 rounded-full transition-all"><i data-lucide="activity" class="w-5 h-5"></i></button></footer>
+
+        <footer class="py-16 border-t border-white/5 text-center mt-20 text-white relative z-10 bg-black/50">
+            <img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" alt="3C Gaming" class="h-10 mx-auto opacity-70 mb-6 grayscale hover:grayscale-0 transition-all duration-700">
+            <p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2">Confidencial &copy; 2026 3C Gaming BizDev</p>
+            <p class="text-[8px] text-gray-700 uppercase tracking-[0.1em] italic opacity-40">Operação MD System v7.0 - Enterprise Edition</p>
+            <button onclick="window.openModal('modal-audit')" class="absolute right-6 bottom-6 md:right-10 md:bottom-10 p-3 text-gray-700 hover:text-gray-400 hover:bg-white/5 rounded-full transition-all" title="Central de Edições (Log Geral)"><i data-lucide="activity" class="w-5 h-5"></i></button>
+        </footer>
     </div>
 
-    <!-- MÓDULO 2: WORKFLOW -->
+    <!-- MÓDULO 2: WORKFLOW 3C APP -->
     <div id="workflow-main-content" class="hidden opacity-0 transition-opacity duration-1000 relative z-10">
         <nav class="fixed w-full z-50 top-0 glass-header">
             <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30"></div>
             <div class="max-w-[1400px] mx-auto px-8 py-3 flex justify-between items-center text-white">
-                <div class="flex items-center gap-5"><img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" class="h-8 w-8 rounded-full border border-white/10 p-0.5 shadow-2xl object-cover"><div class="flex flex-col"><span class="text-[0.65rem] tracking-[0.4em] uppercase font-black leading-tight">PROJETO MD</span><span class="text-[0.45rem] tracking-[0.2em] text-gray-500 font-bold italic uppercase">3C_Workflow_Control</span></div></div>
+                <div class="flex items-center gap-5">
+                    <img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" alt="3C" class="h-8 w-8 rounded-full border border-white/10 p-0.5 shadow-2xl object-cover">
+                    <div class="flex flex-col">
+                        <span class="text-[0.65rem] tracking-[0.4em] uppercase font-black leading-tight">PROJETO MD</span>
+                        <span class="text-[0.45rem] tracking-[0.2em] uppercase text-gray-500 font-bold italic opacity-80 uppercase">3C_Workflow_Control</span>
+                    </div>
+                </div>
+                
                 <div class="flex items-center gap-6">
-                    <button onclick="window.returnToSelection()" class="p-2 text-gray-400 hover:text-pink-500 transition-colors"><i data-lucide="grid" class="w-4 h-4"></i></button>
-                    <div id="notif-btn" onclick="window.testAlert()" class="relative p-2 bg-white/5 rounded-full border border-white/10 cursor-pointer hover:bg-white/10 group"><div id="notif-dot" class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-500 border border-[#030008] hidden"></div><i data-lucide="bell" class="w-4 h-4 text-gray-400 group-hover:text-pink-500"></i></div>
-                    <div class="flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5"><div id="wf-status-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></div><span id="user-id-text" class="text-[7px] font-black tracking-widest uppercase italic text-gray-400">Link...</span></div>
+                    <button onclick="window.returnToSelection()" class="p-2 text-gray-400 hover:text-pink-500 transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest" title="Trocar Módulo">
+                        <i data-lucide="grid" class="w-4 h-4"></i>
+                    </button>
+                    <!-- SINO DISCRETO -->
+                    <div id="notif-btn" onclick="window.testAlert()" class="relative p-2 bg-white/5 rounded-full border border-white/10 cursor-pointer hover:bg-white/10 transition-all group">
+                        <div id="notif-dot" class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-500 border border-[#030008] hidden"></div>
+                        <i data-lucide="bell" class="w-4 h-4 text-gray-400 group-hover:text-pink-500 transition-colors"></i>
+                    </div>
+                    <div class="flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5">
+                        <div id="wf-status-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+                        <span id="user-id-text" class="text-[7px] font-black tracking-widest uppercase italic text-gray-400">Secure Link...</span>
+                    </div>
                 </div>
             </div>
         </nav>
 
         <div class="max-w-[1400px] mx-auto px-8 pt-20 pb-12 relative text-white">
-            <div class="mt-4 mb-6 ml-4"><p class="font-mono text-[9px] text-gray-400 tracking-[0.4em] uppercase flex items-center gap-4"><span class="w-10 h-[1.5px] bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"></span> Strategy_Creative_Production</p></div>
+            <div class="mt-4 mb-6 ml-4">
+                <p class="font-mono text-[9px] text-gray-400 tracking-[0.4em] uppercase flex items-center gap-4">
+                    <span class="w-10 h-[1.5px] bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"></span> 
+                    Strategy_Creative_Production_Bizdev
+                </p>
+            </div>
+
             <header class="mb-12 relative overflow-hidden rounded-2xl bg-white/[0.01] border border-white/[0.03] shadow-2xl flex items-center min-h-[280px]">
                 <div class="mosaic-wrapper"><div class="mosaic-container"><div id="work-mosaic" class="mosaic-pattern" style="background-image: url('https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg')"></div></div></div>
                 <div class="relative z-10 w-full px-12 py-10 flex flex-col md:flex-row justify-between items-center gap-12 text-white">
-                    <div class="max-w-2xl text-center md:text-left flex-shrink-0"><h1 class="text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-none text-white whitespace-nowrap">Workflow <span class="text-pink-500">3C</span></h1></div>
+                    <div class="max-w-2xl text-center md:text-left flex-shrink-0">
+                        <h1 class="text-7xl lg:text-8xl font-black tracking-tighter uppercase leading-none text-white whitespace-nowrap">
+                            Workflow <span class="text-pink-500">3C</span>
+                        </h1>
+                    </div>
                     <div class="bg-black/85 p-8 rounded-2xl border border-white/10 min-w-[340px] backdrop-blur-xl shadow-2xl">
-                        <div class="flex items-center justify-between mb-4"><p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Efficiency_Report</p><span id="percent-display" class="text-[10px] font-black text-pink-500">0%</span></div>
-                        <div class="h-1.5 w-full bg-black/50 rounded-full overflow-hidden border border-white/5"><div id="overall-progress" class="h-full bg-gradient-to-r from-pink-500 via-purple-600 to-emerald-500 transition-all duration-1000" style="width: 0%"></div></div>
+                        <div class="flex items-center justify-between mb-4">
+                            <p id="stats-text" class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Efficiency_Report</p>
+                            <span id="percent-display" class="text-[10px] font-black text-pink-500">0%</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-black/50 rounded-full overflow-hidden border border-white/5">
+                            <div id="overall-progress" class="h-full bg-gradient-to-r from-pink-500 via-purple-600 to-emerald-500 transition-all duration-1000 shadow-[0_0_15px_rgba(236,72,153,0.3)]" style="width: 0%"></div>
+                        </div>
                     </div>
                 </div>
             </header>
 
+            <!-- COMMAND CENTER -->
             <div class="glass-card p-1 rounded-3xl mb-16 shadow-[0_30px_60px_rgba(0,0,0,0.7)] overflow-hidden">
-                <div class="bg-[#050508]/95 p-10 rounded-3xl space-y-8">
-                    <div class="flex flex-col lg:flex-row items-stretch gap-5 text-white">
-                        <div class="flex-grow flex flex-col gap-3"><label class="form-label">Ação Principal</label><input type="text" id="main-task-input" placeholder="O que vamos criar hoje?" class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-6 text-white focus:outline-none command-input font-bold text-xl h-[72px]"></div>
-                        <div class="min-w-[200px] flex flex-col gap-3">
-                            <label class="form-label">Prioridade</label>
-                            <div class="relative h-[72px]"><select id="priority-select" class="w-full h-full appearance-none bg-black/40 border border-white/10 rounded-xl px-6 text-xs font-black uppercase text-gray-400 focus:outline-none cursor-pointer text-white"><option value="high">HIGH</option><option value="medium" selected>MEDIUM</option><option value="low">LOW</option></select><i data-lucide="chevron-down" class="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"></i></div>
+                <div class="bg-[#050508]/95 p-10 rounded-3xl">
+                    <div class="space-y-8">
+                        <div class="flex flex-col lg:flex-row items-stretch gap-5 text-white">
+                            <div class="flex-grow flex flex-col gap-3">
+                                <label class="form-label">Ação Principal</label>
+                                <input type="text" id="main-task-input" placeholder="O que vamos criar hoje?" 
+                                    class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-6 text-white focus:outline-none command-input transition-all font-bold tracking-tight text-xl h-[72px]">
+                            </div>
+                            <div class="min-w-[200px] flex flex-col gap-3">
+                                <label class="form-label">Prioridade</label>
+                                <div class="relative h-[72px]">
+                                    <select id="priority-select" class="w-full h-full appearance-none bg-black/40 border border-white/10 rounded-xl px-6 text-xs font-black uppercase text-gray-400 focus:outline-none cursor-pointer hover:border-white/20 transition-all text-white">
+                                        <option value="high">HIGH</option>
+                                        <option value="medium" selected>MEDIUM</option>
+                                        <option value="low">LOW</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" class="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col lg:flex-row items-stretch gap-6">
+                            <div class="flex-grow flex flex-col gap-3">
+                                <label class="form-label">Contexto Estratégico</label>
+                                <textarea id="main-desc-input" placeholder="Detalhes estratégicos, links de referência e metas..." 
+                                    class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-base text-white focus:outline-none command-input transition-all min-h-[140px] resize-none"></textarea>
+                            </div>
+                            <div class="min-w-[300px] flex flex-col gap-3">
+                                <label class="form-label">Agendar Notificação</label>
+                                <div class="reminder-wrapper flex-grow">
+                                    <input type="datetime-local" id="reminder-input" 
+                                        class="bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold text-white focus:outline-none focus:border-pink-500 transition-all w-full h-full cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button onclick="window.addMainTask()" class="w-full bg-white text-black font-black uppercase text-[11px] tracking-[0.4em] rounded-xl hover:bg-pink-500 hover:text-white active:scale-[0.99] transition-all h-[72px] shadow-2xl">
+                                Criar Tarefa
+                            </button>
                         </div>
                     </div>
-                    <div class="flex flex-col lg:flex-row items-stretch gap-6">
-                        <div class="flex-grow flex flex-col gap-3"><label class="form-label">Contexto Estratégico</label><textarea id="main-desc-input" placeholder="Detalhes estratégicos..." class="w-full bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-base text-white focus:outline-none command-input min-h-[140px] resize-none"></textarea></div>
-                        <div class="min-w-[300px] flex flex-col gap-3"><label class="form-label">Agendar Notificação</label><div class="reminder-wrapper flex-grow"><input type="datetime-local" id="reminder-input" class="bg-black/40 border border-white/10 rounded-xl px-6 py-5 text-sm font-bold text-white focus:outline-none w-full h-full cursor-pointer"></div></div>
-                    </div>
-                    <div class="pt-4"><button onclick="window.addMainTask()" class="w-full bg-white text-black font-black uppercase text-[11px] tracking-[0.4em] rounded-xl hover:bg-pink-500 hover:text-white active:scale-[0.99] transition-all h-[72px] shadow-2xl">Criar Tarefa</button></div>
                 </div>
             </div>
 
+            <!-- FILTROS -->
             <div class="flex flex-wrap justify-between items-center gap-8 mb-12 border-b border-white/5 pb-8">
                 <div class="flex gap-12 text-[11px] font-black uppercase tracking-[0.3em] text-gray-600">
-                    <button onclick="window.setFilter('all')" class="hover:text-pink-500 transition-all filter-btn active-filter text-pink-500 relative">Visão Geral <span class="absolute -bottom-9 left-0 right-0 h-[3px] bg-pink-500 rounded-full"></span></button>
+                    <button onclick="window.setFilter('all')" class="hover:text-pink-500 transition-all filter-btn active-filter text-pink-500 relative">
+                        Visão Geral <span class="absolute -bottom-9 left-0 right-0 h-[3px] bg-pink-500 rounded-full"></span>
+                    </button>
                     <button onclick="window.setFilter('pending')" class="hover:text-pink-500 transition-all filter-btn relative">Pendentes</button>
                     <button onclick="window.setFilter('completed')" class="hover:text-pink-500 transition-all filter-btn relative">Finalizadas</button>
                 </div>
-                <div class="flex items-center gap-4 text-[10px] font-bold text-gray-600 uppercase tracking-widest italic opacity-60"><span id="wf-sync-status">Ready</span><div class="w-1.5 h-1.5 rounded-full bg-gray-800"></div><span id="sync-time">---</span></div>
+                <div class="flex items-center gap-4 text-[10px] font-bold text-gray-600 uppercase tracking-widest italic opacity-60">
+                    <span id="wf-sync-status">Cloud Sync Ready</span>
+                    <div class="w-1.5 h-1.5 rounded-full bg-gray-800"></div>
+                    <span id="sync-time">---</span>
+                </div>
             </div>
 
             <div id="task-list" class="space-y-6 min-h-[300px]"></div>
-            <div id="work-empty-state" class="hidden text-center py-32 opacity-10"><div class="inline-block p-10 rounded-full border-2 border-dashed border-white/20 mb-8"><i data-lucide="check-circle-2" class="w-20 h-20 mx-auto"></i></div><p class="text-3xl font-black uppercase tracking-[0.5em]">Sem pendências</p></div>
+            <div id="work-empty-state" class="hidden text-center py-32 opacity-10">
+                <div class="inline-block p-10 rounded-full border-2 border-dashed border-white/20 mb-8"><i data-lucide="check-circle-2" class="w-20 h-20 mx-auto"></i></div>
+                <p class="text-3xl font-black uppercase tracking-[0.5em]">Sem pendências</p>
+            </div>
         </div>
-        <footer class="py-16 bg-black border-t border-white/5 text-center mt-20 relative z-10 text-white"><img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" class="h-10 mx-auto opacity-70 mb-6 grayscale"><p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2">Confidencial &copy; 2026 3C</p></footer>
+
+        <footer class="py-16 bg-black border-t border-white/5 text-center mt-20 relative z-10 text-white">
+            <img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" alt="3C" class="h-10 mx-auto opacity-70 mb-6 grayscale hover:grayscale-0 transition-all duration-700">
+            <p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2">Confidencial &copy; 2026 3C Gaming BizDev</p>
+            <p class="text-[8px] text-gray-700 uppercase tracking-[0.1em] italic opacity-40">Workflow Management System v2.6.5</p>
+        </footer>
     </div>
 
-    <!-- MODAIS DO SISTEMA -->
+
+    <!-- ========================================== -->
+    <!-- MODAIS ÚNICOS DO SISTEMA                   -->
+    <!-- ========================================== -->
+
+    <!-- Modal Lançar Resultado -->
     <div id="modal-daily" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
         <div class="glass-card w-full max-w-lg p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative max-h-[95vh] overflow-y-auto custom-scrollbar flex flex-col">
             <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
-            <h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="database" class="w-5 h-5 theme-text"></i> Lançar Resultado</h2>
+            <h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0">
+                <i data-lucide="database" class="w-5 h-5 theme-text"></i> Lançar Resultado
+            </h2>
             <div class="space-y-6 shrink-0">
-                <div class="bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20 shadow-inner"><label class="form-label !ml-0 text-blue-400">1. Marca</label><select id="daily-brand" class="edit-mode-input mt-2 w-full py-3 appearance-none cursor-pointer border-blue-500/50 text-white font-bold tracking-widest uppercase" onchange="window.updateDailyModalFields()"></select></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label !ml-0 text-pink-400">2. Parceiro</label><select id="daily-affiliate" class="edit-mode-input mt-1 w-full py-3 appearance-none cursor-pointer border-pink-500/30 text-white font-bold"></select></div><div><label class="form-label !ml-0">Data</label><input type="date" id="daily-date" class="edit-mode-input mt-1 w-full py-3 cursor-pointer border-white/20 font-bold"></div></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/5"><div><label class="form-label !ml-0">FTDs Totais</label><input type="number" id="daily-ftd" placeholder="0" class="edit-mode-input mt-1 w-full py-3 font-mono"></div><div id="qftd-container" class="flex flex-col gap-2"></div></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label !ml-0 text-emerald-400">Depósitos (R$)</label><input type="text" id="daily-dep" placeholder="Ex: 2.340,50" class="edit-mode-input mt-1 w-full py-3 font-mono border-emerald-500/30"></div><div><label class="form-label !ml-0 text-emerald-400">Net Rev (R$)</label><input type="text" id="daily-rev" placeholder="Ex: 1.500,00" class="edit-mode-input mt-1 w-full py-3 font-mono border-emerald-500/30"></div></div>
-                <button onclick="window.saveDailyData()" class="w-full mt-4 theme-bg text-white font-black uppercase text-xs tracking-widest py-5 rounded-xl hover:brightness-110 transition-all theme-shadow shadow-lg">Lançar na Base</button>
+                <div class="bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20 shadow-inner">
+                    <label class="form-label !ml-0 text-blue-400">1. Selecione a Casa (Marca)</label>
+                    <select id="daily-brand" class="edit-mode-input mt-2 w-full py-3 appearance-none cursor-pointer border-blue-500/50 text-white font-bold tracking-widest uppercase" onchange="window.updateDailyModalFields()"></select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label !ml-0 text-pink-400">2. Parceiro</label>
+                        <select id="daily-affiliate" class="edit-mode-input mt-1 w-full py-3 appearance-none cursor-pointer border-pink-500/30 text-white font-bold"></select>
+                    </div>
+                    <div>
+                        <label class="form-label !ml-0">Data de Referência</label>
+                        <input type="date" id="daily-date" class="edit-mode-input mt-1 w-full py-3 cursor-pointer border-white/20 font-bold" onclick="this.showPicker()">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                    <div>
+                        <label class="form-label !ml-0">FTDs Totais</label>
+                        <input type="number" id="daily-ftd" placeholder="0" class="edit-mode-input mt-1 w-full py-3 font-mono">
+                    </div>
+                    <div id="qftd-container" class="flex flex-col gap-2"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label !ml-0 text-emerald-400">Depósitos (R$)</label>
+                        <input type="text" id="daily-dep" placeholder="Ex: 2.340,50" class="edit-mode-input mt-1 w-full py-3 font-mono border-emerald-500/30">
+                    </div>
+                    <div>
+                        <label class="form-label !ml-0 text-emerald-400">Net Revenue (R$)</label>
+                        <input type="text" id="daily-rev" placeholder="Ex: 1.500,00" class="edit-mode-input mt-1 w-full py-3 font-mono border-emerald-500/30">
+                    </div>
+                </div>
+                <button onclick="window.saveDailyData()" class="w-full mt-4 theme-bg text-white font-black uppercase text-xs tracking-widest py-5 rounded-xl hover:brightness-110 transition-all theme-shadow shadow-lg">Lançar na Base de Dados</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Perfil do Afiliado -->
     <div id="modal-affiliate-profile" class="fixed inset-0 z-[250] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
         <div class="glass-card w-full max-w-2xl p-8 md:p-10 rounded-3xl border border-white/10 shadow-2xl relative max-h-[95vh] overflow-y-auto custom-scrollbar flex flex-col">
-            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-6 h-6"></i></button>
             <div class="flex items-center gap-6 border-b border-white/10 pb-6 mb-6 shrink-0">
-                <div class="w-16 h-16 rounded-full bg-pink-500/20 border border-pink-500/50 flex items-center justify-center shrink-0"><i data-lucide="user" class="w-8 h-8 text-pink-400"></i></div>
-                <div><h2 id="profile-name" class="text-3xl font-black uppercase tracking-tighter text-white">NOME DO AFILIADO</h2><div class="flex items-center gap-4 mt-2"><p id="profile-date" class="text-xs text-gray-400 font-mono">Parceiro desde: ---</p><button onclick="window.deleteAffiliate(window.currentProfileAffId)" class="text-red-500/80 hover:text-red-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1 transition-colors bg-red-500/10 px-2 py-1 rounded"><i data-lucide="trash-2" class="w-3 h-3"></i> Excluir</button></div></div>
+                <div class="w-16 h-16 rounded-full bg-pink-500/20 border border-pink-500/50 flex items-center justify-center shrink-0">
+                    <i data-lucide="user" class="w-8 h-8 text-pink-400"></i>
+                </div>
+                <div>
+                    <h2 id="profile-name" class="text-3xl font-black uppercase tracking-tighter text-white">NOME DO AFILIADO</h2>
+                    <div class="flex items-center gap-4 mt-2">
+                        <p id="profile-date" class="text-xs text-gray-400 font-mono">Parceiro desde: ---</p>
+                        <button onclick="window.deleteAffiliate(window.currentProfileAffId)" class="text-red-500/80 hover:text-red-400 text-[9px] font-bold uppercase tracking-widest flex items-center gap-1 transition-colors bg-red-500/10 px-2 py-1 rounded"><i data-lucide="trash-2" class="w-3 h-3"></i> Excluir</button>
+                    </div>
+                </div>
             </div>
             <div class="space-y-8 shrink-0">
                 <div>
-                    <div class="flex justify-between items-center mb-3"><h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500">Informações e Anotações</h3><button id="btn-edit-notes" onclick="window.enableProfileEdit()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-[9px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1"><i data-lucide="pencil" class="w-3 h-3"></i> Editar</button><button id="btn-save-notes" onclick="window.saveProfileNotes()" class="hidden px-4 py-1.5 bg-pink-500 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1 shadow-[0_0_10px_rgba(236,72,153,0.4)]"><i data-lucide="save" class="w-3 h-3"></i> Salvar</button></div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="flex flex-col"><label class="form-label !ml-0 text-pink-400 flex items-center gap-2 mb-2"><i data-lucide="share-2" class="w-3 h-3"></i> Fontes de Tráfego / Social</label><textarea id="profile-social" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none"></textarea></div><div class="flex flex-col"><label class="form-label !ml-0 text-amber-400 flex items-center gap-2 mb-2"><i data-lucide="sticky-note" class="w-3 h-3"></i> Observações Live</label><textarea id="profile-notes" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none"></textarea></div></div>
-                </div>
-                <div>
-                    <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Performance Vitalícia</h3>
-                    <div class="grid grid-cols-3 gap-4">
-                        <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">QFTDs</p><p id="profile-qftds" class="text-2xl font-mono font-bold text-white mt-1">0</p></div>
-                        <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">Comissão</p><p id="profile-comm" class="text-xl font-mono font-bold text-red-400 mt-1">R$ 0</p></div>
-                        <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">Lucro 3C</p><p id="profile-profit" class="text-xl font-mono font-bold text-emerald-400 mt-1">R$ 0</p></div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500">Informações e Anotações</h3>
+                        <button id="btn-edit-notes" onclick="window.enableProfileEdit()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-[9px] font-bold uppercase tracking-widest rounded-lg transition-all border border-white/5 flex items-center gap-1"><i data-lucide="pencil" class="w-3 h-3"></i> Editar</button>
+                        <button id="btn-save-notes" onclick="window.saveProfileNotes()" class="hidden px-4 py-1.5 bg-pink-500 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg transition-all flex items-center gap-1 shadow-[0_0_10px_rgba(236,72,153,0.4)]"><i data-lucide="save" class="w-3 h-3"></i> Salvar</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="form-label !ml-0 text-pink-400 flex items-center gap-2 mb-2"><i data-lucide="share-2" class="w-3 h-3"></i> Fontes de Tráfego / Social</label>
+                            <textarea id="profile-social" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none transition-all duration-300" placeholder="Nenhuma informação registrada."></textarea>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="form-label !ml-0 text-amber-400 flex items-center gap-2 mb-2"><i data-lucide="sticky-note" class="w-3 h-3"></i> Observações Live</label>
+                            <textarea id="profile-notes" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none transition-all duration-300" placeholder="Nenhuma anotação registrada."></textarea>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-2 border-t border-white/10 pt-6">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-3 flex items-center gap-2"><i data-lucide="receipt" class="w-4 h-4"></i> Faturas Deste Afiliado</h3>
-                    <div class="bg-black/40 rounded-xl border border-white/5 overflow-hidden"><table class="w-full text-left"><thead class="bg-white/5 text-[9px] uppercase tracking-widest text-gray-400"><tr><th class="p-3 font-bold">Período</th><th class="p-3 font-bold text-right">Valor (R$)</th><th class="p-3 font-bold text-center">Status</th><th class="p-3 font-bold text-center">NF (Anexo)</th><th class="p-3 font-bold text-center">Ações</th></tr></thead><tbody id="profile-payments-tbody" class="text-xs font-mono"></tbody></table></div>
-                </div>
                 <div>
-                    <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2 justify-between"><span>Deals</span><button onclick="window.openAffiliateModalFromProfile()" class="text-blue-400 hover:text-blue-300 flex items-center gap-1"><i data-lucide="settings-2" class="w-3 h-3"></i> Gerir Deals</button></h3>
-                    <div class="bg-black/40 rounded-xl border border-white/5 overflow-hidden"><table class="w-full text-left"><thead class="bg-white/5 text-[9px] uppercase tracking-widest text-gray-400"><tr><th class="p-3 font-bold">Casa</th><th class="p-3 font-bold text-center">CPA (R$)</th><th class="p-3 font-bold text-center">Baseline</th><th class="p-3 font-bold text-center">RS (%)</th></tr></thead><tbody id="profile-deals-tbody" class="text-xs font-mono"></tbody></table></div>
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Performance Vitalícia (Todas as Casas)</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">QFTDs Totais</p><p id="profile-qftds" class="text-2xl font-mono font-bold text-white mt-1">0</p></div>
+                        <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">Comissão Recebida</p><p id="profile-comm" class="text-xl font-mono font-bold text-red-400 mt-1">R$ 0</p></div>
+                        <div class="bg-black/30 p-4 rounded-xl border border-white/5 text-center"><p class="text-[10px] text-gray-400 uppercase tracking-widest">Lucro 3C Gerado</p><p id="profile-profit" class="text-xl font-mono font-bold text-emerald-400 mt-1">R$ 0</p></div>
+                    </div>
+                </div>
+                
+                <div class="mt-2 border-t border-white/10 pt-6">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-3 flex items-center gap-2"><i data-lucide="receipt" class="w-4 h-4"></i> Histórico de Fechamentos (Pagamentos)</h3>
+                    <div class="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-white/5 text-[9px] uppercase tracking-widest text-gray-400">
+                                <tr>
+                                    <th class="p-3 font-bold whitespace-nowrap">Período</th>
+                                    <th class="p-3 font-bold text-right whitespace-nowrap">Valor (R$)</th>
+                                    <th class="p-3 font-bold text-center whitespace-nowrap">Status</th>
+                                    <th class="p-3 font-bold text-center whitespace-nowrap">Nota Fiscal (Anexo)</th>
+                                    <th class="p-3 font-bold text-center whitespace-nowrap">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="profile-payments-tbody" class="text-xs font-mono"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-2 justify-between">
+                        <span>Acordos e Margens (Deals)</span>
+                        <button onclick="window.openAffiliateModalFromProfile()" class="text-blue-400 hover:text-blue-300 flex items-center gap-1"><i data-lucide="settings-2" class="w-3 h-3"></i> Gerir Deals</button>
+                    </h3>
+                    <div class="bg-black/40 rounded-xl border border-white/5 overflow-hidden">
+                        <table class="w-full text-left">
+                            <thead class="bg-white/5 text-[9px] uppercase tracking-widest text-gray-400"><tr><th class="p-3 font-bold whitespace-nowrap">Casa</th><th class="p-3 font-bold text-center whitespace-nowrap">CPA (R$)</th><th class="p-3 font-bold text-center whitespace-nowrap">Baseline / Níveis</th><th class="p-3 font-bold text-center whitespace-nowrap">RevShare (%)</th></tr></thead>
+                            <tbody id="profile-deals-tbody" class="text-xs font-mono"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal Audit / Log -->
     <div id="modal-audit" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
-        <div class="glass-card w-full max-w-xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh]"><button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button><h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="activity" class="w-5 h-5 text-gray-400"></i> Log de Ações</h2><div id="audit-list" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-grow"></div></div>
+        <div class="glass-card w-full max-w-xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh]">
+            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="activity" class="w-5 h-5 text-gray-400"></i> Central de Edições</h2>
+            <p class="text-[10px] text-gray-500 mb-4 italic shrink-0">Histórico de alterações na operação (Últimas 100 ações).</p>
+            <div id="audit-list" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-grow"></div>
+        </div>
     </div>
 
+    <!-- Modal Histórico de Lançamentos -->
     <div id="modal-history" class="fixed inset-0 z-[250] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
         <div class="glass-card w-full max-w-5xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh]">
-            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
             <h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="list" class="w-5 h-5 theme-text"></i> Histórico de Lançamentos</h2>
-            <div class="overflow-x-auto custom-scrollbar flex-grow bg-black/30 rounded-2xl border border-white/5"><table class="w-full text-left border-collapse"><thead><tr class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-400"><th class="px-5 py-4 font-bold whitespace-nowrap">Data</th><th class="px-5 py-4 font-bold">Marca</th><th class="px-5 py-4 font-bold">Afiliado</th><th class="px-5 py-4 font-bold text-center">FTD / QFTD</th><th class="px-5 py-4 font-bold text-right">Depósitos</th><th class="px-5 py-4 font-bold text-right">Net Rev</th><th class="px-5 py-4 font-bold text-center">Ações</th></tr></thead><tbody id="history-table-body" class="text-xs"></tbody></table></div>
+            <p class="text-[10px] text-gray-500 mb-4 italic shrink-0">Caso encontre algum lançamento com valores errados, basta apagar e lançar novamente.</p>
+            <div class="overflow-x-auto custom-scrollbar flex-grow bg-black/30 rounded-2xl border border-white/5">
+                <table class="w-full text-left border-collapse">
+                    <thead><tr class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-400"><th class="px-5 py-4 font-bold whitespace-nowrap">Data</th><th class="px-5 py-4 font-bold whitespace-nowrap">Marca</th><th class="px-5 py-4 font-bold whitespace-nowrap">Afiliado</th><th class="px-5 py-4 font-bold text-center whitespace-nowrap">FTD / QFTD</th><th class="px-5 py-4 font-bold text-right whitespace-nowrap">Depósitos</th><th class="px-5 py-4 font-bold text-right whitespace-nowrap">Net Rev</th><th class="px-5 py-4 font-bold text-center whitespace-nowrap">Ações</th></tr></thead>
+                    <tbody id="history-table-body" class="text-xs"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
+    <!-- Modal Configuração -->
     <div id="modal-config" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
         <div class="glass-card w-full max-w-2xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative max-h-[95vh] overflow-y-auto custom-scrollbar flex flex-col">
-            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
             <h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="settings" class="w-5 h-5 theme-text"></i> Configuração Master</h2>
             <div class="space-y-6 shrink-0">
-                <div class="bg-black/30 p-5 rounded-2xl border border-white/10"><h3 class="text-xs font-black uppercase tracking-widest text-emerald-400 mb-3">+ Nova Casa</h3><div class="grid grid-cols-1 md:grid-cols-5 gap-3"><div class="col-span-2"><label class="form-label !ml-0">Nome</label><input type="text" id="new-brand-name" placeholder="Ex: Betano" class="edit-mode-input mt-1 w-full py-2"></div><div class="col-span-2"><label class="form-label !ml-0">Logo URL</label><input type="text" id="new-brand-logo" class="edit-mode-input mt-1 w-full py-2"></div><div><label class="form-label !ml-0">Cor Hex</label><input type="text" id="new-brand-color" placeholder="#ff0000" class="edit-mode-input mt-1 w-full py-2 font-mono"></div><div class="md:col-span-5 flex justify-end mt-2"><button onclick="window.addNewBrand()" class="bg-emerald-500 text-white font-black uppercase text-[10px] tracking-widest px-6 py-2.5 rounded-lg hover:bg-emerald-600 transition-all">Adicionar</button></div></div></div>
-                <div><h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b border-white/10 pb-2">Deals da 3C com as Casas</h3><div id="brands-config-list" class="space-y-4 max-h-[35vh] overflow-y-auto custom-scrollbar pr-2"></div></div>
-                <div class="bg-blue-500/10 p-5 rounded-2xl border border-blue-500/20 mt-6"><button onclick="window.forceCloudSync(event)" class="w-full bg-blue-500 text-white font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2"><i data-lucide="cloud-upload" class="w-4 h-4"></i> Forçar Envio para Nuvem</button></div>
-                <div class="bg-black/30 p-5 rounded-2xl border border-white/10 mt-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-4"><button onclick="window.exportBackup()" class="w-full bg-white/10 text-white font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-white/20 border border-white/10 flex justify-center gap-2"><i data-lucide="download-cloud" class="w-4 h-4"></i> Exportar JSON</button><div><input type="file" id="import-file" accept=".json" class="hidden" onchange="window.importBackup(event)"><button onclick="document.getElementById('import-file').click()" class="w-full bg-blue-500/20 text-blue-400 font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-blue-500/30 border border-blue-500/30 flex justify-center gap-2"><i data-lucide="upload-cloud" class="w-4 h-4"></i> Restaurar</button></div></div></div>
-                <button onclick="window.saveBrandsConfig()" class="w-full mt-4 theme-bg text-white font-black uppercase text-xs tracking-widest py-4 rounded-xl hover:brightness-110 transition-all theme-shadow">Salvar Deals Globais</button>
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-emerald-400 mb-3">+ Nova Casa Parceira</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                        <div class="col-span-2"><label class="form-label !ml-0">Nome da Marca</label><input type="text" id="new-brand-name" placeholder="Ex: Betano" class="edit-mode-input mt-1 w-full py-2"></div>
+                        <div class="col-span-2"><label class="form-label !ml-0">Logo (URL da Imagem)</label><input type="text" id="new-brand-logo" placeholder="https://..." class="edit-mode-input mt-1 w-full py-2"></div>
+                        <div><label class="form-label !ml-0">Cor (Hex)</label><input type="text" id="new-brand-color" placeholder="#ff0000" class="edit-mode-input mt-1 w-full py-2 font-mono"></div>
+                        <div class="md:col-span-5 flex justify-end mt-2"><button onclick="window.addNewBrand()" class="bg-emerald-500 text-white font-black uppercase text-[10px] tracking-widest px-6 py-2.5 rounded-lg hover:bg-emerald-600 transition-all">Adicionar Casa</button></div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b border-white/10 pb-2">Deals da 3C com as Casas Atuais</h3>
+                    <p class="text-[10px] text-gray-500 mb-4 italic">Configure a margem primária da operação (O que a casa paga para a 3C).</p>
+                    <div id="brands-config-list" class="space-y-4 max-h-[35vh] overflow-y-auto custom-scrollbar pr-2"></div>
+                </div>
+                
+                <div class="bg-blue-500/10 p-5 rounded-2xl border border-blue-500/20 mt-6">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i data-lucide="cloud"></i> Sincronização em Nuvem</h3>
+                    <p class="text-[10px] text-gray-400 mb-4 italic">Se os seus dados não aparecerem no telemóvel, clique abaixo no computador onde eles estão guardados para forçar o envio para a nuvem.</p>
+                    <button onclick="window.forceCloudSync(event)" class="w-full bg-blue-500 text-white font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-blue-600 transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)] flex items-center justify-center gap-2"><i data-lucide="cloud-upload" class="w-4 h-4"></i> Forçar Envio Local -> Nuvem</button>
+                </div>
+
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/10 mt-6">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-2"><i data-lucide="hard-drive" class="w-4 h-4"></i> Segurança de Dados (Backup)</h3>
+                    <p class="text-[10px] text-gray-500 mb-4 italic">Faça o download do seu banco de dados para backup local ou importe um arquivo JSON.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button onclick="window.exportBackup()" class="w-full bg-white/10 text-white font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-white/20 transition-all border border-white/10 flex items-center justify-center gap-2"><i data-lucide="download-cloud" class="w-4 h-4"></i> Exportar Backup (JSON)</button>
+                        <div>
+                            <input type="file" id="import-file" accept=".json" class="hidden" onchange="window.importBackup(event)">
+                            <button onclick="document.getElementById('import-file').click()" class="w-full bg-blue-500/20 text-blue-400 font-black uppercase text-[10px] tracking-widest py-3 rounded-lg hover:bg-blue-500/30 transition-all border border-blue-500/30 flex items-center justify-center gap-2"><i data-lucide="upload-cloud" class="w-4 h-4"></i> Restaurar Backup</button>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="window.saveBrandsConfig()" class="w-full mt-4 theme-bg text-white font-black uppercase text-xs tracking-widest py-4 rounded-xl hover:brightness-110 transition-all theme-shadow shrink-0">Salvar Deals Globais</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Gerenciar Afiliado -->
     <div id="modal-affiliate" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
         <div class="glass-card w-full max-w-xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative max-h-[95vh] overflow-y-auto custom-scrollbar flex flex-col">
-            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
             <h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="user-cog" class="w-5 h-5 theme-text"></i> Gerenciar Afiliado</h2>
             <div class="space-y-6 shrink-0">
-                <div class="bg-black/40 p-5 rounded-2xl border border-white/5"><label class="form-label !ml-0">Ação</label><select id="aff-action-select" class="edit-mode-input mt-1 w-full py-3 cursor-pointer" onchange="window.toggleAffiliateAction()"></select></div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4"><div class="md:col-span-2"><label class="form-label !ml-0">Nome</label><input type="text" id="aff-name" class="edit-mode-input mt-1 w-full py-3 font-bold text-lg"></div><div><label class="form-label !ml-0">Início</label><input type="date" id="aff-start-date" class="edit-mode-input mt-1 w-full py-3 text-sm cursor-pointer"></div></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div><label class="form-label !ml-0">Fontes de Tráfego / Social</label><textarea id="aff-social" class="edit-mode-input mt-1 w-full text-sm min-h-[60px] resize-none"></textarea></div><div><label class="form-label !ml-0">Observações Live</label><textarea id="aff-notes" class="edit-mode-input mt-1 w-full text-sm min-h-[60px] resize-none"></textarea></div></div>
-                <div><h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b border-white/10 pb-2">Casas</h3><div id="brand-checkboxes" class="flex flex-wrap gap-3 mb-4"></div><div id="affiliate-deals-container" class="space-y-4"></div></div>
-                <button onclick="window.saveAffiliate()" class="w-full mt-4 theme-bg text-white font-black uppercase text-xs tracking-widest py-4 rounded-xl hover:brightness-110 transition-all theme-shadow">Salvar Afiliado</button>
+                <div class="bg-black/40 p-5 rounded-2xl border border-white/5">
+                    <label class="form-label !ml-0">Ação</label>
+                    <select id="aff-action-select" class="edit-mode-input mt-1 w-full py-3 appearance-none cursor-pointer" onchange="window.toggleAffiliateAction()"><option value="new">+ Cadastrar Novo Afiliado</option></select>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2"><label class="form-label !ml-0">Nome do Afiliado</label><input type="text" id="aff-name" placeholder="Ex: João Silva" class="edit-mode-input mt-1 w-full py-3 font-bold text-lg"></div>
+                    <div><label class="form-label !ml-0">Data de Início</label><input type="date" id="aff-start-date" class="edit-mode-input mt-1 w-full py-3 text-sm cursor-pointer" onclick="this.showPicker()"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="form-label !ml-0">Fontes de Tráfego / Social</label><textarea id="aff-social" class="edit-mode-input mt-1 w-full text-sm min-h-[60px] custom-scrollbar resize-none" placeholder="Ex: Instagram (@joao.bet)..."></textarea></div>
+                    <div><label class="form-label !ml-0">Observações Live</label><textarea id="aff-notes" class="edit-mode-input mt-1 w-full text-sm min-h-[60px] custom-scrollbar resize-none" placeholder="Anotações sobre a operação..."></textarea></div>
+                </div>
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 border-b border-white/10 pb-2">Casas de Operação</h3>
+                    <p class="text-[10px] text-gray-500 mb-4 italic">Selecione as casas em que este afiliado opera para configurar o deal.</p>
+                    <div id="brand-checkboxes" class="flex flex-wrap gap-3 mb-4"></div>
+                    <div id="affiliate-deals-container" class="space-y-4"></div>
+                </div>
+                <button onclick="window.saveAffiliate()" class="w-full mt-4 theme-bg text-white font-black uppercase text-xs tracking-widest py-4 rounded-xl hover:brightness-110 transition-all theme-shadow shrink-0">Salvar Dados do Afiliado</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal Anexar Nota Fiscal -->
     <div id="modal-invoice" class="fixed inset-0 z-[400] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.closeModals()">
         <div class="glass-card w-full max-w-md p-6 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col">
             <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -449,11 +747,36 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, doc, onSnapshot, deleteDoc, updateDoc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        window.openModal = (id) => { const e = document.getElementById(id); if(e) { e.classList.remove('hidden'); setTimeout(() => e.classList.remove('opacity-0'), 10); } };
-        window.closeModals = () => { document.querySelectorAll('.md-modal').forEach(m => { m.classList.add('opacity-0'); setTimeout(() => m.classList.add('hidden'), 300); }); };
+        // Funções Base Seguras
+        window.openModal = (id) => { 
+            const e = document.getElementById(id); 
+            if(e) { e.classList.remove('hidden'); setTimeout(() => e.classList.remove('opacity-0'), 10); } 
+        };
+        window.closeModals = () => { 
+            document.querySelectorAll('.md-modal').forEach(m => { 
+                m.classList.add('opacity-0'); 
+                setTimeout(() => m.classList.add('hidden'), 300); 
+            }); 
+        };
         window.parseMoney = s => parseFloat(s?.toString().replace(/\./g, '').replace(',', '.')) || 0;
         window.formatCurrency = v => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
+        
+        window.showToast = (msg, type = 'error') => {
+            const c = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-emerald-500' : 'bg-blue-500';
+            const i = type === 'error' ? 'alert-triangle' : type === 'success' ? 'check-circle' : 'info';
+            const t = document.createElement('div'); 
+            t.className = `${c} text-white px-5 py-3 rounded-xl shadow-2xl text-[10px] font-black uppercase tracking-widest transform transition-all duration-300 translate-x-full opacity-0 flex items-center gap-3 border border-white/20 z-[9999]`;
+            t.innerHTML = `<i data-lucide="${i}" class="w-4 h-4"></i> ${msg}`; 
+            document.getElementById('toast-container').appendChild(t); 
+            lucide.createIcons();
+            setTimeout(() => t.classList.remove('translate-x-full', 'opacity-0'), 10); 
+            setTimeout(() => { t.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => t.remove(), 300); }, 3500);
+        };
+        
+        window.closeConfirm = () => window.closeModals();
+        window.showConfirm = (msg, cb) => { document.getElementById('confirm-msg').innerText = msg; document.getElementById('btn-confirm-action').onclick = () => { window.closeConfirm(); cb(); }; window.openModal('modal-confirm'); };
 
+        // Variáveis e Configurações
         const FB_CFG = { apiKey: "AIzaSyDuiup15ELAcm78GFJ0w7pdeYu2DHy-6Zk", authDomain: "hub-3c.firebaseapp.com", projectId: "hub-3c", storageBucket: "hub-3c.firebasestorage.app", messagingSenderId: "340842089459", appId: "1:340842089459:web:c2072752324c52f998a086" }; 
         const MD_KEY = 'igaming3c_data_v15'; 
         
@@ -478,6 +801,7 @@
         window.tasks = []; window.currentFilter = 'all'; window.isCloudMode = false;
         const wfAppId = typeof __app_id !== 'undefined' ? __app_id : 'hub3c-production';
 
+        // Firebase Inicialização
         window.initFirebaseSystem = async () => {
             window.workflowInitialized = true;
             try {
@@ -522,6 +846,7 @@
             }
         };
 
+        // Autenticação / Logins
         window.checkPassword = async () => {
             const p = document.getElementById('password-input').value.trim(); if (!p) return;
             document.getElementById('btn-login').innerText = "Verificando..."; document.getElementById('btn-login').disabled = true;
@@ -561,17 +886,9 @@
             }, 700);
         };
 
-        window.showToast = (msg, type = 'error') => {
-            const c = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-emerald-500' : 'bg-blue-500';
-            const i = type === 'error' ? 'alert-triangle' : type === 'success' ? 'check-circle' : 'info';
-            const t = document.createElement('div'); t.className = `${c} text-white px-5 py-3 rounded-xl shadow-2xl text-[10px] font-black uppercase tracking-widest transform transition-all duration-300 translate-x-full opacity-0 flex items-center gap-3 border border-white/20 z-[9999]`;
-            t.innerHTML = `<i data-lucide="${i}" class="w-4 h-4"></i> ${msg}`; document.getElementById('toast-container').appendChild(t); lucide.createIcons();
-            setTimeout(() => t.classList.remove('translate-x-full', 'opacity-0'), 10); setTimeout(() => { t.classList.add('translate-x-full', 'opacity-0'); setTimeout(() => t.remove(), 300); }, 3500);
-        };
-        window.closeConfirm = () => window.closeModals();
-        window.showConfirm = (msg, cb) => { document.getElementById('confirm-msg').innerText = msg; document.getElementById('btn-confirm-action').onclick = () => { window.closeConfirm(); cb(); }; window.openModal('modal-confirm'); };
-
+        // Funções Core MD
         window.logAction = (action, details) => { window.dataStore.auditLogs.unshift({ id: Math.random().toString(36).substr(2, 9), timestamp: Date.now(), action, details }); if(window.dataStore.auditLogs.length > 100) window.dataStore.auditLogs.pop(); window.saveMDData(); };
+        
         window.getBrandConfig = (n) => {
             if (MD_BASE_CONFIG[n]) return MD_BASE_CONFIG[n]; const d = window.dataStore.brands[n]; if(!d) return null;
             let h = d.color.replace('#', ''); if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
@@ -579,6 +896,7 @@
             const bg = d.logo ? `url('${d.logo}')` : `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><text x='50%' y='50%' font-family='Montserrat' font-weight='900' font-size='28' fill='rgba(${rgb},0.15)' text-anchor='middle' dominant-baseline='middle' transform='rotate(-25, 100, 100)'>${n.toUpperCase()}</text></svg>`;
             return { color: d.color, colorRGB: rgb, grad1: `rgba(${rgb}, 0.12)`, grad2: `rgba(${rgb}, 0.05)`, title: n.toUpperCase(), subtitle: '', logo: d.logo || '', mosaic: bg, deal: d };
         };
+        
         window.getBrandList = () => Object.keys(window.dataStore.brands).sort((a,b)=> { let qa=0, qb=0; window.dataStore.dailyReports.forEach(r=>{ if(r.brand===a) qa += typeof r.qftd==='object'?r.qftd.l1||0:r.qftd; if(r.brand===b) qb += typeof r.qftd==='object'?r.qftd.l1||0:r.qftd;}); return qb-qa; });
 
         window.saveMDData = async () => {
@@ -686,6 +1004,10 @@
                 if(myRep.length===0) return;
 
                 let sFtd=0, sQftd=0, sDep=0, sRev=0, hCpa=0, hRs=0, comm=0;
+                
+                // SEGURANÇA: Garante que os deals existem para este afiliado.
+                aff.deals = aff.deals || {};
+
                 myRep.forEach(r => {
                     const cfg = window.getBrandConfig(r.brand)?.deal; if(!cfg) return;
                     const aDeal = aff.deals[r.brand] || { cpa:0, rs:0 };
@@ -763,6 +1085,8 @@
             let gridHtml = '';
             list.forEach(aff => {
                 let brandsHtml = '';
+                aff.deals = aff.deals || {}; // SEGURANÇA
+
                 window.getBrandList().forEach(b => {
                     if (aff.deals[b] && (aff.deals[b].cpa>0 || aff.deals[b].cpa_l1>0 || aff.deals[b].rs>0)) {
                         const cfg = window.getBrandConfig(b) || { color: '#fff' };
@@ -788,11 +1112,23 @@
             lucide.createIcons();
         };
 
-        window.enableProfileEdit = () => { ['profile-social', 'profile-notes'].forEach(id => { document.getElementById(id).readOnly = false; document.getElementById(id).classList.replace('bg-transparent', 'bg-black/30'); document.getElementById(id).classList.replace('pointer-events-none', 'pointer-events-auto'); document.getElementById(id).classList.replace('text-gray-400', 'text-white'); }); document.getElementById('btn-save-notes').classList.remove('hidden'); document.getElementById('btn-edit-notes').classList.add('hidden'); document.getElementById('profile-social').focus(); };
+        window.enableProfileEdit = () => { 
+            ['profile-social', 'profile-notes'].forEach(id => { 
+                document.getElementById(id).readOnly = false; 
+                document.getElementById(id).className = document.getElementById(id).className.replace(/bg-transparent|pointer-events-none|text-gray-400/g, '').trim() + ' bg-black/30 pointer-events-auto text-white';
+            }); 
+            document.getElementById('btn-save-notes').classList.remove('hidden'); 
+            document.getElementById('btn-edit-notes').classList.add('hidden'); 
+            document.getElementById('profile-social').focus(); 
+        };
+
         window.saveProfileNotes = () => {
             const aff = window.dataStore.affiliates.find(a => a.id === window.currentProfileAffId);
             if(aff) { aff.social = document.getElementById('profile-social').value; aff.notes = document.getElementById('profile-notes').value; window.saveMDData(); window.logAction('Anotações Editadas', `Para ${aff.name}.`); }
-            ['profile-social', 'profile-notes'].forEach(id => { document.getElementById(id).readOnly = true; document.getElementById(id).classList.replace('bg-black/30', 'bg-transparent'); document.getElementById(id).classList.replace('pointer-events-auto', 'pointer-events-none'); document.getElementById(id).classList.replace('text-white', 'text-gray-400'); });
+            ['profile-social', 'profile-notes'].forEach(id => { 
+                document.getElementById(id).readOnly = true; 
+                document.getElementById(id).className = document.getElementById(id).className.replace(/bg-black\/30|pointer-events-auto|text-white/g, '').trim() + ' bg-transparent pointer-events-none text-gray-400 border-transparent';
+            });
             const btn = document.getElementById('btn-save-notes'); btn.innerHTML = '<i data-lucide="check" class="w-3 h-3"></i> Salvo!'; btn.classList.replace('bg-pink-500', 'bg-emerald-500'); lucide.createIcons();
             setTimeout(() => { btn.innerHTML = '<i data-lucide="save" class="w-3 h-3"></i> Salvar'; btn.classList.replace('bg-emerald-500', 'bg-pink-500'); btn.classList.add('hidden'); document.getElementById('btn-edit-notes').classList.remove('hidden'); lucide.createIcons(); }, 1500);
         };
@@ -803,7 +1139,11 @@
             document.getElementById('profile-social').value = aff.social || ''; document.getElementById('profile-notes').value = aff.notes || '';
             ['profile-social', 'profile-notes'].forEach(el => { document.getElementById(el).readOnly = true; document.getElementById(el).className = document.getElementById(el).className.replace(/bg-black\/30|pointer-events-auto|text-white/g, '').trim() + ' bg-transparent pointer-events-none text-gray-400 border-transparent'; });
             document.getElementById('btn-save-notes').classList.add('hidden'); document.getElementById('btn-edit-notes').classList.remove('hidden');
-            let tQ=0, tC=0, tP=0; window.dataStore.dailyReports.filter(r=>r.affiliateId===id).forEach(r => {
+            let tQ=0, tC=0, tP=0; 
+            
+            aff.deals = aff.deals || {}; // SEGURANÇA
+
+            window.dataStore.dailyReports.filter(r=>r.affiliateId===id).forEach(r => {
                 const cfg = window.getBrandConfig(r.brand)?.deal; if(!cfg) return; const ad = aff.deals[r.brand] || { cpa:0, rs:0 }; let q=0, hC=0, rC=0;
                 if (cfg.type === 'tiered') { q = (r.qftd&&r.qftd.l1)?r.qftd.l1:0; hC = (q*(cfg.levels[0]?.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(cfg.levels[1]?.cpa||0))+(((r.qftd&&r.qftd.l3)||0)*(cfg.levels[2]?.cpa||0)); rC = (q*(ad.cpa_l1||ad.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(ad.cpa_l2||0))+(((r.qftd&&r.qftd.l3)||0)*(ad.cpa_l3||0))+(r.netRev*((ad.rs||0)/100)); } 
                 else { q = typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0); hC = q*(cfg.cpa||0); rC = (q*(ad.cpa||0))+(r.netRev*((ad.rs||0)/100)); }
@@ -844,6 +1184,8 @@
             const aff = window.dataStore.affiliates.find(a => a.id === affId);
             if(!aff) return document.getElementById('close-brands-container').innerHTML = '<span class="text-xs text-gray-500 italic">Selecione um afiliado.</span>';
             
+            aff.deals = aff.deals || {}; // SEGURANÇA
+
             let brandsHtml = '';
             window.getBrandList().forEach(b => {
                 if(aff.deals[b] && (aff.deals[b].cpa > 0 || aff.deals[b].cpa_l1 > 0 || aff.deals[b].rs > 0)) {
@@ -868,6 +1210,8 @@
             const aff = window.dataStore.affiliates.find(a => a.id === id);
             
             if(!aff) return window.showToast("Afiliado não encontrado.", "error");
+
+            aff.deals = aff.deals || {}; // SEGURANÇA
 
             const reps = window.dataStore.dailyReports.filter(r => {
                 const d = new Date(r.date + 'T12:00:00');
@@ -1085,18 +1429,18 @@
                     btnDel = '<button onclick="window.deleteBrand(\''+b+'\')" class="text-red-500 hover:text-red-400 p-2 bg-red-500/10 rounded-lg absolute top-4 right-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>';
                 }
                 
-                configHtml += '<div class="bg-black/30 p-4 rounded-xl border border-white/5 relative" style="border-left: 2px solid ' + d.color + '">';
+                configHtml += '<div class="bg-black/30 p-5 rounded-2xl border border-white/5 relative mb-4" style="border-left: 3px solid ' + d.color + '">';
                 configHtml += btnDel;
-                configHtml += '<h4 class="text-[10px] uppercase font-bold mb-3" style="color: ' + d.color + '">' + b + ' <span class="text-gray-500 font-normal ml-2">(' + d.type + ')</span></h4>';
+                configHtml += '<h4 class="text-xs uppercase font-black tracking-widest mb-4 flex items-center gap-2" style="color: ' + d.color + '"><i data-lucide="settings-2" class="w-4 h-4"></i> ' + b + ' <span class="text-gray-500 font-normal ml-2">(' + d.type + ')</span></h4>';
                 
                 if (t) {
-                    configHtml += '<div class="space-y-2">';
+                    configHtml += '<div class="space-y-3">';
                     d.levels.forEach((l,i) => {
-                        configHtml += '<div class="flex items-center gap-3 bg-black/20 p-2 rounded-lg"><span class="text-[9px] uppercase font-bold w-12 text-gray-400">' + l.name + '</span><div class="flex-1 flex gap-2"><input type="number" id="cfg-'+b+'-cpa-'+i+'" value="'+l.cpa+'" placeholder="CPA" class="edit-mode-input py-1.5 text-xs"><input type="number" id="cfg-'+b+'-base-'+i+'" value="'+l.baseline+'" placeholder="Base" class="edit-mode-input py-1.5 text-xs"></div></div>';
+                        configHtml += '<div class="flex items-center gap-4 bg-black/40 p-3 rounded-xl border border-white/5"><span class="text-[10px] uppercase font-bold w-16 text-gray-400">' + l.name + '</span><div class="flex-1 flex gap-3"><div><label class="form-label !ml-0">CPA (R$)</label><input type="number" id="cfg-'+b+'-cpa-'+i+'" value="'+l.cpa+'" placeholder="CPA" class="edit-mode-input py-2 mt-1 text-sm font-mono"></div><div><label class="form-label !ml-0">Baseline</label><input type="number" id="cfg-'+b+'-base-'+i+'" value="'+l.baseline+'" placeholder="Base" class="edit-mode-input py-2 mt-1 text-sm font-mono"></div></div></div>';
                     });
-                    configHtml += '<div class="mt-2 flex items-center gap-2"><span class="text-[9px] uppercase font-bold text-gray-400">RS (%)</span><input type="number" id="cfg-'+b+'-rs" value="'+d.rs+'" class="edit-mode-input py-1.5 text-xs w-24"></div></div>';
+                    configHtml += '<div class="mt-3 bg-black/40 p-3 rounded-xl border border-white/5"><label class="form-label !ml-0">RevShare Geral (%)</label><input type="number" id="cfg-'+b+'-rs" value="'+d.rs+'" class="edit-mode-input py-2 mt-1 text-sm font-mono w-full"></div></div>';
                 } else {
-                    configHtml += '<div class="grid grid-cols-2 gap-4"><div><label class="form-label !ml-0">CPA (R$)</label><input type="number" id="cfg-'+b+'-cpa" value="'+d.cpa+'" class="edit-mode-input w-full py-2 font-mono"></div><div><label class="form-label !ml-0">RS (%)</label><input type="number" id="cfg-'+b+'-rs" value="'+d.rs+'" class="edit-mode-input w-full py-2 font-mono"></div></div>';
+                    configHtml += '<div class="grid grid-cols-2 gap-4"><div><label class="form-label !ml-0">CPA Padrão (R$)</label><input type="number" id="cfg-'+b+'-cpa" value="'+d.cpa+'" class="edit-mode-input mt-1 w-full py-2 font-mono"></div><div><label class="form-label !ml-0">RevShare (%)</label><input type="number" id="cfg-'+b+'-rs" value="'+d.rs+'" class="edit-mode-input mt-1 w-full py-2 font-mono"></div></div>';
                 }
                 configHtml += '</div>';
             });
@@ -1104,7 +1448,7 @@
             window.openModal('modal-config'); lucide.createIcons();
         };
 
-        window.deleteBrand = (b) => window.showConfirm(`Excluir ${b}?`, () => { delete window.dataStore.brands[b]; window.dataStore.dailyReports = window.dataStore.dailyReports.filter(r=>r.brand!==b); window.dataStore.affiliates.forEach(a=>{if(a.deals[b]) delete a.deals[b];}); window.saveMDData(); window.logAction('Casa Excluída', b); if (window.currentMDEnv === b) window.switchMDEnv('Visão Geral'); else { window.initMDTabs(); window.openConfigModal(); } window.showToast("Excluída!", "success"); });
+        window.deleteBrand = (b) => window.showConfirm(`Excluir ${b}?`, () => { delete window.dataStore.brands[b]; window.dataStore.dailyReports = window.dataStore.dailyReports.filter(r=>r.brand!==b); window.dataStore.affiliates.forEach(a=>{if(a.deals && a.deals[b]) delete a.deals[b];}); window.saveMDData(); window.logAction('Casa Excluída', b); if (window.currentMDEnv === b) window.switchMDEnv('Visão Geral'); else { window.initMDTabs(); window.openConfigModal(); } window.showToast("Excluída!", "success"); });
         window.saveBrandsConfig = () => { window.getBrandList().forEach(b => { const d = window.dataStore.brands[b]; if(d.type==='tiered'){ d.levels.forEach((l,i)=>{ l.cpa=parseFloat(document.getElementById(`cfg-${b}-cpa-${i}`).value)||0; l.baseline=parseFloat(document.getElementById(`cfg-${b}-base-${i}`).value)||0; }); d.rs=parseFloat(document.getElementById(`cfg-${b}-rs`).value)||0; } else { d.cpa=parseFloat(document.getElementById(`cfg-${b}-cpa`).value)||0; d.rs=parseFloat(document.getElementById(`cfg-${b}-rs`).value)||0; } }); window.saveMDData(); window.closeModals(); window.showToast("Salvo!", "success"); if(window.currentMDEnv!=='Fechamento'&&window.currentMDEnv!=='Afiliados') window.renderDashboard(); };
         window.addNewBrand = () => { const n=document.getElementById('new-brand-name').value.trim(), l=document.getElementById('new-brand-logo').value.trim(), c=document.getElementById('new-brand-color').value.trim()||'#fff'; if(!n)return; if(window.dataStore.brands[n])return window.showToast("Já existe!", "error"); window.dataStore.brands[n] = { color:c, type:'standard', cpa:0, rs:0, logo:l }; window.saveMDData(); window.initMDTabs(); document.getElementById('new-brand-name').value=''; document.getElementById('new-brand-logo').value=''; document.getElementById('new-brand-color').value=''; window.openConfigModal(); window.showToast("Adicionada!", "success"); };
         window.exportBackup = () => { const a=document.createElement('a'); a.href='data:application/json;charset=utf-8,'+encodeURIComponent(localStorage.getItem(MD_KEY)); a.download=`bkp_${Date.now()}.json`; a.click(); window.showToast("Exportado!", "success"); };
@@ -1146,7 +1490,10 @@
             document.getElementById('aff-name').value = isN ? '' : a.name; document.getElementById('aff-name').disabled = !isN; document.getElementById('aff-name').classList[isN?'remove':'add']('opacity-50');
             document.getElementById('aff-start-date').value = isN ? new Date().toISOString().split('T')[0] : (a.createdAt ? new Date(a.createdAt).toISOString().split('T')[0] : ''); document.getElementById('aff-social').value = isN ? '' : (a.social||''); document.getElementById('aff-notes').value = isN ? '' : (a.notes||'');
             window.getBrandList().forEach(b => {
-                const cb = document.getElementById(`cb-brand-${b}`); if(!cb) return; const md = isN ? null : a.deals[b], t = window.dataStore.brands[b].type === 'tiered';
+                const cb = document.getElementById(`cb-brand-${b}`); if(!cb) return; 
+                
+                a && (a.deals = a.deals || {}); // Segurança
+                const md = isN ? null : a.deals[b], t = window.dataStore.brands[b].type === 'tiered';
                 cb.checked = !!md;
                 if(t) { document.getElementById(`aff-cpa-l1-${b}`).value = md?md.cpa_l1||md.cpa||0:0; document.getElementById(`aff-cpa-l2-${b}`).value = md?md.cpa_l2||0:0; document.getElementById(`aff-cpa-l3-${b}`).value = md?md.cpa_l3||0:0; } 
                 else { document.getElementById(`aff-cpa-${b}`).value = md?md.cpa||0:0; document.getElementById(`aff-base-${b}`).value = md?md.baseline||0:0; }
