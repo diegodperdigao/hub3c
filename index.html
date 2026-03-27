@@ -67,7 +67,6 @@
 <body class="antialiased selection:bg-pink-500 selection:text-white">
     <div class="bg-fluid"></div><div class="bg-noise"></div>
 
-    <!-- TOAST E ALERTAS -->
     <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
     <div id="browser-alert">
@@ -81,7 +80,6 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIRMAÇÃO -->
     <div id="modal-confirm" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6" onclick="if(event.target === this) window.closeConfirm()">
         <div class="glass-card w-full max-w-sm p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col text-center">
             <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30 mx-auto mb-4"><i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i></div>
@@ -94,7 +92,6 @@
         </div>
     </div>
 
-    <!-- LOCK SCREEN -->
     <div id="lock-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#030008] transition-opacity duration-700">
         <div class="max-w-md w-full px-10 text-center">
             <div class="mb-8 flex flex-col items-center">
@@ -108,7 +105,6 @@
         </div>
     </div>
 
-    <!-- APP SELECTION -->
     <div id="app-selection" class="fixed inset-0 z-[90] flex items-center justify-center bg-[#030008] transition-opacity duration-700 hidden opacity-0 flex-col px-4">
         <div class="mb-16 flex flex-col items-center"><img src="https://i.ibb.co/TDvNpKbv/285535120-111261434935979-5560566145880188190-n.jpg" class="h-16 w-16 rounded-full object-cover border-2 border-white/10 mb-6 shadow-[0_0_20px_rgba(236,72,153,0.3)]"><h2 class="text-xs font-black tracking-[0.4em] uppercase text-gray-400 italic">Selecione o Módulo</h2></div>
         <div class="flex flex-col md:flex-row gap-6 w-full max-w-4xl">
@@ -123,7 +119,6 @@
         </div>
     </div>
 
-    <!-- MÓDULO 1: DASHBOARD OPERAÇÃO MD -->
     <div id="dashboard-app" class="hidden opacity-0 transition-opacity duration-1000 relative z-10">
         <nav class="fixed w-full z-50 top-0 glass-header">
             <div class="absolute top-0 left-0 right-0 h-[2px] theme-bg opacity-30 transition-colors duration-500"></div>
@@ -156,7 +151,6 @@
                     </div>
                 </header>
 
-                <!-- TAB: DASHBOARD GERAL E MARCAS -->
                 <div id="standard-module">
                     <div class="flex flex-wrap justify-between items-end gap-8 mb-12">
                         <div class="flex flex-wrap gap-4 items-end bg-black/40 p-6 rounded-2xl border border-white/5 shadow-lg">
@@ -212,7 +206,6 @@
                     </div>
                 </div>
 
-                <!-- TAB: AFILIADOS / CRM -->
                 <div id="crm-module" class="hidden">
                     <div class="flex justify-between items-center mb-8">
                         <div class="bg-black/40 p-2 rounded-xl border border-white/5 flex items-center w-full max-w-md"><i data-lucide="search" class="w-5 h-5 text-gray-500 ml-3"></i><input type="text" id="search-affiliate" placeholder="Buscar afiliado..." class="bg-transparent border-none text-white px-4 py-2 w-full focus:outline-none" oninput="window.renderAffiliatesCRM()"></div>
@@ -222,7 +215,6 @@
                     <div id="crm-empty-state" class="hidden text-center py-24 opacity-30"><i data-lucide="users" class="w-20 h-20 mx-auto mb-6 text-pink-500"></i><p class="text-2xl font-black uppercase tracking-widest">Nenhum encontrado</p></div>
                 </div>
 
-                <!-- TAB: FECHAMENTOS E FATURAS -->
                 <div id="fechamento-module" class="hidden">
                     <div class="glass-card p-10 rounded-3xl border border-white/10 shadow-2xl mb-12">
                         <h2 class="text-2xl font-black uppercase tracking-widest mb-8 border-b border-white/10 pb-5 flex items-center gap-3"><i data-lucide="file-check" class="w-6 h-6 text-emerald-400"></i> Gerador de Faturas (Extrato)</h2>
@@ -260,7 +252,6 @@
                         </div>
                     </div>
 
-                    <!-- HISTÓRICO GLOBAL DE FECHAMENTOS (ACORDEÃO) -->
                     <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
                         <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center"><h2 class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-emerald-400"></i> Histórico de Pagamentos por Afiliado</h2></div>
                         <div id="grouped-payments-container" class="p-6 space-y-4"></div>
@@ -271,7 +262,6 @@
         <footer class="py-16 border-t border-white/5 text-center mt-20 text-white relative z-10 bg-black/50"><img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" class="h-10 mx-auto opacity-70 mb-6 grayscale hover:grayscale-0 transition-all"><p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2">Confidencial &copy; 2026 3C Gaming</p><button onclick="window.$show('modal-audit')" class="absolute right-6 bottom-6 p-3 text-gray-700 hover:text-gray-400 hover:bg-white/5 rounded-full transition-all"><i data-lucide="activity" class="w-5 h-5"></i></button></footer>
     </div>
 
-    <!-- MÓDULO 2: WORKFLOW -->
     <div id="workflow-main-content" class="hidden opacity-0 transition-opacity duration-1000 relative z-10">
         <nav class="fixed w-full z-50 top-0 glass-header">
             <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-pink-500 to-transparent opacity-30"></div>
@@ -330,7 +320,6 @@
         <footer class="py-16 bg-black border-t border-white/5 text-center mt-20 relative z-10 text-white"><img src="https://i.ibb.co/chfw0cND/Horizontal-Com-Tag-W.png" class="h-10 mx-auto opacity-70 mb-6 grayscale"><p class="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-bold mb-2">Confidencial &copy; 2026 3C</p></footer>
     </div>
 
-    <!-- MODAIS DO SISTEMA -->
     <div id="modal-daily" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 sm:p-6 md-modal" onclick="if(event.target === this) window.$hide('modal-daily')">
         <div class="glass-card w-full max-w-lg p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative max-h-[95vh] overflow-y-auto custom-scrollbar flex flex-col">
             <button onclick="window.$hide('modal-daily')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -355,7 +344,7 @@
             <div class="space-y-8 shrink-0">
                 <div>
                     <div class="flex justify-between items-center mb-3"><h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500">Informações e Anotações</h3><button id="btn-edit-notes" onclick="window.enableProfileEdit()" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-[9px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1"><i data-lucide="pencil" class="w-3 h-3"></i> Editar</button><button id="btn-save-notes" onclick="window.saveProfileNotes()" class="hidden px-4 py-1.5 bg-pink-500 text-white text-[9px] font-bold uppercase tracking-widest rounded-lg flex items-center gap-1 shadow-[0_0_10px_rgba(236,72,153,0.4)]"><i data-lucide="save" class="w-3 h-3"></i> Salvar</button></div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="flex flex-col"><label class="form-label !ml-0 text-pink-400 flex items-center gap-2 mb-2"><i data-lucide="share-2" class="w-3 h-3"></i> Fontes de Tráfego / Social</label><textarea id="profile-social" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none"></textarea></div><div class="flex flex-col"><label class="form-label !ml-0 text-amber-400 flex items-center gap-2 mb-2"><i data-lucide="sticky-note" class="w-3 h-3"></i> Observações</label><textarea id="profile-notes" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none"></textarea></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="flex flex-col"><label class="form-label !ml-0 text-pink-400 flex items-center gap-2 mb-2"><i data-lucide="share-2" class="w-3 h-3"></i> Fontes de Tráfego / Social</label><textarea id="profile-social" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none"></textarea></div><div class="flex flex-col"><label class="form-label !ml-0 text-amber-400 flex items-center gap-2 mb-2"><i data-lucide="sticky-note" class="w-3 h-3"></i> Observações Live</label><textarea id="profile-notes" class="edit-mode-input w-full text-sm min-h-[80px] custom-scrollbar flex-grow resize-none"></textarea></div></div>
                 </div>
                 <div>
                     <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-3">Performance Vitalícia</h3>
@@ -437,7 +426,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT GERAL (Otimizado) -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js'
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js'
@@ -740,7 +728,7 @@
                     else { const q=typeof r.qftd==='object'?(r.qftd.l1||0):r.qftd; sQ+=q; bC+=(q*(mD.cpa||0))+(r.netRev*(mD.rs/100)); }
                 });
                 tQ+=sQ; tRev+=sR; tComm+=bC; const cfg = window.getBrandConfig(brand)||{color:'#fff'}, mD = aff.deals[brand]||{cpa:0,rs:0}, isT = window.dataStore.brands[brand]?.type==='tiered';
-                return `<tr class="border-b border-white/5 hover:bg-white/5 transition-colors"><td class="py-4 font-bold" style="color: ${cfg.color}">${brand}</td><td class="py-4 text-center font-mono text-xs text-gray-400">${isT?`L1: R$ ${mD.cpa_l1||mD.cpa||0}/${mD.rs}%`:`R$ ${mD.cpa}/${mD.rs}%`}</td><td class="py-4 text-center font-bold text-gray-300">${sQ}</td><td class="py-4 text-right font-mono text-gray-400">${window.formatCurrency(sR)}</td><td class="py-4 text-right font-mono font-bold text-emerald-400">${window.formatCurrency(bC)}</td></tr>`;
+                return `<tr class="border-b border-white/5 hover:bg-white/5"><td class="py-4 font-bold" style="color: ${cfg.color}">${brand}</td><td class="py-4 text-center font-mono text-xs text-gray-400">${isT?`L1: R$ ${mD.cpa_l1||mD.cpa||0}/${mD.rs}%`:`R$ ${mD.cpa}/${mD.rs}%`}</td><td class="py-4 text-center font-bold text-gray-300">${sQ}</td><td class="py-4 text-right font-mono text-gray-400">${window.formatCurrency(sR)}</td><td class="py-4 text-right font-mono font-bold text-emerald-400">${window.formatCurrency(bC)}</td></tr>`;
             }).join('') || '<tr><td colspan="5" class="py-8 text-center text-gray-500 italic">Nenhum dado gerador de receita.</td></tr>');
             text('closure-total', window.formatCurrency(tComm)); text('closure-summary', `${tQ} QFTDs | Receita: ${window.formatCurrency(tRev)}`); text('closure-meta', `Afiliado: ${aff.name} | Período: ${s.split('-').reverse().join('/')} até ${e.split('-').reverse().join('/')}`);
             window.currentPendingClosure = { affiliateId: aff.id, affiliateName: aff.name, startDate: s, endDate: e, totalAmount: tComm };
