@@ -668,7 +668,7 @@
 
     // ── Filter affiliates with activity ───────────────────────────────────
     var active = Object.values(affMap).filter(function(a){return a.ftd>0;})
-        .sort(function(a,b){return b.ftd-a.ftd;});
+        .sort(function(a,b){ var cA=a.ftd>0?a.qftd/a.ftd:0; var cB=b.ftd>0?b.qftd/b.ftd:0; return cB-cA; });
 
     if(!active.length) return;
 
@@ -735,7 +735,16 @@
     wrap.appendChild(header);
     var grid = header.querySelector('#intel-grid');
 
-    active.forEach(function(a) {
+    // Pagination state
+    var _page = 1;
+    var _perPage = 8;
+
+    function buildCards(affList) {
+        grid.innerHTML = '';
+        var visible = affList.slice(0, _page * _perPage);
+        var hasMore = affList.length > visible.length;
+
+        visible.forEach(function(a) {
         var conv = convRate(a.ftd, a.qftd);
         var trend = depTrend(a.depByDay);
 
@@ -805,8 +814,25 @@
         card.addEventListener('mouseout',  function(){ this.style.borderColor='rgba(255,255,255,0.06)'; this.style.transform='none'; });
         card.addEventListener('click', function(){ window.openAffiliateProfile(this.dataset.affId); });
 
-        grid.appendChild(card);
-    });
+            grid.appendChild(card);
+        }); // end visible.forEach
+
+        // "Ver mais" button
+        if (hasMore) {
+            var verMaisWrap = document.createElement('div');
+            verMaisWrap.style.cssText = 'grid-column:1/-1;display:flex;justify-content:center;padding:8px 0 4px;';
+            var btn = document.createElement('button');
+            btn.style.cssText = 'background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2);color:#ec4899;font-size:11px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;padding:10px 32px;border-radius:12px;cursor:pointer;transition:all 0.2s ease;';
+            btn.textContent = 'Ver mais (' + (affList.length - visible.length) + ' restantes)';
+            btn.onmouseover = function(){ this.style.background='rgba(236,72,153,0.15)'; this.style.borderColor='rgba(236,72,153,0.4)'; };
+            btn.onmouseout = function(){ this.style.background='rgba(236,72,153,0.08)'; this.style.borderColor='rgba(236,72,153,0.2)'; };
+            btn.onclick = function(){ _page++; buildCards(affList); };
+            verMaisWrap.appendChild(btn);
+            grid.appendChild(verMaisWrap);
+        }
+    } // end buildCards
+
+    buildCards(active);
 
     var tableCard = document.querySelector('#standard-module .glass-card.rounded-3xl.overflow-hidden');
     if(tableCard) tableCard.parentNode.insertBefore(wrap, tableCard);
