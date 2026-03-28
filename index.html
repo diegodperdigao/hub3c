@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root { --theme-color: #ec4899; --theme-color-glow: rgba(236, 72, 153, 0.4); --bg-grad-1: rgba(255, 0, 127, 0.08); --bg-grad-2: rgba(106, 13, 173, 0.1); }
         html { scroll-behavior: smooth; }
@@ -290,31 +289,7 @@
                             <div id="kpi-profit-trend" class="mt-1 relative z-10"></div>
                         </div>
                     </div>
-                    <!-- CHARTS SECTION -->
-                    <div id="charts-section" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-                        <div class="glass-card p-7 rounded-3xl border border-white/5">
-                            <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <p class="form-label !ml-0 text-pink-400">Evolução de QFTDs</p>
-                                    <h3 class="text-lg font-black text-white mt-1">Últimos 6 Meses</h3>
-                                </div>
-                                <div class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]"></div>
-                            </div>
-                            <canvas id="chart-qftd"></canvas>
-                        </div>
-                        <div class="glass-card p-7 rounded-3xl border border-white/5">
-                            <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <p class="form-label !ml-0 text-emerald-400">Net Revenue (R$)</p>
-                                    <h3 class="text-lg font-black text-white mt-1">Últimos 6 Meses</h3>
-                                </div>
-                                <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                            </div>
-                            <canvas id="chart-rev"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
+                                        <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
                         <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center"><h2 id="table-title" class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 theme-text"></i> Performance</h2><span class="text-[9px] text-gray-500 italic uppercase tracking-widest">No período</span></div>
                         <div class="overflow-x-auto custom-scrollbar"><table class="w-full text-left border-collapse min-w-[1000px]"><thead><tr class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-400"><th class="px-6 py-5 font-bold whitespace-nowrap">Ranking / Afiliado</th><th id="th-deal" class="px-6 py-5 font-bold text-center whitespace-nowrap">Deal Afiliado</th><th class="px-6 py-5 font-bold text-center">FTDs</th><th class="px-6 py-5 font-bold text-center">QFTDs</th><th class="px-6 py-5 font-bold text-right">Depósitos</th><th class="px-6 py-5 font-bold text-right">Net Rev</th><th class="px-6 py-5 font-bold text-right text-red-400">Comissão Gerada</th><th class="px-6 py-5 font-bold text-right text-emerald-400">Lucro 3C</th><th class="px-6 py-5 font-bold text-center">Ações</th></tr></thead><tbody id="affiliates-table-body" class="text-sm"></tbody></table></div>
                         <div id="md-empty-state" class="hidden text-center py-20 opacity-40"><div class="empty-float inline-block mb-6"><i data-lucide="folder-open" class="w-16 h-16 theme-text"></i></div><p class="text-xl font-black uppercase tracking-widest">Sem dados no período</p><p class="text-xs text-gray-600 mt-2 uppercase tracking-widest">Tente um período diferente ou lance novos dados</p></div>
@@ -667,118 +642,7 @@
 
         window.setDateRange=(type)=>{ const d=new Date(),y=d.getFullYear(),m=d.getMonth(); if(type==='month'){document.getElementById('filter-start').value=new Date(y,m,1).toISOString().split('T')[0];document.getElementById('filter-end').value=new Date(y,m+1,0).toISOString().split('T')[0];} if(type==='last'){document.getElementById('filter-start').value=new Date(y,m-1,1).toISOString().split('T')[0];document.getElementById('filter-end').value=new Date(y,m,0).toISOString().split('T')[0];} if(type==='all'){document.getElementById('filter-start').value='2023-01-01';const e=new Date();e.setFullYear(e.getFullYear()+1);document.getElementById('filter-end').value=e.toISOString().split('T')[0];} window.renderDashboard(); };
 
-        window.renderCharts = () => {
-    const reports = window.dataStore.dailyReports || [];
-    const monthlyData = {};
-    reports.forEach(r => {
-        const m = r.date.substring(0, 7);
-        if (!monthlyData[m]) monthlyData[m] = { qftd: 0, rev: 0 };
-        const q = typeof r.qftd === 'object' ? (r.qftd.l1 || 0) : (r.qftd || 0);
-        monthlyData[m].qftd += q;
-        monthlyData[m].rev += r.netRev || 0;
-    });
-    const months = Object.keys(monthlyData).sort(); // All months since Feb/26
-    if (months.length === 0) return;
-    const qftdValues = months.map(m => monthlyData[m].qftd);
-    const revValues = months.map(m => Math.round(monthlyData[m].rev));
-    const names = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    const labels = months.map(m => { const [y,mo] = m.split('-'); return names[parseInt(mo)-1]+'/'+y.slice(2); });
-
-    Chart.defaults.color = '#6b7280';
-    Chart.defaults.font.family = 'Montserrat, sans-serif';
-    Chart.defaults.font.size = 10;
-
-    const buildChart = (id, type, data, color, isRevenue) => {
-        const canvas = document.getElementById(id);
-        if (!canvas) return;
-        const existing = Chart.getChart(canvas);
-        if (existing) existing.destroy();
-        new Chart(canvas, {
-            type,
-            data: {
-                labels,
-                datasets: [{
-                    label: isRevenue ? 'Net Rev' : 'QFTDs',
-                    data,
-                    borderColor: color,
-                    backgroundColor: type === 'bar'
-                        ? data.map((v, i) => i === data.length - 1 ? color + 'CC' : color + '33')
-                        : color + '15',
-                    borderWidth: type === 'bar' ? 1 : 2.5,
-                    borderRadius: type === 'bar' ? 6 : 0,
-                    borderSkipped: false,
-                    pointBackgroundColor: color,
-                    pointRadius: 4,
-                    pointHoverRadius: 7,
-                    fill: type === 'line',
-                    tension: 0.4,
-                }]
-            },
-            options: {
-                responsive: true,
-                animation: { duration: 800, easing: 'easeOutQuart' },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(5,5,10,0.95)',
-                        borderColor: color + '40',
-                        borderWidth: 1,
-                        titleColor: '#fff',
-                        bodyColor: '#9ca3af',
-                        padding: 12,
-                        callbacks: {
-                            label: (ctx) => isRevenue ? ' R$ ' + ctx.raw.toLocaleString('pt-BR') : ' ' + ctx.raw + ' QFTDs'
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
-                        ticks: { color: '#4b5563' }
-                    },
-                    y: {
-                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
-                        ticks: {
-                            color: '#4b5563',
-                            callback: isRevenue ? (v) => 'R$' + Math.round(v/1000) + 'k' : undefined
-                        },
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    };
-
-    buildChart('chart-qftd', 'line', qftdValues, '#ec4899', false);
-    buildChart('chart-rev', 'bar', revValues, '#10b981', true);
-
-    // Add progress bars to ranking table
-    setTimeout(() => {
-        const rows = document.querySelectorAll('#affiliates-table-body tr');
-        const profits = [];
-        rows.forEach(row => {
-            const cell = row.cells[row.cells.length - 2];
-            if (cell) {
-                const v = parseFloat(cell.innerText.replace(/[R$\s\.]/g,'').replace(',','.')) || 0;
-                profits.push(v);
-            }
-        });
-        const maxP = Math.max(...profits, 1);
-        rows.forEach((row, i) => {
-            const cell = row.cells[row.cells.length - 2];
-            if (!cell || cell.querySelector('.profit-bar')) return;
-            const v = profits[i] || 0;
-            const pct = (v / maxP) * 100;
-            const bar = document.createElement('div');
-            bar.className = 'profit-bar';
-            bar.style.cssText = 'height:3px;background:linear-gradient(90deg,rgba(16,185,129,0.7),rgba(16,185,129,0.15));border-radius:2px;margin-top:5px;transition:width 0.8s ease;width:0%;';
-            cell.appendChild(bar);
-            setTimeout(() => { bar.style.width = pct + '%'; }, 50 + i * 60);
-        });
-    }, 200);
-};
-
-window.renderIntelligencePanel = function(affiliatesData) {
+        window.renderIntelligencePanel = function(affiliatesData) {
     var pid = 'intel-panel';
     var ex = document.getElementById(pid); if(ex) ex.remove();
     if(!affiliatesData||!affiliatesData.length) return;
@@ -904,7 +768,6 @@ window.renderIntelligencePanel = function(affiliatesData) {
             +'<p style="font-size:13px;font-weight:900;color:#fff;margin:0;letter-spacing:-0.01em">'+a.name+'</p>'
             +'<p style="font-size:9px;font-weight:700;color:#6b7280;margin:3px 0 0;text-transform:uppercase;letter-spacing:0.08em">'+a.ftd+' FTDs · '+a.qftd+' QFTDs · '+sortedDates.length+' dias</p>'
             +'</div>'
-            +'<span style="font-size:9px;font-weight:900;padding:3px 10px;border-radius:20px;color:'+trendColor+';background:'+trendBg+';border:1px solid '+trendBorder+'">'+trend.label+'</span>'
             +'</div>'
 
             // Metric 1: Conversion
@@ -933,7 +796,7 @@ window.renderIntelligencePanel = function(affiliatesData) {
             +'</div>'
             +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">'
             +'<div style="text-align:right">'
-            +'<p style="font-size:8px;color:#6b7280;margin:0;font-weight:700">Tendência dep.</p>'
+            +'<p style="font-size:8px;color:#6b7280;margin:0;font-weight:700">Tendência de depósitos</p>'
             +depSpark
             +'</div>'
             +'</div>'
@@ -1001,7 +864,6 @@ window.renderDashboard=()=>{ const s=document.getElementById('filter-start').val
         renderTrend('kpi-deposits-trend', gDep, pDep);
         renderTrend('kpi-comm-trend', tComm, pComm);
         renderTrend('kpi-profit-trend', tGross-tComm, pProfit); data.sort((a,b)=>b.profit-a.profit);
-        window.renderCharts();
         window.renderIntelligencePanel(window.dataStore.affiliates || []); if(!data.length){document.getElementById('affiliates-table-body').innerHTML='';document.getElementById('md-empty-state').classList.remove('hidden');return;} document.getElementById('md-empty-state').classList.add('hidden'); let rows=''; data.forEach((d,i)=>{let dt=''; if(window.currentMDEnv!=='Visão Geral'){const m=d.deals[window.currentMDEnv];const isT=window.dataStore.brands[window.currentMDEnv]&&window.dataStore.brands[window.currentMDEnv].type==='tiered'; if(m){if(isT)dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">L1: R$ '+(m.cpa_l1||m.cpa||0)+' / '+(m.rs||0)+'%</td>';else dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">R$ '+(m.cpa||0)+' / '+(m.rs||0)+'%</td>';}else dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Não opera</td>';} let ico=window.currentMDEnv==='Visão Geral'?(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)):'👤'; rows+='<tr class="border-b border-white/5 table-row-hover cursor-pointer" onclick="window.openAffiliateProfile(\''+d.id+'\')"><td class="px-6 py-5 font-bold flex items-center gap-4 whitespace-nowrap"><span class="text-xl">'+ico+'</span> '+d.name+'</td>'+dt+'<td class="px-6 py-5 text-center font-bold text-gray-300">'+d.sFtd+'</td><td class="px-6 py-5 text-center font-bold text-pink-400 text-lg">'+d.sQftd+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sDep)+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sRev)+'</td><td class="px-6 py-5 text-right font-mono font-bold text-red-400">'+window.formatCurrency(d.comm)+'</td><td class="px-6 py-5 text-right font-mono font-black text-emerald-400">'+window.formatCurrency(d.profit)+'</td><td class="px-6 py-5 text-center" onclick="event.stopPropagation()"><button onclick="window.openAffiliateModal(\''+d.id+'\')" class="p-2 text-gray-400 hover:text-white mr-2"><i data-lucide="pencil" class="w-5 h-5"></i></button><button onclick="window.deleteAffiliate(\''+d.id+'\')" class="p-2 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>'; }); document.getElementById('affiliates-table-body').innerHTML=rows; lucide.createIcons(); };
 
         window.renderAffiliatesCRM=()=>{ const s=document.getElementById('search-affiliate').value.toLowerCase(),list=window.dataStore.affiliates.filter(a=>a.name.toLowerCase().includes(s)); if(!list.length){document.getElementById('crm-cards-grid').innerHTML='';document.getElementById('crm-empty-state').classList.remove('hidden');return;} document.getElementById('crm-empty-state').classList.add('hidden'); let g=''; list.forEach(aff=>{aff.deals=aff.deals||{};
