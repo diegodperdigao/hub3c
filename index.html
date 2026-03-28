@@ -419,7 +419,7 @@
         let wfDb, wfAuth, wfUser;
         window.tasks=[]; window.currentFilter='all'; window.isCloudMode=false;
         // *** FIX 1: wfAppId hardcoded para o Firebase AppId correto ***
-        const wfAppId = typeof __app_id !== 'undefined' ? __app_id : '1:340842089459:web:c2072752324c52f998a086';
+        const wfAppId = typeof __app_id !== 'undefined' ? __app_id : 'hub3c-production';
 
         window.initFirebaseSystem = async () => {
             window.workflowInitialized = true;
@@ -438,7 +438,14 @@
                         onSnapshot(doc(wfDb,'artifacts',wfAppId,'public','data','md_store','main'),(s)=>{
                             if(s.exists()){
                                 const p=s.data();
-                                Object.assign(window.dataStore,{brands:p.brands||window.dataStore.brands,affiliates:p.affiliates||[],dailyReports:p.dailyReports||[],auditLogs:p.auditLogs||[],payments:p.payments||[]});
+                                const localData = (() => { try { return JSON.parse(localStorage.getItem('igaming3c_data_v15') || '{}'); } catch(e) { return {}; } })();
+                                Object.assign(window.dataStore,{
+                                    brands: p.brands || localData.brands || window.dataStore.brands,
+                                    affiliates: (p.affiliates && p.affiliates.length > 0) ? p.affiliates : (localData.affiliates || []),
+                                    dailyReports: (p.dailyReports && p.dailyReports.length > 0) ? p.dailyReports : (localData.dailyReports || []),
+                                    auditLogs: p.auditLogs || localData.auditLogs || [],
+                                    payments: p.payments || localData.payments || []
+                                });
                                 if(!document.getElementById('dashboard-app').classList.contains('hidden')){
                                     window.initMDTabs();
                                     if(window.currentMDEnv==='Afiliados') window.renderAffiliatesCRM();
@@ -476,7 +483,27 @@
         window.getBrandList=()=>Object.keys(window.dataStore.brands).sort((a,b)=>{let qa=0,qb=0;window.dataStore.dailyReports.forEach(r=>{if(r.brand===a)qa+=typeof r.qftd==='object'?r.qftd.l1||0:r.qftd||0;if(r.brand===b)qb+=typeof r.qftd==='object'?r.qftd.l1||0:r.qftd||0;});return qb-qa;});
         window.saveMDData=async()=>{ localStorage.setItem(MD_KEY,JSON.stringify(window.dataStore)); if(window.isCloudMode&&wfUser){document.getElementById('md-sync-status').innerText="Salvando...";try{await setDoc(doc(wfDb,'artifacts',wfAppId,'public','data','md_store','main'),window.dataStore);document.getElementById('md-sync-status').innerText="Salvo";setTimeout(()=>document.getElementById('md-sync-status').innerText="Cloud Sync Online",2000);}catch(e){document.getElementById('md-sync-status').innerText="Erro";}}else{document.getElementById('md-sync-status').innerText="Salvo (Local)";setTimeout(()=>document.getElementById('md-sync-status').innerText="Offline (Local)",2000);} };
         window.loadMDData=()=>{ try{const p=JSON.parse(localStorage.getItem(MD_KEY));if(p){Object.keys(p.brands||{}).forEach(b=>{if(window.dataStore.brands[b])p.brands[b].logo=window.dataStore.brands[b].logo;});Object.assign(window.dataStore,p);window.dataStore.payments=p.payments||[];}}catch(e){} };
-        window.initMD=()=>{window.loadMDData();window.initMDTabs();window.generateDealInputsForModal();window.switchMDEnv('Visão Geral');window.setDateRange('month');};
+        window.initMD=()=>{
+            window.loadMDData();
+            // If no affiliates in storage, inject demo data for testing
+            if(window.dataStore.affiliates.length === 0 && !window.isCloudMode) {
+                const demoId = 'demo-aff-1';
+                window.dataStore.affiliates = [{
+                    id: demoId, name: 'DEMO - Afiliado Teste', 
+                    social: '', notes: '', createdAt: Date.now(),
+                    deals: {
+                        'Vupi': { cpa: 30, rs: 15, baseline: 0 },
+                        'Superbet': { cpa: 40, rs: 20, baseline: 0 }
+                    }
+                }];
+                window.dataStore.dailyReports = [{
+                    id: 'demo-r1', brand: 'Vupi', affiliateId: demoId,
+                    date: new Date().toISOString().split('T')[0],
+                    ftd: 5, qftd: 3, deposits: 1500, netRev: 800, insertedAt: Date.now()
+                }];
+            }
+            window.initMDTabs();window.generateDealInputsForModal();window.switchMDEnv('Visão Geral');window.setDateRange('month');
+        };
         window.initMDTabs=()=>{ const list=window.getBrandList(); let h=''; ['Visão Geral',...list,'Fechamento'].forEach(t=>{const c=window.getBrandConfig(t);const sp=t==='Fechamento'?'ml-auto border border-emerald-500/30':''; h+='<button onclick="window.switchMDEnv(\''+t+'\')" id="tab-'+t.replace(/\s+/g,'')+ '" class="px-6 py-3 rounded-t-xl font-black uppercase tracking-widest text-xs text-gray-500 hover:text-white transition-all flex items-center gap-2 whitespace-nowrap '+sp+'"><div class="w-2 h-2 rounded-full" style="background-color:'+c.color+'"></div> '+t+'</button>'; }); document.getElementById('brand-tabs-container').innerHTML=h; let dh=''; list.forEach(b=>{const c=window.getBrandConfig(b); dh+='<button onclick="window.switchMDEnv(\''+b+'\')" class="w-full text-left px-5 py-3 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white hover:bg-white/10 transition-colors flex items-center gap-3"><div class="w-2 h-2 rounded-full" style="background-color:'+c.color+'"></div> '+b+'</button>';}); document.getElementById('header-brands-dropdown').innerHTML=dh; lucide.createIcons(); };
 
         window.switchMDEnv=(env)=>{ window.currentMDEnv=env; const c=window.getBrandConfig(env); document.getElementById('dynamic-view-wrapper').classList.remove('fade-content'); void document.getElementById('dynamic-view-wrapper').offsetWidth; document.getElementById('dynamic-view-wrapper').classList.add('fade-content'); const r=document.documentElement; r.style.setProperty('--theme-color',c.color); r.style.setProperty('--theme-color-glow',`rgba(${c.colorRGB},0.4)`); r.style.setProperty('--bg-grad-1',c.grad1); r.style.setProperty('--bg-grad-2',c.grad2); const isS=['Visão Geral','Fechamento','Afiliados'].includes(env); document.getElementById('brand-title').innerHTML=c.title+(isS?'':' <span class="text-sm font-medium tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-lg ml-4">Operação Ativa</span>'); document.getElementById('brand-subtitle').innerText=c.subtitle; document.getElementById('brand-subtitle').style.display=c.subtitle?'block':'none'; if(document.getElementById('nav-logo'))document.getElementById('nav-logo').src=c.logo||MD_BASE_CONFIG['Visão Geral'].logo; if(document.getElementById('dynamic-mosaic')){document.getElementById('dynamic-mosaic').style.opacity=0;setTimeout(()=>{document.getElementById('dynamic-mosaic').style.backgroundImage=c.mosaic.startsWith('url')?c.mosaic:`url("${c.mosaic}")`;document.getElementById('dynamic-mosaic').style.opacity=1;},300);} ['Visão Geral','Afiliados',...window.getBrandList(),'Fechamento'].forEach(t=>{const el=document.getElementById('tab-'+t.replace(/\s+/g,''));if(el){el.className=el.className.replace(/active-tab|text-gray-500/g,'').trim();el.classList.add(t===env?'active-tab':'text-gray-500');}}); if(document.getElementById('nav-afiliados')){const na=document.getElementById('nav-afiliados');na.className=na.className.replace(/text-white|text-gray-400/g,'').trim()+(env==='Afiliados'?' text-white':' text-gray-400');} document.getElementById('standard-module').classList.add('hidden'); document.getElementById('fechamento-module').classList.add('hidden'); document.getElementById('crm-module').classList.add('hidden'); if(env==='Fechamento'){document.getElementById('fechamento-module').classList.remove('hidden');window.initFechamentoUI();window.renderGlobalPaymentHistory();}else if(env==='Afiliados'){document.getElementById('crm-module').classList.remove('hidden');window.renderAffiliatesCRM();}else{document.getElementById('standard-module').classList.remove('hidden');if(document.getElementById('th-deal'))env==='Visão Geral'?document.getElementById('th-deal').classList.add('hidden'):document.getElementById('th-deal').classList.remove('hidden');document.getElementById('table-title').innerHTML='<i data-lucide="bar-chart-2" class="w-4 h-4 theme-text"></i> Performance '+(env==='Visão Geral'?'por Afiliado (Top Ranking)':`na ${env}`);window.renderDashboard();} };
@@ -491,19 +518,40 @@
         window.saveProfileNotes=()=>{const aff=window.dataStore.affiliates.find(a=>a.id===window.currentProfileAffId);if(aff){aff.social=document.getElementById('profile-social').value;aff.notes=document.getElementById('profile-notes').value;window.saveMDData();window.logAction('Anotações',`Para ${aff.name}`);} ['profile-social','profile-notes'].forEach(id=>{document.getElementById(id).readOnly=true;document.getElementById(id).className=document.getElementById(id).className.replace(/bg-black\/30|pointer-events-auto|text-white/g,'').trim()+' bg-transparent pointer-events-none text-gray-400 border-transparent';}); const btn=document.getElementById('btn-save-notes');btn.innerHTML='<i data-lucide="check" class="w-3 h-3"></i> Salvo!';btn.classList.replace('bg-pink-500','bg-emerald-500');lucide.createIcons();setTimeout(()=>{btn.innerHTML='<i data-lucide="save" class="w-3 h-3"></i> Salvar';btn.classList.replace('bg-emerald-500','bg-pink-500');btn.classList.add('hidden');document.getElementById('btn-edit-notes').classList.remove('hidden');lucide.createIcons();},1500);};
 
         window.openAffiliateProfile=(id)=>{ const aff=window.dataStore.affiliates.find(a=>a.id===id);if(!aff)return;window.currentProfileAffId=id;aff.deals=aff.deals||{}; document.getElementById('profile-name').innerText=aff.name;document.getElementById('profile-date').innerText=`Parceiro desde: ${new Date(aff.createdAt).toLocaleDateString('pt-BR')}`; document.getElementById('profile-social').value=aff.social||'';document.getElementById('profile-notes').value=aff.notes||''; ['profile-social','profile-notes'].forEach(el=>{document.getElementById(el).readOnly=true;document.getElementById(el).className=document.getElementById(el).className.replace(/bg-black\/30|pointer-events-auto|text-white/g,'').trim()+' bg-transparent pointer-events-none text-gray-400 border-transparent';}); document.getElementById('btn-save-notes').classList.add('hidden');document.getElementById('btn-edit-notes').classList.remove('hidden'); let tQ=0,tC=0,tP=0; window.dataStore.dailyReports.filter(r=>r.affiliateId===id).forEach(r=>{const cfg=window.getBrandConfig(r.brand)?.deal;if(!cfg)return;const ad=aff.deals[r.brand]||{cpa:0,rs:0};let q=0,hC=0,rC=0;if(cfg.type==='tiered'){q=(r.qftd&&r.qftd.l1)?r.qftd.l1:0;hC=(q*(cfg.levels[0]?.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(cfg.levels[1]?.cpa||0))+(((r.qftd&&r.qftd.l3)||0)*(cfg.levels[2]?.cpa||0));rC=(q*(ad.cpa_l1||ad.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(ad.cpa_l2||0))+(((r.qftd&&r.qftd.l3)||0)*(ad.cpa_l3||0))+(r.netRev*((ad.rs||0)/100));}else{q=typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);hC=q*(cfg.cpa||0);rC=(q*(ad.cpa||0))+(r.netRev*((ad.rs||0)/100));}tQ+=q;tC+=rC;tP+=((hC+(r.netRev*((cfg.rs||0)/100)))-rC);}); document.getElementById('profile-qftds').innerText=tQ;document.getElementById('profile-comm').innerText=window.formatCurrency(tC);document.getElementById('profile-profit').innerText=window.formatCurrency(tP); let dh='';window.getBrandList().forEach(b=>{if(aff.deals[b]&&(aff.deals[b].cpa>0||aff.deals[b].cpa_l1>0||aff.deals[b].rs>0)){const c=window.getBrandConfig(b);const d=aff.deals[b];dh+='<tr class="border-b border-white/5 hover:bg-white/5"><td class="p-3 font-bold" style="color:'+(c?.color||'#fff')+'">'+b+'</td><td class="p-3 text-center text-gray-300">R$ '+(d.cpa_l1||d.cpa||0)+'</td><td class="p-3 text-center text-gray-300">R$ '+(d.cpa_l2||d.baseline||0)+'</td><td class="p-3 text-center text-gray-300">'+(d.rs||0)+'%</td></tr>';}}); document.getElementById('profile-deals-tbody').innerHTML=dh||'<tr><td colspan="4" class="p-4 text-center text-gray-500 italic">Sem deals.</td></tr>'; window.openAffiliateModalFromProfile=()=>{window.closeModals();setTimeout(()=>window.openAffiliateModal(aff.id),300);}; window.renderPaymentHistory(id); window.openModal('modal-affiliate-profile'); };
-        window.initFechamentoUI=()=>{ let ops=window.dataStore.affiliates.length?'<option value="">Selecione...</option>'+window.dataStore.affiliates.map(a=>'<option value="'+a.id+'">'+a.name+'</option>').join(''):'<option>Sem afiliados</option>'; document.getElementById('close-affiliate').innerHTML=ops; const d=new Date();document.getElementById('close-start').value=new Date(d.getFullYear(),d.getMonth(),1).toISOString().split('T')[0];document.getElementById('close-end').value=new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().split('T')[0]; document.getElementById('closure-result-card').classList.add('hidden');document.getElementById('close-brands-container').innerHTML='<span class="text-xs text-gray-500 italic">Selecione um afiliado.</span>'; };
+        window.initFechamentoUI=()=>{
+            // Try localStorage as fallback
+            if(window.dataStore.affiliates.length === 0) {
+                try {
+                    const local = JSON.parse(localStorage.getItem('igaming3c_data_v15') || '{}');
+                    if(local.affiliates && local.affiliates.length > 0) {
+                        window.dataStore.affiliates = local.affiliates;
+                        window.dataStore.dailyReports = local.dailyReports || window.dataStore.dailyReports;
+                        window.dataStore.payments = local.payments || window.dataStore.payments;
+                    }
+                } catch(e) {}
+            }
+            let ops=window.dataStore.affiliates.length?'<option value="">Selecione o afiliado...</option>'+window.dataStore.affiliates.map(a=>'<option value="'+a.id+'">'+a.name+'</option>').join(''):'<option value="">⚠ Nenhum afiliado carregado</option>'; document.getElementById('close-affiliate').innerHTML=ops; const d=new Date();document.getElementById('close-start').value=new Date(d.getFullYear(),d.getMonth(),1).toISOString().split('T')[0];document.getElementById('close-end').value=new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().split('T')[0]; document.getElementById('closure-result-card').classList.add('hidden');document.getElementById('close-brands-container').innerHTML='<span class="text-xs text-gray-500 italic">Selecione um afiliado.</span>'; };
         window.updateClosureBrands=()=>{ const id=document.getElementById('close-affiliate').value,aff=window.dataStore.affiliates.find(a=>a.id===id); if(!aff)return document.getElementById('close-brands-container').innerHTML='<span class="text-xs text-gray-500 italic">Selecione um afiliado.</span>'; aff.deals=aff.deals||{}; let h='';window.getBrandList().forEach(b=>{if(aff.deals[b]&&(aff.deals[b].cpa>0||aff.deals[b].cpa_l1>0||aff.deals[b].rs>0))h+='<label class="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 bg-black/40"><input type="checkbox" value="'+b+'" class="closure-brand-cb w-4 h-4 accent-emerald-500" checked><span class="text-xs font-bold text-gray-300 uppercase tracking-widest">'+b+'</span></label>';}); document.getElementById('close-brands-container').innerHTML=h||'<span class="text-xs text-gray-500 italic">Sem deals.</span>'; };
 
         window.generateClosure=()=>{
             try {
+                // Always refresh the select with latest data before processing
+                window.initFechamentoUI();
                 const id=document.getElementById('close-affiliate').value;
                 const s=document.getElementById('close-start').value;
                 const e=document.getElementById('close-end').value;
                 const b=Array.from(document.querySelectorAll('.closure-brand-cb:checked')).map(cb=>cb.value);
                 if(!id||!s||!e) return window.showToast("Preencha todos os campos.","error");
                 if(!b.length) return window.showToast("Selecione uma casa.","error");
+                // Re-populate select in case it wasn't populated yet
+                if(window.dataStore.affiliates.length > 0 && document.getElementById('close-affiliate').children.length <= 1) {
+                    window.initFechamentoUI();
+                }
                 const aff=window.dataStore.affiliates.find(a=>a.id===id);
-                if(!aff) return window.showToast("Afiliado não encontrado.","error");
+                if(!aff) {
+                    const total = window.dataStore.affiliates.length;
+                    return window.showToast(total === 0 ? "Nenhum afiliado carregado ainda. Aguarde a sincronização." : "Afiliado não encontrado.", "error");
+                }
                 aff.deals=aff.deals||{};
                 const start=new Date(s+'T00:00:00').getTime(), end=new Date(e+'T23:59:59').getTime();
                 const reps=window.dataStore.dailyReports.filter(r=>{ const t=new Date(r.date+'T12:00:00').getTime(); return r.affiliateId===id&&t>=start&&t<=end&&b.includes(r.brand); });
