@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root { --theme-color: #ec4899; --theme-color-glow: rgba(236, 72, 153, 0.4); --bg-grad-1: rgba(255, 0, 127, 0.08); --bg-grad-2: rgba(106, 13, 173, 0.1); }
         html { scroll-behavior: smooth; }
@@ -272,11 +273,47 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-                        <div class="glass-card p-8 rounded-2xl border-l-4 theme-border relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 theme-glow opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> QFTDs</h3><p id="kpi-qftds" class="text-5xl font-mono font-black text-white mt-2 tracking-tight kpi-animate">0</p><p id="kpi-ftds" class="text-sm text-gray-500 mt-3 font-bold">0 FTDs Totais</p><div id="kpi-qftds-trend" class="mt-2"></div></div>
+                        <div class="glass-card p-8 rounded-2xl border-l-4 theme-border relative overflow-hidden group min-h-[160px] flex flex-col justify-center" style="background:linear-gradient(135deg,rgba(236,72,153,0.07) 0%,rgba(15,15,20,0.6) 60%)">
+                            <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full" style="background:radial-gradient(circle,rgba(236,72,153,0.15) 0%,transparent 70%)"></div>
+                            <h3 class="text-[10px] uppercase font-black tracking-widest text-gray-500 mb-1 flex items-center gap-2 relative z-10"><i data-lucide="users" class="w-3.5 h-3.5 text-pink-500"></i> QFTDs Qualificados</h3>
+                            <p id="kpi-qftds" class="text-6xl font-mono font-black text-white mt-1 tracking-tight kpi-animate relative z-10">0</p>
+                            <p id="kpi-ftds" class="text-xs text-gray-600 mt-2 font-bold relative z-10">0 FTDs Totais</p>
+                            <div id="kpi-qftds-trend" class="mt-1 relative z-10"></div>
+                        </div>
                         <div class="glass-card p-8 rounded-2xl border-l-4 border-l-blue-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(59,130,246,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Depósitos</h3><p id="kpi-deposits" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Volume depositado</p><div id="kpi-deposits-trend" class="mt-2"></div></div>
-                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-red-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(239,68,68,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4"></i> Comissão Afiliados</h3><p id="kpi-aff-comm" class="text-4xl font-mono font-bold text-red-400 mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">A pagar na fatura</p><div id="kpi-comm-trend" class="mt-2"></div></div>
-                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-emerald-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(16,185,129,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-emerald-400 mb-2 flex items-center gap-2"><i data-lucide="gem" class="w-4 h-4"></i> Margem 3C</h3><p id="kpi-profit" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight kpi-animate">R$ 0,00</p><p id="kpi-gross" class="text-sm text-emerald-200/50 mt-3">Receita Bruta: R$ 0,00</p><div id="kpi-profit-trend" class="mt-2"></div></div>
+                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-red-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(239,68,68,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4"></i> Comissão Afiliados</h3><p id="kpi-aff-comm" class="text-4xl font-mono font-bold text-red-400 mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Total a pagar (CPA + Rev Share)</p><div id="kpi-comm-trend" class="mt-2"></div></div>
+                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-emerald-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center" style="background:linear-gradient(135deg,rgba(16,185,129,0.07) 0%,rgba(15,15,20,0.6) 60%)">
+                            <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full" style="background:radial-gradient(circle,rgba(16,185,129,0.15) 0%,transparent 70%)"></div>
+                            <h3 class="text-[10px] uppercase font-black tracking-widest text-emerald-400 mb-1 flex items-center gap-2 relative z-10"><i data-lucide="gem" class="w-3.5 h-3.5"></i> Lucro Líquido 3C</h3>
+                            <p id="kpi-profit" class="text-4xl font-mono font-black text-white mt-1 tracking-tight kpi-animate relative z-10">R$ 0,00</p>
+                            <p id="kpi-gross" class="text-xs text-emerald-400/40 mt-2 font-bold relative z-10">Bruto 3C: R$ 0,00</p>
+                            <div id="kpi-profit-trend" class="mt-1 relative z-10"></div>
+                        </div>
                     </div>
+                    <!-- CHARTS SECTION -->
+                    <div id="charts-section" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                        <div class="glass-card p-7 rounded-3xl border border-white/5">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <p class="form-label !ml-0 text-pink-400">Evolução de QFTDs</p>
+                                    <h3 class="text-lg font-black text-white mt-1">Últimos 6 Meses</h3>
+                                </div>
+                                <div class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]"></div>
+                            </div>
+                            <canvas id="chart-qftd"></canvas>
+                        </div>
+                        <div class="glass-card p-7 rounded-3xl border border-white/5">
+                            <div class="flex justify-between items-start mb-6">
+                                <div>
+                                    <p class="form-label !ml-0 text-emerald-400">Net Revenue (R$)</p>
+                                    <h3 class="text-lg font-black text-white mt-1">Últimos 6 Meses</h3>
+                                </div>
+                                <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                            </div>
+                            <canvas id="chart-rev"></canvas>
+                        </div>
+                    </div>
+
                     <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
                         <div class="bg-black/60 px-8 py-6 border-b border-white/5 flex justify-between items-center"><h2 id="table-title" class="text-base font-black uppercase tracking-widest text-white flex items-center gap-2"><i data-lucide="bar-chart-2" class="w-4 h-4 theme-text"></i> Performance</h2><span class="text-[9px] text-gray-500 italic uppercase tracking-widest">No período</span></div>
                         <div class="overflow-x-auto custom-scrollbar"><table class="w-full text-left border-collapse min-w-[1000px]"><thead><tr class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-400"><th class="px-6 py-5 font-bold whitespace-nowrap">Ranking / Afiliado</th><th id="th-deal" class="px-6 py-5 font-bold text-center whitespace-nowrap">Deal Afiliado</th><th class="px-6 py-5 font-bold text-center">FTDs</th><th class="px-6 py-5 font-bold text-center">QFTDs</th><th class="px-6 py-5 font-bold text-right">Depósitos</th><th class="px-6 py-5 font-bold text-right">Net Rev</th><th class="px-6 py-5 font-bold text-right text-red-400">Comissão Gerada</th><th class="px-6 py-5 font-bold text-right text-emerald-400">Lucro 3C</th><th class="px-6 py-5 font-bold text-center">Ações</th></tr></thead><tbody id="affiliates-table-body" class="text-sm"></tbody></table></div>
@@ -625,7 +662,292 @@
 
         window.setDateRange=(type)=>{ const d=new Date(),y=d.getFullYear(),m=d.getMonth(); if(type==='month'){document.getElementById('filter-start').value=new Date(y,m,1).toISOString().split('T')[0];document.getElementById('filter-end').value=new Date(y,m+1,0).toISOString().split('T')[0];} if(type==='last'){document.getElementById('filter-start').value=new Date(y,m-1,1).toISOString().split('T')[0];document.getElementById('filter-end').value=new Date(y,m,0).toISOString().split('T')[0];} if(type==='all'){document.getElementById('filter-start').value='2023-01-01';const e=new Date();e.setFullYear(e.getFullYear()+1);document.getElementById('filter-end').value=e.toISOString().split('T')[0];} window.renderDashboard(); };
 
-        window.renderDashboard=()=>{ const s=document.getElementById('filter-start').value,e=document.getElementById('filter-end').value; if(!s||!e)return; const start=new Date(s+'T00:00:00'),end=new Date(e+'T23:59:59'); let reps=window.dataStore.dailyReports.filter(r=>{const d=new Date(r.date+'T12:00:00');return d>=start&&d<=end;}); if(window.currentMDEnv!=='Visão Geral')reps=reps.filter(r=>r.brand===window.currentMDEnv); let gFtd=0,gQftd=0,gDep=0,gRev=0,tComm=0,tGross=0,data=[]; window.dataStore.affiliates.forEach(aff=>{ aff.deals=aff.deals||{}; const myR=reps.filter(r=>r.affiliateId===aff.id); if(!myR.length)return; let sFtd=0,sQftd=0,sDep=0,sRev=0,hCpa=0,hRs=0,comm=0; myR.forEach(r=>{const cfg=window.getBrandConfig(r.brand)?.deal;if(!cfg)return;const ad=aff.deals[r.brand]||{cpa:0,rs:0};sFtd+=r.ftd;sDep+=r.deposits;sRev+=r.netRev;let cq=0,acp=0;if(cfg.type==='tiered'){cq=(r.qftd&&r.qftd.l1)?r.qftd.l1:0;sQftd+=cq;hCpa+=(cq*(cfg.levels[0]?.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(cfg.levels[1]?.cpa||0))+(((r.qftd&&r.qftd.l3)||0)*(cfg.levels[2]?.cpa||0));acp=(cq*(ad.cpa_l1||ad.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(ad.cpa_l2||0))+(((r.qftd&&r.qftd.l3)||0)*(ad.cpa_l3||0));}else{cq=typeof r.qftd==='object'?(r.qftd?.l1||0):(r.qftd||0);sQftd+=cq;hCpa+=(cq*(cfg.cpa||0));acp=(cq*(ad.cpa||0));}hRs+=(r.netRev*((cfg.rs||0)/100));comm+=acp+(r.netRev*((ad.rs||0)/100));}); const hG=hCpa+hRs;gFtd+=sFtd;gQftd+=sQftd;gDep+=sDep;gRev+=sRev;tComm+=comm;tGross+=hG;data.push({...aff,sFtd,sQftd,sDep,sRev,comm,profit:hG-comm}); }); // Animate KPI updates
+        window.renderCharts = () => {
+    const reports = window.dataStore.dailyReports || [];
+    const monthlyData = {};
+    reports.forEach(r => {
+        const m = r.date.substring(0, 7);
+        if (!monthlyData[m]) monthlyData[m] = { qftd: 0, rev: 0 };
+        const q = typeof r.qftd === 'object' ? (r.qftd.l1 || 0) : (r.qftd || 0);
+        monthlyData[m].qftd += q;
+        monthlyData[m].rev += r.netRev || 0;
+    });
+    const months = Object.keys(monthlyData).sort(); // All months since Feb/26
+    if (months.length === 0) return;
+    const qftdValues = months.map(m => monthlyData[m].qftd);
+    const revValues = months.map(m => Math.round(monthlyData[m].rev));
+    const names = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    const labels = months.map(m => { const [y,mo] = m.split('-'); return names[parseInt(mo)-1]+'/'+y.slice(2); });
+
+    Chart.defaults.color = '#6b7280';
+    Chart.defaults.font.family = 'Montserrat, sans-serif';
+    Chart.defaults.font.size = 10;
+
+    const buildChart = (id, type, data, color, isRevenue) => {
+        const canvas = document.getElementById(id);
+        if (!canvas) return;
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+        new Chart(canvas, {
+            type,
+            data: {
+                labels,
+                datasets: [{
+                    label: isRevenue ? 'Net Rev' : 'QFTDs',
+                    data,
+                    borderColor: color,
+                    backgroundColor: type === 'bar'
+                        ? data.map((v, i) => i === data.length - 1 ? color + 'CC' : color + '33')
+                        : color + '15',
+                    borderWidth: type === 'bar' ? 1 : 2.5,
+                    borderRadius: type === 'bar' ? 6 : 0,
+                    borderSkipped: false,
+                    pointBackgroundColor: color,
+                    pointRadius: 4,
+                    pointHoverRadius: 7,
+                    fill: type === 'line',
+                    tension: 0.4,
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: { duration: 800, easing: 'easeOutQuart' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(5,5,10,0.95)',
+                        borderColor: color + '40',
+                        borderWidth: 1,
+                        titleColor: '#fff',
+                        bodyColor: '#9ca3af',
+                        padding: 12,
+                        callbacks: {
+                            label: (ctx) => isRevenue ? ' R$ ' + ctx.raw.toLocaleString('pt-BR') : ' ' + ctx.raw + ' QFTDs'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: { color: '#4b5563' }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: {
+                            color: '#4b5563',
+                            callback: isRevenue ? (v) => 'R$' + Math.round(v/1000) + 'k' : undefined
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    };
+
+    buildChart('chart-qftd', 'line', qftdValues, '#ec4899', false);
+    buildChart('chart-rev', 'bar', revValues, '#10b981', true);
+
+    // Add progress bars to ranking table
+    setTimeout(() => {
+        const rows = document.querySelectorAll('#affiliates-table-body tr');
+        const profits = [];
+        rows.forEach(row => {
+            const cell = row.cells[row.cells.length - 2];
+            if (cell) {
+                const v = parseFloat(cell.innerText.replace(/[R$\s\.]/g,'').replace(',','.')) || 0;
+                profits.push(v);
+            }
+        });
+        const maxP = Math.max(...profits, 1);
+        rows.forEach((row, i) => {
+            const cell = row.cells[row.cells.length - 2];
+            if (!cell || cell.querySelector('.profit-bar')) return;
+            const v = profits[i] || 0;
+            const pct = (v / maxP) * 100;
+            const bar = document.createElement('div');
+            bar.className = 'profit-bar';
+            bar.style.cssText = 'height:3px;background:linear-gradient(90deg,rgba(16,185,129,0.7),rgba(16,185,129,0.15));border-radius:2px;margin-top:5px;transition:width 0.8s ease;width:0%;';
+            cell.appendChild(bar);
+            setTimeout(() => { bar.style.width = pct + '%'; }, 50 + i * 60);
+        });
+    }, 200);
+};
+
+window.renderIntelligencePanel = function(affiliatesData) {
+    var pid = 'intel-panel';
+    var ex = document.getElementById(pid); if(ex) ex.remove();
+    if(!affiliatesData||!affiliatesData.length) return;
+
+    var rpts = window.dataStore.dailyReports||[];
+    if(!rpts.length) return;
+
+    // ── Build per-affiliate data ──────────────────────────────────────────
+    var affMap = {};
+    affiliatesData.forEach(function(a){
+        affMap[a.id] = {id:a.id, name:a.name, ftd:0, qftd:0, dep:0, depByDay:{}, ftdByDay:{}};
+    });
+
+    rpts.forEach(function(r){
+        var m = affMap[r.affiliateId]; if(!m) return;
+        var q = typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);
+        m.ftd += r.ftd||0;
+        m.qftd += q;
+        m.dep  += r.deposits||0;
+        if(!m.depByDay[r.date]) m.depByDay[r.date] = 0;
+        if(!m.ftdByDay[r.date]) m.ftdByDay[r.date] = 0;
+        m.depByDay[r.date] += r.deposits||0;
+        m.ftdByDay[r.date] += r.ftd||0;
+    });
+
+    // ── Filter affiliates with activity ───────────────────────────────────
+    var active = Object.values(affMap).filter(function(a){return a.ftd>0;})
+        .sort(function(a,b){return b.ftd-a.ftd;});
+
+    if(!active.length) return;
+
+    // ── Helper: sparkline SVG ─────────────────────────────────────────────
+    function sparkline(values, color, w, h) {
+        if(!values||values.length<2) return '';
+        var max = Math.max.apply(null,values.concat([1]));
+        var pts = values.map(function(v,i){
+            var x = (i/(values.length-1))*(w-4)+2;
+            var y = h-2-(v/max)*(h-4);
+            return x.toFixed(1)+','+y.toFixed(1);
+        }).join(' ');
+        var lastX = ((values.length-1)/(values.length-1))*(w-4)+2;
+        var lastY = h-2-(values[values.length-1]/max)*(h-4);
+        return '<svg width="'+w+'" height="'+h+'" style="overflow:visible">'
+            +'<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>'
+            +'<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="2.5" fill="'+color+'"/>'
+            +'</svg>';
+    }
+
+    // ── Helper: deposit growth trend (slope of last N days) ───────────────
+    function depTrend(depByDay) {
+        var dates = Object.keys(depByDay).sort();
+        if(dates.length < 2) return {pct: 0, label: 'Sem dados', up: null};
+        var half = Math.floor(dates.length/2);
+        var firstHalf = dates.slice(0, half);
+        var secondHalf = dates.slice(half);
+        var avg1 = firstHalf.reduce(function(s,d){return s+depByDay[d];},0)/firstHalf.length;
+        var avg2 = secondHalf.reduce(function(s,d){return s+depByDay[d];},0)/secondHalf.length;
+        if(avg1===0) return {pct: 0, label: 'Dados insuf.', up: null};
+        var pct = Math.round(((avg2-avg1)/avg1)*100);
+        return {pct: Math.abs(pct), label: (pct>=0?'▲ ':'▼ ')+Math.abs(pct)+'%', up: pct>=0};
+    }
+
+    // ── Helper: conversion rate ────────────────────────────────────────────
+    function convRate(ftd, qftd) {
+        if(!ftd) return {pct:0, label:'0%', color:'#6b7280'};
+        var p = Math.round((qftd/ftd)*100);
+        var col = p>=60?'#10b981':p>=30?'#f59e0b':'#ef4444';
+        return {pct:p, label:p+'%', color:col};
+    }
+
+    // ── Build HTML ────────────────────────────────────────────────────────
+    var wrap = document.createElement('div');
+    wrap.id = pid;
+    wrap.style.marginBottom = '40px';
+
+    var header = document.createElement('div');
+    header.style.cssText = 'background:rgba(15,15,20,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:24px;overflow:hidden;';
+
+    header.innerHTML = '<div style="background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(168,85,247,0.05));padding:24px 32px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">'
+        +'<div>'
+        +'<p style="font-size:9px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;color:#ec4899;margin:0">Intelligence 3C</p>'
+        +'<h2 style="font-size:18px;font-weight:900;color:#fff;margin:4px 0 0;letter-spacing:-0.02em">Conversão e Retenção por Afiliado</h2>'
+        +'<p style="font-size:10px;color:#6b7280;margin:4px 0 0;">Taxa FTD→QFTD · Tendência de Depósitos · Sinal de Redepósito</p>'
+        +'</div>'
+        +'<div style="display:flex;gap:20px;text-align:center;">'
+        +'<div><p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0">Métrica 1</p><p style="font-size:11px;font-weight:900;color:#ec4899;margin:2px 0">Conversão</p></div>'
+        +'<div><p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0">Métrica 2</p><p style="font-size:11px;font-weight:900;color:#10b981;margin:2px 0">Crescimento Dep.</p></div>'
+        +'</div>'
+        +'</div>'
+        +'<div id="intel-grid" style="padding:24px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"></div>';
+
+    wrap.appendChild(header);
+    var grid = header.querySelector('#intel-grid');
+
+    active.forEach(function(a) {
+        var conv = convRate(a.ftd, a.qftd);
+        var trend = depTrend(a.depByDay);
+
+        // Sparklines from sorted daily data
+        var sortedDates = Object.keys(a.depByDay).sort();
+        var depValues = sortedDates.map(function(d){return a.depByDay[d];});
+        var ftdValues = sortedDates.map(function(d){return a.ftdByDay[d]||0;});
+
+        var depSpark = sparkline(depValues, '#10b981', 80, 28);
+        var ftdSpark = sparkline(ftdValues, '#ec4899', 80, 28);
+
+        var trendColor = trend.up===null?'#6b7280':trend.up?'#10b981':'#ef4444';
+        var trendBg = trend.up===null?'rgba(107,114,128,0.1)':trend.up?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)';
+        var trendBorder = trend.up===null?'rgba(107,114,128,0.2)':trend.up?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.2)';
+
+        var avgDep = sortedDates.length > 0
+            ? Math.round(a.dep / sortedDates.length)
+            : 0;
+
+        var card = document.createElement('div');
+        card.style.cssText = 'background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:20px;cursor:pointer;transition:all 0.25s ease;';
+        card.dataset.affId = a.id;
+
+        card.innerHTML =
+            // Header row
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">'
+            +'<div>'
+            +'<p style="font-size:13px;font-weight:900;color:#fff;margin:0;letter-spacing:-0.01em">'+a.name+'</p>'
+            +'<p style="font-size:9px;font-weight:700;color:#6b7280;margin:3px 0 0;text-transform:uppercase;letter-spacing:0.08em">'+a.ftd+' FTDs · '+a.qftd+' QFTDs · '+sortedDates.length+' dias</p>'
+            +'</div>'
+            +'<span style="font-size:9px;font-weight:900;padding:3px 10px;border-radius:20px;color:'+trendColor+';background:'+trendBg+';border:1px solid '+trendBorder+'">'+trend.label+'</span>'
+            +'</div>'
+
+            // Metric 1: Conversion
+            +'<div style="margin-bottom:14px;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+            +'<p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0;letter-spacing:0.08em">Conversão FTD → QFTD</p>'
+            +'<span style="font-size:16px;font-weight:900;color:'+conv.color+'">'+conv.label+'</span>'
+            +'</div>'
+            // Conversion bar
+            +'<div style="height:6px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">'
+            +'<div style="height:100%;width:'+Math.min(conv.pct,100)+'%;background:'+conv.color+';border-radius:6px;transition:width 1s ease;"></div>'
+            +'</div>'
+            +'<div style="display:flex;justify-content:space-between;margin-top:4px;">'
+            +'<span style="font-size:8px;color:#4b5563;font-weight:700">'+a.ftd+' FTDs</span>'
+            +'<span style="font-size:8px;color:'+conv.color+';font-weight:700">'+a.qftd+' QFTDs qualificados</span>'
+            +'</div>'
+            +'</div>'
+
+            // Metric 2: Deposit growth
+            +'<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;">'
+            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
+            +'<div>'
+            +'<p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0;letter-spacing:0.08em">Depósitos por dia</p>'
+            +'<p style="font-size:15px;font-weight:900;color:#10b981;margin:4px 0 2px;">R$'+(avgDep).toLocaleString('pt-BR')+'/dia</p>'
+            +'<p style="font-size:8px;color:#4b5563;font-weight:700">Total: R$'+Math.round(a.dep).toLocaleString('pt-BR')+'</p>'
+            +'</div>'
+            +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">'
+            +'<div style="text-align:right">'
+            +'<p style="font-size:8px;color:#6b7280;margin:0;font-weight:700">Tendência dep.</p>'
+            +depSpark
+            +'</div>'
+            +'</div>'
+            +'</div>'
+            +'</div>';
+
+        card.addEventListener('mouseover', function(){ this.style.borderColor='rgba(236,72,153,0.25)'; this.style.transform='translateY(-2px)'; });
+        card.addEventListener('mouseout',  function(){ this.style.borderColor='rgba(255,255,255,0.06)'; this.style.transform='none'; });
+        card.addEventListener('click', function(){ window.openAffiliateProfile(this.dataset.affId); });
+
+        grid.appendChild(card);
+    });
+
+    var tableCard = document.querySelector('#standard-module .glass-card.rounded-3xl.overflow-hidden');
+    if(tableCard) tableCard.parentNode.insertBefore(wrap, tableCard);
+};
+
+
+window.renderDashboard=()=>{ const s=document.getElementById('filter-start').value,e=document.getElementById('filter-end').value; if(!s||!e)return; const start=new Date(s+'T00:00:00'),end=new Date(e+'T23:59:59'); let reps=window.dataStore.dailyReports.filter(r=>{const d=new Date(r.date+'T12:00:00');return d>=start&&d<=end;}); if(window.currentMDEnv!=='Visão Geral')reps=reps.filter(r=>r.brand===window.currentMDEnv); let gFtd=0,gQftd=0,gDep=0,gRev=0,tComm=0,tGross=0,data=[]; window.dataStore.affiliates.forEach(aff=>{ aff.deals=aff.deals||{}; const myR=reps.filter(r=>r.affiliateId===aff.id); if(!myR.length)return; let sFtd=0,sQftd=0,sDep=0,sRev=0,hCpa=0,hRs=0,comm=0; myR.forEach(r=>{const cfg=window.getBrandConfig(r.brand)?.deal;if(!cfg)return;const ad=aff.deals[r.brand]||{cpa:0,rs:0};sFtd+=r.ftd;sDep+=r.deposits;sRev+=r.netRev;let cq=0,acp=0;if(cfg.type==='tiered'){cq=(r.qftd&&r.qftd.l1)?r.qftd.l1:0;sQftd+=cq;hCpa+=(cq*(cfg.levels[0]?.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(cfg.levels[1]?.cpa||0))+(((r.qftd&&r.qftd.l3)||0)*(cfg.levels[2]?.cpa||0));acp=(cq*(ad.cpa_l1||ad.cpa||0))+(((r.qftd&&r.qftd.l2)||0)*(ad.cpa_l2||0))+(((r.qftd&&r.qftd.l3)||0)*(ad.cpa_l3||0));}else{cq=typeof r.qftd==='object'?(r.qftd?.l1||0):(r.qftd||0);sQftd+=cq;hCpa+=(cq*(cfg.cpa||0));acp=(cq*(ad.cpa||0));}hRs+=(r.netRev*((cfg.rs||0)/100));comm+=acp+(r.netRev*((ad.rs||0)/100));}); const hG=hCpa+hRs;gFtd+=sFtd;gQftd+=sQftd;gDep+=sDep;gRev+=sRev;tComm+=comm;tGross+=hG;data.push({...aff,sFtd,sQftd,sDep,sRev,comm,profit:hG-comm}); }); // Animate KPI updates
         const animateKPI = (id, val) => {
             const el = document.getElementById(id);
             if (!el) return;
@@ -639,28 +961,59 @@
         animateKPI('kpi-deposits', window.formatCurrency(gDep));
         animateKPI('kpi-aff-comm', window.formatCurrency(tComm));
         animateKPI('kpi-profit', window.formatCurrency(tGross-tComm));
-        document.getElementById('kpi-gross').innerText = 'Receita Bruta: ' + window.formatCurrency(tGross);
+        document.getElementById('kpi-gross').innerText = 'Bruto 3C: ' + window.formatCurrency(tGross);
         
-        // Trend badges (compare vs previous period)
+        // Trend badges - compare current period vs equivalent previous period
         const renderTrend = (elId, current, prev) => {
             const el = document.getElementById(elId);
-            if (!el || prev === 0) { if(el) el.innerHTML = ''; return; }
+            if (!el) return;
+            if (prev === 0 && current === 0) { el.innerHTML = ''; return; }
+            if (prev === 0) { el.innerHTML = '<span class="trend-badge trend-up">▲ Novo período</span>'; return; }
             const pct = Math.round(((current - prev) / Math.abs(prev)) * 100);
             const up = pct >= 0;
-            el.innerHTML = '<span class="trend-badge ' + (up?'trend-up':'trend-down') + '">' + (up?'▲':'▼') + ' ' + Math.abs(pct) + '% vs anterior</span>';
+            el.innerHTML = '<span class="trend-badge ' + (up?'trend-up':'trend-down') + '">' + (up?'▲':'▼') + ' ' + Math.abs(pct) + '% vs período ant.</span>';
         };
-        // Store current for next comparison
-        if (window._prevKPI) {
-            renderTrend('kpi-qftds-trend', gQftd, window._prevKPI.qftd);
-            renderTrend('kpi-deposits-trend', gDep, window._prevKPI.dep);
-            renderTrend('kpi-comm-trend', tComm, window._prevKPI.comm);
-            renderTrend('kpi-profit-trend', tGross-tComm, window._prevKPI.profit);
-        }
-        window._prevKPI = {qftd: gQftd, dep: gDep, comm: tComm, profit: tGross-tComm}; data.sort((a,b)=>b.profit-a.profit); if(!data.length){document.getElementById('affiliates-table-body').innerHTML='';document.getElementById('md-empty-state').classList.remove('hidden');return;} document.getElementById('md-empty-state').classList.add('hidden'); let rows=''; data.forEach((d,i)=>{let dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Vários</td>'; if(window.currentMDEnv!=='Visão Geral'){const m=d.deals[window.currentMDEnv];const isT=window.dataStore.brands[window.currentMDEnv]&&window.dataStore.brands[window.currentMDEnv].type==='tiered'; if(m){if(isT)dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">L1: R$ '+(m.cpa_l1||m.cpa||0)+' / '+(m.rs||0)+'%</td>';else dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">R$ '+(m.cpa||0)+' / '+(m.rs||0)+'%</td>';}else dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Não opera</td>';} let ico=window.currentMDEnv==='Visão Geral'?(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)):'👤'; rows+='<tr class="border-b border-white/5 table-row-hover cursor-pointer" onclick="window.openAffiliateProfile(\''+d.id+'\')"><td class="px-6 py-5 font-bold flex items-center gap-4 whitespace-nowrap"><span class="text-xl">'+ico+'</span> '+d.name+'</td>'+dt+'<td class="px-6 py-5 text-center font-bold text-gray-300">'+d.sFtd+'</td><td class="px-6 py-5 text-center font-bold text-pink-400 text-lg">'+d.sQftd+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sDep)+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sRev)+'</td><td class="px-6 py-5 text-right font-mono font-bold text-red-400">'+window.formatCurrency(d.comm)+'</td><td class="px-6 py-5 text-right font-mono font-black text-emerald-400">'+window.formatCurrency(d.profit)+'</td><td class="px-6 py-5 text-center" onclick="event.stopPropagation()"><button onclick="window.openAffiliateModal(\''+d.id+'\')" class="p-2 text-gray-400 hover:text-white mr-2"><i data-lucide="pencil" class="w-5 h-5"></i></button><button onclick="window.deleteAffiliate(\''+d.id+'\')" class="p-2 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>'; }); document.getElementById('affiliates-table-body').innerHTML=rows; lucide.createIcons(); };
+        // Calculate previous period totals for comparison
+        const msStart = new Date(window.mdStartDate||startEl?.value||new Date().toISOString().split('T')[0]);
+        const msEnd = new Date(window.mdEndDate||endEl?.value||new Date().toISOString().split('T')[0]);
+        const periodLen = Math.max(1, Math.round((msEnd - msStart)/(1000*60*60*24)));
+        const prevEnd = new Date(msStart.getTime() - 1);
+        const prevStart = new Date(prevEnd.getTime() - (periodLen-1)*24*60*60*1000);
+        const prevS = prevStart.toISOString().split('T')[0];
+        const prevE = prevEnd.toISOString().split('T')[0];
+        let pQftd=0,pDep=0,pComm=0,pProfit=0,pGross=0;
+        window.dataStore.dailyReports.forEach(r => {
+            if(r.date < prevS || r.date > prevE) return;
+            const aff2 = window.dataStore.affiliates.find(a=>a.id===r.affiliateId);
+            if(!aff2) return;
+            const deal2 = aff2.deals?.[r.brand]||{};
+            const q2 = typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);
+            const c2 = (q2*(deal2.cpa||0)) + ((r.netRev||0)*(deal2.rs||0)/100);
+            pQftd += q2; pDep += r.deposits||0; pComm += c2; pGross += c2;
+        });
+        pProfit = pGross - pComm;
+        renderTrend('kpi-qftds-trend', gQftd, pQftd);
+        renderTrend('kpi-deposits-trend', gDep, pDep);
+        renderTrend('kpi-comm-trend', tComm, pComm);
+        renderTrend('kpi-profit-trend', tGross-tComm, pProfit); data.sort((a,b)=>b.profit-a.profit);
+        window.renderCharts();
+        window.renderIntelligencePanel(window.dataStore.affiliates || []); if(!data.length){document.getElementById('affiliates-table-body').innerHTML='';document.getElementById('md-empty-state').classList.remove('hidden');return;} document.getElementById('md-empty-state').classList.add('hidden'); let rows=''; data.forEach((d,i)=>{let dt=''; if(window.currentMDEnv!=='Visão Geral'){const m=d.deals[window.currentMDEnv];const isT=window.dataStore.brands[window.currentMDEnv]&&window.dataStore.brands[window.currentMDEnv].type==='tiered'; if(m){if(isT)dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">L1: R$ '+(m.cpa_l1||m.cpa||0)+' / '+(m.rs||0)+'%</td>';else dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">R$ '+(m.cpa||0)+' / '+(m.rs||0)+'%</td>';}else dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Não opera</td>';} let ico=window.currentMDEnv==='Visão Geral'?(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)):'👤'; rows+='<tr class="border-b border-white/5 table-row-hover cursor-pointer" onclick="window.openAffiliateProfile(\''+d.id+'\')"><td class="px-6 py-5 font-bold flex items-center gap-4 whitespace-nowrap"><span class="text-xl">'+ico+'</span> '+d.name+'</td>'+dt+'<td class="px-6 py-5 text-center font-bold text-gray-300">'+d.sFtd+'</td><td class="px-6 py-5 text-center font-bold text-pink-400 text-lg">'+d.sQftd+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sDep)+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sRev)+'</td><td class="px-6 py-5 text-right font-mono font-bold text-red-400">'+window.formatCurrency(d.comm)+'</td><td class="px-6 py-5 text-right font-mono font-black text-emerald-400">'+window.formatCurrency(d.profit)+'</td><td class="px-6 py-5 text-center" onclick="event.stopPropagation()"><button onclick="window.openAffiliateModal(\''+d.id+'\')" class="p-2 text-gray-400 hover:text-white mr-2"><i data-lucide="pencil" class="w-5 h-5"></i></button><button onclick="window.deleteAffiliate(\''+d.id+'\')" class="p-2 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>'; }); document.getElementById('affiliates-table-body').innerHTML=rows; lucide.createIcons(); };
 
         window.renderAffiliatesCRM=()=>{ const s=document.getElementById('search-affiliate').value.toLowerCase(),list=window.dataStore.affiliates.filter(a=>a.name.toLowerCase().includes(s)); if(!list.length){document.getElementById('crm-cards-grid').innerHTML='';document.getElementById('crm-empty-state').classList.remove('hidden');return;} document.getElementById('crm-empty-state').classList.add('hidden'); let g=''; list.forEach(aff=>{aff.deals=aff.deals||{};
             const getAffLevel=(q)=>{if(q>=100)return{label:'OURO',cls:'level-gold',icon:'🥇'};if(q>=30)return{label:'PRATA',cls:'level-silver',icon:'🥈'};return{label:'BRONZE',cls:'level-bronze',icon:'🥉'};};
-            let bh='';window.getBrandList().forEach(b=>{if(aff.deals[b]&&(aff.deals[b].cpa>0||aff.deals[b].cpa_l1>0||aff.deals[b].rs>0)){const cfg=window.getBrandConfig(b)||{color:'#fff'};bh+='<span class="text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-white/10" style="color:'+cfg.color+';background:'+cfg.color+'15">'+b+'</span>';}}); if(!bh)bh='<span class="text-[9px] text-gray-600 italic">Sem deals</span>'; let tQ=0;window.dataStore.dailyReports.forEach(r=>{if(r.affiliateId===aff.id)tQ+=typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);}); g+='<div class="glass-card p-6 rounded-3xl border border-white/5 hover:border-pink-500/50 card-hover relative" onclick="window.openAffiliateProfile(\''+aff.id+'\')"><div class="absolute top-4 right-4 z-10"><button onclick="event.stopPropagation();window.deleteAffiliate(\''+aff.id+'\')" class="p-2 text-gray-500 hover:text-red-500 rounded-full hover:bg-red-500/10"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><div class="flex items-start justify-between mb-4 pr-8"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center border border-pink-500/20 text-pink-400"><i data-lucide="user" class="w-6 h-6"></i></div><div><h3 class="text-lg font-black uppercase text-white">'+aff.name+'</h3><p class="text-[9px] text-gray-500 font-mono mt-1">ID: '+aff.id+'</p></div></div></div><div class="flex flex-wrap gap-2 mb-6 min-h-[24px]">'+bh+'</div><div class="border-t border-white/5 pt-4 flex justify-between items-end"><div><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">QFTDs All Time</p><p class="text-2xl font-mono font-black text-white mt-1">'+tQ+'</p></div><button class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-pink-500 hover:text-white transition-colors"><i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div>'; }); document.getElementById('crm-cards-grid').innerHTML=g; lucide.createIcons(); };
+            let bh='';window.getBrandList().forEach(b=>{if(aff.deals[b]&&(aff.deals[b].cpa>0||aff.deals[b].cpa_l1>0||aff.deals[b].rs>0)){const cfg=window.getBrandConfig(b)||{color:'#fff'};bh+='<span class="text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-white/10" style="color:'+cfg.color+';background:'+cfg.color+'15">'+b+'</span>';}}); if(!bh)bh='<span class="text-[9px] text-gray-600 italic">Sem deals</span>'; let tQ=0;
+            const affReports=window.dataStore.dailyReports.filter(r=>r.affiliateId===aff.id).sort((a,b)=>a.date.localeCompare(b.date));
+            affReports.forEach(r=>{tQ+=typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);});
+            // Build sparkline SVG from last 8 reports
+            const sparkData=affReports.slice(-8).map(r=>typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0));
+            const sparkMax=Math.max(...sparkData,1);
+            const sparkW=80,sparkH=28;
+            const sparkPts=sparkData.map((v,i)=>{
+                const x=(i/(Math.max(sparkData.length-1,1)))*(sparkW-4)+2;
+                const y=sparkH-2-(v/sparkMax)*(sparkH-4);
+                return x+','+y;
+            }).join(' ');
+            const sparkline=sparkData.length>1?'<svg width="'+sparkW+'" height="'+sparkH+'" style="overflow:visible"><polyline points="'+sparkPts+'" fill="none" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/><circle cx="'+sparkPts.split(' ').pop().split(',')[0]+'" cy="'+sparkPts.split(' ').pop().split(',')[1]+'" r="2.5" fill="#ec4899"/></svg>':''; g+='<div class="glass-card p-6 rounded-3xl border border-white/5 hover:border-pink-500/50 card-hover relative" onclick="window.openAffiliateProfile(\''+aff.id+'\')"><div class="absolute top-4 right-4 z-10"><button onclick="event.stopPropagation();window.deleteAffiliate(\''+aff.id+'\')" class="p-2 text-gray-500 hover:text-red-500 rounded-full hover:bg-red-500/10"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div><div class="flex items-start justify-between mb-4 pr-8"><div class="flex items-center gap-4"><div class="w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center border border-pink-500/20 text-pink-400"><i data-lucide="user" class="w-6 h-6"></i></div><div><h3 class="text-lg font-black uppercase text-white">'+aff.name+'</h3><p class="text-[9px] text-gray-500 font-mono mt-1">ID: '+aff.id+'</p></div></div></div><div class="flex flex-wrap gap-2 mb-6 min-h-[24px]">'+bh+'</div><div class="border-t border-white/5 pt-4 flex justify-between items-end"><div><p class="text-[10px] uppercase font-bold tracking-widest text-gray-500">QFTDs All Time</p><p class="text-2xl font-mono font-black text-white mt-1">'+tQ+'</p></div><div class="flex flex-col items-end gap-1">'+sparkline+'<button class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-pink-500 hover:text-white transition-colors mt-1"><i data-lucide="arrow-right" class="w-4 h-4"></i></button></div></div></div>'; }); document.getElementById('crm-cards-grid').innerHTML=g; lucide.createIcons(); };
 
         window.enableProfileEdit=()=>{['profile-social','profile-notes'].forEach(id=>{document.getElementById(id).readOnly=false;document.getElementById(id).className=document.getElementById(id).className.replace(/bg-transparent|pointer-events-none|text-gray-400|border-transparent/g,'').trim()+' bg-black/30 pointer-events-auto text-white';});document.getElementById('btn-save-notes').classList.remove('hidden');document.getElementById('btn-edit-notes').classList.add('hidden');document.getElementById('profile-social').focus();};
         window.saveProfileNotes=()=>{const aff=window.dataStore.affiliates.find(a=>a.id===window.currentProfileAffId);if(aff){aff.social=document.getElementById('profile-social').value;aff.notes=document.getElementById('profile-notes').value;window.saveMDData();window.logAction('Anotações',`Para ${aff.name}`);} ['profile-social','profile-notes'].forEach(id=>{document.getElementById(id).readOnly=true;document.getElementById(id).className=document.getElementById(id).className.replace(/bg-black\/30|pointer-events-auto|text-white/g,'').trim()+' bg-transparent pointer-events-none text-gray-400 border-transparent';}); const btn=document.getElementById('btn-save-notes');btn.innerHTML='<i data-lucide="check" class="w-3 h-3"></i> Salvo!';btn.classList.replace('bg-pink-500','bg-emerald-500');lucide.createIcons();setTimeout(()=>{btn.innerHTML='<i data-lucide="save" class="w-3 h-3"></i> Salvar';btn.classList.replace('bg-emerald-500','bg-pink-500');btn.classList.add('hidden');document.getElementById('btn-edit-notes').classList.remove('hidden');lucide.createIcons();},1500);};
