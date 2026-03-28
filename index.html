@@ -84,9 +84,7 @@
         .kpi-animate { animation: countUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
         /* --- KPI TREND BADGE --- */
-        .trend-up { color: #10b981; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); }
-        .trend-down { color: #ef4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); }
-        .trend-badge { font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 3px; margin-top: 6px; }
+
 
         /* --- AFFILIATE LEVEL BADGES --- */
         .level-gold { background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(245,158,11,0.05)); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; }
@@ -277,16 +275,16 @@
                             <h3 class="text-[10px] uppercase font-black tracking-widest text-gray-500 mb-1 flex items-center gap-2 relative z-10"><i data-lucide="users" class="w-3.5 h-3.5 text-pink-500"></i> QFTDs Qualificados</h3>
                             <p id="kpi-qftds" class="text-6xl font-mono font-black text-white mt-1 tracking-tight kpi-animate relative z-10">0</p>
                             <p id="kpi-ftds" class="text-xs text-gray-600 mt-2 font-bold relative z-10">0 FTDs Totais</p>
-                            <div id="kpi-qftds-trend" class="mt-1 relative z-10"></div>
+                            
                         </div>
-                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-blue-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(59,130,246,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Depósitos</h3><p id="kpi-deposits" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Volume depositado</p><div id="kpi-deposits-trend" class="mt-2"></div></div>
-                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-red-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(239,68,68,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4"></i> Comissão Afiliados</h3><p id="kpi-aff-comm" class="text-4xl font-mono font-bold text-red-400 mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Total a pagar (CPA + Rev Share)</p><div id="kpi-comm-trend" class="mt-2"></div></div>
+                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-blue-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(59,130,246,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="arrow-down-to-line" class="w-4 h-4"></i> Depósitos</h3><p id="kpi-deposits" class="text-4xl font-mono font-bold text-white mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Volume depositado</p></div>
+                        <div class="glass-card p-8 rounded-2xl border-l-4 border-l-red-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center"><div class="absolute -right-10 -top-10 w-40 h-40 bg-[radial-gradient(circle,rgba(239,68,68,0.4)_0%,transparent_70%)] opacity-20 group-hover:opacity-40 pointer-events-none"></div><h3 class="text-[11px] uppercase font-black tracking-widest text-gray-400 mb-2 flex items-center gap-2"><i data-lucide="banknote" class="w-4 h-4"></i> Comissão Afiliados</h3><p id="kpi-aff-comm" class="text-4xl font-mono font-bold text-red-400 mt-2 tracking-tight kpi-animate">R$ 0,00</p><p class="text-sm text-gray-500 mt-3">Total a pagar (CPA + Rev Share)</p></div>
                         <div class="glass-card p-8 rounded-2xl border-l-4 border-l-emerald-500 relative overflow-hidden group min-h-[160px] flex flex-col justify-center" style="background:linear-gradient(135deg,rgba(16,185,129,0.07) 0%,rgba(15,15,20,0.6) 60%)">
                             <div class="absolute -right-6 -top-6 w-32 h-32 rounded-full" style="background:radial-gradient(circle,rgba(16,185,129,0.15) 0%,transparent 70%)"></div>
                             <h3 class="text-[10px] uppercase font-black tracking-widest text-emerald-400 mb-1 flex items-center gap-2 relative z-10"><i data-lucide="gem" class="w-3.5 h-3.5"></i> Lucro Líquido 3C</h3>
                             <p id="kpi-profit" class="text-4xl font-mono font-black text-white mt-1 tracking-tight kpi-animate relative z-10">R$ 0,00</p>
                             <p id="kpi-gross" class="text-xs text-emerald-400/40 mt-2 font-bold relative z-10">Bruto 3C: R$ 0,00</p>
-                            <div id="kpi-profit-trend" class="mt-1 relative z-10"></div>
+                            
                         </div>
                     </div>
                                         <div class="glass-card rounded-3xl overflow-hidden border border-white/10 shadow-2xl mb-12">
@@ -831,39 +829,7 @@ window.renderDashboard=()=>{ const s=document.getElementById('filter-start').val
         animateKPI('kpi-profit', window.formatCurrency(tGross-tComm));
         document.getElementById('kpi-gross').innerText = 'Bruto 3C: ' + window.formatCurrency(tGross);
         
-        // Trend badges - compare current period vs equivalent previous period
-        const renderTrend = (elId, current, prev) => {
-            const el = document.getElementById(elId);
-            if (!el) return;
-            if (prev === 0 && current === 0) { el.innerHTML = ''; return; }
-            if (prev === 0) { el.innerHTML = '<span class="trend-badge trend-up">▲ Novo período</span>'; return; }
-            const pct = Math.round(((current - prev) / Math.abs(prev)) * 100);
-            const up = pct >= 0;
-            el.innerHTML = '<span class="trend-badge ' + (up?'trend-up':'trend-down') + '">' + (up?'▲':'▼') + ' ' + Math.abs(pct) + '% vs período ant.</span>';
-        };
-        // Calculate previous period totals for comparison
-        const msStart = new Date(document.getElementById('md-start')?.value || new Date().toISOString().split('T')[0]);
-        const msEnd = new Date(document.getElementById('md-end')?.value || new Date().toISOString().split('T')[0]);
-        const periodLen = Math.max(1, Math.round((msEnd - msStart)/(1000*60*60*24)));
-        const prevEnd = new Date(msStart.getTime() - 1);
-        const prevStart = new Date(prevEnd.getTime() - (periodLen-1)*24*60*60*1000);
-        const prevS = prevStart.toISOString().split('T')[0];
-        const prevE = prevEnd.toISOString().split('T')[0];
-        let pQftd=0,pDep=0,pComm=0,pProfit=0,pGross=0;
-        window.dataStore.dailyReports.forEach(r => {
-            if(r.date < prevS || r.date > prevE) return;
-            const aff2 = window.dataStore.affiliates.find(a=>a.id===r.affiliateId);
-            if(!aff2) return;
-            const deal2 = aff2.deals?.[r.brand]||{};
-            const q2 = typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);
-            const c2 = (q2*(deal2.cpa||0)) + ((r.netRev||0)*(deal2.rs||0)/100);
-            pQftd += q2; pDep += r.deposits||0; pComm += c2; pGross += c2;
-        });
-        pProfit = pGross - pComm;
-        renderTrend('kpi-qftds-trend', gQftd, pQftd);
-        renderTrend('kpi-deposits-trend', gDep, pDep);
-        renderTrend('kpi-comm-trend', tComm, pComm);
-        renderTrend('kpi-profit-trend', tGross-tComm, pProfit); data.sort((a,b)=>b.profit-a.profit);
+        data.sort((a,b)=>b.profit-a.profit);
         window.renderIntelligencePanel(window.dataStore.affiliates || []); if(!data.length){document.getElementById('affiliates-table-body').innerHTML='';document.getElementById('md-empty-state').classList.remove('hidden');return;} document.getElementById('md-empty-state').classList.add('hidden'); let rows=''; data.forEach((d,i)=>{let dt=''; if(window.currentMDEnv!=='Visão Geral'){const m=d.deals[window.currentMDEnv];const isT=window.dataStore.brands[window.currentMDEnv]&&window.dataStore.brands[window.currentMDEnv].type==='tiered'; if(m){if(isT)dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">L1: R$ '+(m.cpa_l1||m.cpa||0)+' / '+(m.rs||0)+'%</td>';else dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">R$ '+(m.cpa||0)+' / '+(m.rs||0)+'%</td>';}else dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Não opera</td>';} let ico=window.currentMDEnv==='Visão Geral'?(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)):'👤'; rows+='<tr class="border-b border-white/5 table-row-hover cursor-pointer" onclick="window.openAffiliateProfile(\''+d.id+'\')"><td class="px-6 py-5 font-bold flex items-center gap-4 whitespace-nowrap"><span class="text-xl">'+ico+'</span> '+d.name+'</td>'+dt+'<td class="px-6 py-5 text-center font-bold text-gray-300">'+d.sFtd+'</td><td class="px-6 py-5 text-center font-bold text-pink-400 text-lg">'+d.sQftd+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sDep)+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sRev)+'</td><td class="px-6 py-5 text-right font-mono font-bold text-red-400">'+window.formatCurrency(d.comm)+'</td><td class="px-6 py-5 text-right font-mono font-black text-emerald-400">'+window.formatCurrency(d.profit)+'</td><td class="px-6 py-5 text-center" onclick="event.stopPropagation()"><button onclick="window.openAffiliateModal(\''+d.id+'\')" class="p-2 text-gray-400 hover:text-white mr-2"><i data-lucide="pencil" class="w-5 h-5"></i></button><button onclick="window.deleteAffiliate(\''+d.id+'\')" class="p-2 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>'; }); document.getElementById('affiliates-table-body').innerHTML=rows; lucide.createIcons(); };
 
         window.renderAffiliatesCRM=()=>{ const s=document.getElementById('search-affiliate').value.toLowerCase(),list=window.dataStore.affiliates.filter(a=>a.name.toLowerCase().includes(s)); if(!list.length){document.getElementById('crm-cards-grid').innerHTML='';document.getElementById('crm-empty-state').classList.remove('hidden');return;} document.getElementById('crm-empty-state').classList.add('hidden'); let g=''; list.forEach(aff=>{aff.deals=aff.deals||{};
