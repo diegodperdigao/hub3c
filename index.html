@@ -242,7 +242,7 @@
                     </div>
                     <button onclick="window.openConfigModal()" class="p-2 text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><i data-lucide="settings" class="w-4 h-4"></i> <span class="hidden sm:inline">Configuração</span></button>
                     <button onclick="window.returnToSelection()" class="p-2 text-gray-400 hover:text-pink-500 transition-colors"><i data-lucide="grid" class="w-4 h-4"></i></button>
-                    <div class="hidden md:flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5"><div id="status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div><span id="md-sync-status" class="text-[7px] font-black tracking-widest uppercase italic text-gray-400">Conectando...</span></div>
+                    <div class="hidden md:flex items-center gap-3 px-3 py-1.5 bg-white/5 rounded-xl border border-white/5"><div id="status-dot" class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div><span id="md-sync-status" class="text-[7px] font-black tracking-widest uppercase italic text-gray-400">Cloud Sync...</span></div>
                 </div>
             </div>
         </nav>
@@ -588,6 +588,11 @@
                         document.getElementById('wf-sync-status').innerText="Cloud Sync Online";
                         onSnapshot(collection(wfDb,'artifacts',wfAppId,'public','data','tasks'),(s)=>{ window.tasks=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt); window.renderTasks(); window.updateSyncTime(); });
                         onSnapshot(doc(wfDb,'artifacts',wfAppId,'public','data','md_store','main'),(s)=>{
+                            // Update status to Online when snapshot fires
+                            const syncEl = document.getElementById('md-sync-status');
+                            if(syncEl && (syncEl.innerText === 'Conectando...' || syncEl.innerText === 'ONLINE')) {
+                                syncEl.innerText = 'Cloud Sync Online';
+                            }
                             if(s.exists()){
                                 const p=s.data();
                                 const localData = (() => { try { return JSON.parse(localStorage.getItem('igaming3c_data_v15') || '{}'); } catch(e) { return {}; } })();
@@ -974,8 +979,8 @@ window.renderDashboard=()=>{ const s=document.getElementById('filter-start').val
             el.innerHTML = '<span class="trend-badge ' + (up?'trend-up':'trend-down') + '">' + (up?'▲':'▼') + ' ' + Math.abs(pct) + '% vs período ant.</span>';
         };
         // Calculate previous period totals for comparison
-        const msStart = new Date(window.mdStartDate||startEl?.value||new Date().toISOString().split('T')[0]);
-        const msEnd = new Date(window.mdEndDate||endEl?.value||new Date().toISOString().split('T')[0]);
+        const msStart = new Date(document.getElementById('md-start')?.value || new Date().toISOString().split('T')[0]);
+        const msEnd = new Date(document.getElementById('md-end')?.value || new Date().toISOString().split('T')[0]);
         const periodLen = Math.max(1, Math.round((msEnd - msStart)/(1000*60*60*24)));
         const prevEnd = new Date(msStart.getTime() - 1);
         const prevStart = new Date(prevEnd.getTime() - (periodLen-1)*24*60*60*1000);
@@ -1176,6 +1181,8 @@ window.renderDashboard=()=>{ const s=document.getElementById('filter-start').val
             const stTotal=(t.subtasks||[]).length;
             const stDone=(t.subtasks||[]).filter(s=>s.completed).length;
             const stPct=stTotal>0?Math.round((stDone/stTotal)*100):0;
+            // Build subtask items HTML
+            const sh=(t.subtasks||[]).map(st=>'<div class="flex items-center gap-2 py-1"><button onclick="window.toggleSubtask(\''+t.id+'\',\''+st.id+'\')" class="shrink-0 w-4 h-4 rounded border '+(st.completed?'bg-pink-500 border-pink-500':'border-white/20 hover:border-pink-400')+' flex items-center justify-center"><i data-lucide="check" class="w-2.5 h-2.5 text-white '+(st.completed?'':'hidden')+'"></i></button><span class="text-xs '+(st.completed?'line-through text-gray-600':'text-gray-400')+'">'+st.title+'</span></div>').join('');
             
             h+='<div class="glass-card p-5 rounded-2xl animate-task '+bc+' '+(t.completed?'completed-task':'')+' group transition-all hover:border-white/10">'
              +'<div class="flex items-start gap-4">'
