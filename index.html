@@ -496,6 +496,47 @@
         <div class="glass-card w-full max-w-xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh]"><button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button><h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="activity" class="w-5 h-5 text-gray-400"></i> Central de Edições</h2><p class="text-[10px] text-gray-500 mb-4 italic shrink-0">Últimas 100 ações.</p><div id="audit-list" class="space-y-3 overflow-y-auto custom-scrollbar pr-2 flex-grow"></div></div>
     </div>
 
+    <!-- Modal Diagnóstico Help -->
+    <div id="modal-intel-help" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 md-modal" onclick="if(event.target===this)window.closeModals()">
+        <div class="glass-card w-full max-w-2xl p-8 rounded-3xl border border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h2 class="text-lg font-black uppercase tracking-widest mb-2 text-white flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-pink-500"></i> Metodologia do Diagnóstico</h2>
+            <p class="text-[10px] text-gray-500 mb-6 uppercase tracking-widest font-bold">Baseado em benchmarks do mercado de iGaming Brasil 2025</p>
+            <div class="space-y-5">
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-pink-400 mb-2">1. Taxa de Qualificação (QFTD/FTD)</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed mb-2">Mede quantos FTDs se tornam jogadores qualificados. No mercado LatAm, a taxa de conversão registro→FTD é 15-25% (Gambling Insider 2025). Para FTD→QFTD, o range saudável é <span class="text-white font-bold">35-75%</span>.</p>
+                    <p class="text-[10px] text-gray-500"><span class="text-red-400 font-bold">&lt; 20%</span> = tráfego não qualificado · <span class="text-red-400 font-bold">&gt; 90%</span> = possível auto-cadastro ou contas fake (Scaleo Fraud Detection 2026)</p>
+                </div>
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">2. Ticket Médio (Depósitos / QFTD)</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed mb-2">Valor médio depositado por jogador qualificado. O depósito médio no Brasil é <span class="text-white font-bold">US$ 159 (~R$ 880)</span> com crescimento de 12% YoY (Optimove Brazil Pulse Report, Ago/2025).</p>
+                    <p class="text-[10px] text-gray-500"><span class="text-emerald-400 font-bold">&gt; R$ 500</span> = saudável · <span class="text-amber-400 font-bold">R$ 200-500</span> = atenção · <span class="text-red-400 font-bold">&lt; R$ 200</span> = depósitos mínimos, possível bonus abuse</p>
+                </div>
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-2">3. Net Revenue Total</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed mb-2">Receita líquida gerada pelos jogadores do afiliado. O hold médio de sportsbooks é <span class="text-white font-bold">10-15%</span> do handle (AGA Revenue Tracker 2025). Parlays chegam a 25% de margem.</p>
+                    <p class="text-[10px] text-gray-500"><span class="text-emerald-400 font-bold">Positivo</span> = casa lucrando · <span class="text-red-400 font-bold">Negativo</span> = casa perdendo dinheiro com o tráfego do afiliado</p>
+                </div>
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-2">4. Retenção (Dias Ativos / Dias do Período)</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed mb-2">Frequência de atividade dos jogadores. No Brasil, a média é <span class="text-white font-bold">12.4 dias ativos/mês (~40%)</span>, vs 7.7 dias global (Optimove Brazil Pulse Report, Ago/2025). Retenção BR: 77% vs 69% global.</p>
+                    <p class="text-[10px] text-gray-500"><span class="text-emerald-400 font-bold">&gt; 40%</span> = saudável · <span class="text-amber-400 font-bold">15-40%</span> = atenção · <span class="text-red-400 font-bold">&lt; 15%</span> = jogadores descartáveis, possível tráfego incentivado</p>
+                </div>
+                <div class="bg-black/30 p-5 rounded-2xl border border-white/5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-amber-400 mb-2">5. ROI da Operação (Lucro 3C / Comissão Paga)</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed mb-2">Retorno sobre o investimento em comissão. Mede se o lucro bruto da casa cobre o custo do afiliado (CPA + RevShare).</p>
+                    <p class="text-[10px] text-gray-500"><span class="text-emerald-400 font-bold">&gt; 1.5x</span> = saudável · <span class="text-amber-400 font-bold">0.8-1.5x</span> = atenção · <span class="text-red-400 font-bold">&lt; 0.8x</span> = operação no prejuízo</p>
+                </div>
+                <div class="bg-white/5 p-5 rounded-2xl border border-white/10">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-white mb-2">Score Final (0-100)</h3>
+                    <p class="text-[11px] text-gray-400 leading-relaxed">Cada KPI contribui com <span class="text-white font-bold">0-20 pontos</span>. O score total indica: <span class="text-emerald-400 font-bold">70-100 Saudável</span> · <span class="text-amber-400 font-bold">40-69 Atenção</span> · <span class="text-red-400 font-bold">0-39 Crítico</span>. Mínimo de <span class="text-white font-bold">5 QFTDs</span> no período para diagnóstico confiável.</p>
+                </div>
+            </div>
+            <p class="text-[9px] text-gray-600 mt-6 text-center uppercase tracking-widest font-bold">Fontes: Optimove Brazil Pulse Report (Ago/2025) · Gambling Insider LatAm 2025 · Scaleo Fraud Detection 2026 · AGA Revenue Tracker 2025</p>
+        </div>
+    </div>
+
     <!-- Modal Histórico de Lançamentos -->
     <div id="modal-history" class="fixed inset-0 z-[250] flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity p-4 md-modal" onclick="if(event.target===this)window.closeModals()">
         <div class="glass-card w-full max-w-5xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative flex flex-col max-h-[90vh]"><button onclick="window.closeModals()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x" class="w-5 h-5"></i></button><h2 class="text-xl font-black uppercase tracking-widest mb-6 border-b border-white/10 pb-4 flex items-center gap-2 shrink-0"><i data-lucide="list" class="w-5 h-5 theme-text"></i> Histórico de Lançamentos</h2><div class="overflow-x-auto custom-scrollbar flex-grow bg-black/30 rounded-2xl border border-white/5"><table class="w-full text-left border-collapse"><thead><tr class="bg-white/5 text-[10px] uppercase tracking-widest text-gray-400"><th class="px-5 py-4 font-bold whitespace-nowrap">Data</th><th class="px-5 py-4 font-bold">Marca</th><th class="px-5 py-4 font-bold">Afiliado</th><th class="px-5 py-4 font-bold text-center">FTD/QFTD</th><th class="px-5 py-4 font-bold text-right">Depósitos</th><th class="px-5 py-4 font-bold text-right">Net Rev</th><th class="px-5 py-4 font-bold text-center">Ações</th></tr></thead><tbody id="history-table-body" class="text-xs"></tbody></table></div></div>
@@ -704,200 +745,216 @@
 
         window.setDateRange=(type)=>{ const d=new Date(),y=d.getFullYear(),m=d.getMonth(); if(type==='month'){document.getElementById('filter-start').value=new Date(y,m,1).toISOString().split('T')[0];document.getElementById('filter-end').value=new Date(y,m+1,0).toISOString().split('T')[0];} if(type==='last'){document.getElementById('filter-start').value=new Date(y,m-1,1).toISOString().split('T')[0];document.getElementById('filter-end').value=new Date(y,m,0).toISOString().split('T')[0];} if(type==='all'){document.getElementById('filter-start').value='2023-01-01';const e=new Date();e.setFullYear(e.getFullYear()+1);document.getElementById('filter-end').value=e.toISOString().split('T')[0];} window.renderDashboard(); };
 
-        window.renderIntelligencePanel = function(affiliatesData) {
+        window.renderIntelligencePanel = function(dashData, filteredReps) {
     var pid = 'intel-panel';
     var ex = document.getElementById(pid); if(ex) ex.remove();
-    if(!affiliatesData||!affiliatesData.length) return;
+    if(!dashData||!dashData.length||!filteredReps||!filteredReps.length) return;
 
-    var rpts = window.dataStore.dailyReports||[];
-    if(!rpts.length) return;
+    // ── Market Benchmarks (iGaming Brazil 2025) ──────────────────────────
+    // Sources: Optimove Brazil Pulse Report Aug/2025, Scaleo Fraud Detection 2026,
+    // Gambling Insider LatAm 2025, AGA Revenue Tracker
+    var BM = {
+        // Taxa de Qualificação FTD→QFTD: range saudável 35-75%
+        // >90% = possível auto-cadastro/contas fake (Scaleo/BluePear fraud flags)
+        // <20% = tráfego não qualificado
+        qualMin: 0.35, qualMax: 0.75, qualAlertLow: 0.20, qualAlertHigh: 0.90,
+        // Ticket Médio: dep médio Brasil US$159 ≈ R$880 (Optimove Aug/2025)
+        // <R$200 indica depósitos mínimos (possível bonus abuse)
+        ticketGood: 500, ticketWarn: 200,
+        // Retenção: Brasil 12.4 dias ativos/mês ≈ 40% (Optimove Aug/2025)
+        // Global: 7.7 dias/mês ≈ 25%
+        retGood: 0.40, retWarn: 0.15,
+        // ROI: lucro operação / comissão paga
+        roiGood: 1.5, roiWarn: 0.8,
+        // Mínimo de QFTDs para score confiável
+        minQftd: 5
+    };
 
-    // ── Build per-affiliate data ──────────────────────────────────────────
-    var affMap = {};
-    affiliatesData.forEach(function(a){
-        affMap[a.id] = {id:a.id, name:a.name, ftd:0, qftd:0, dep:0, depByDay:{}, ftdByDay:{}};
+    // ── Calculate period days ────────────────────────────────────────────
+    var s=document.getElementById('filter-start').value, e=document.getElementById('filter-end').value;
+    var periodDays = 30;
+    if(s&&e){ var ds=new Date(s),de=new Date(e); periodDays=Math.max(1,Math.round((de-ds)/(1000*60*60*24))+1); }
+
+    // ── Build per-affiliate metrics ──────────────────────────────────────
+    var affMetrics = [];
+    dashData.forEach(function(d){
+        var myR = filteredReps.filter(function(r){return r.affiliateId===d.id;});
+        var activeDays = {};
+        var netRev = 0;
+        myR.forEach(function(r){
+            activeDays[r.date] = true;
+            netRev += r.netRev||0;
+        });
+        var nDays = Object.keys(activeDays).length;
+        var qftd = d.sQftd||0, ftd = d.sFtd||0, dep = d.sDep||0;
+        var qualRate = ftd>0 ? qftd/ftd : 0;
+        var ticket = qftd>0 ? dep/qftd : 0;
+        var retention = periodDays>0 ? nDays/periodDays : 0;
+        var roi = d.comm>0 ? d.profit/d.comm : (d.profit>0?99:0);
+
+        // ── Score calculation (0-20 per KPI, total 0-100) ────────────
+        var sufficient = qftd >= BM.minQftd;
+        var sQual=0, sTick=0, sRev=0, sRet=0, sRoi=0;
+
+        // 1. Qualificação (bell curve: best at 35-75%, bad at extremes)
+        if(qualRate>=BM.qualMin&&qualRate<=BM.qualMax) sQual=20;
+        else if(qualRate>=BM.qualAlertLow&&qualRate<BM.qualMin) sQual=Math.round(5+15*((qualRate-BM.qualAlertLow)/(BM.qualMin-BM.qualAlertLow)));
+        else if(qualRate>BM.qualMax&&qualRate<=BM.qualAlertHigh) sQual=Math.round(5+15*((BM.qualAlertHigh-qualRate)/(BM.qualAlertHigh-BM.qualMax)));
+        else sQual=qualRate<BM.qualAlertLow?Math.round(5*(qualRate/BM.qualAlertLow)):Math.round(5*Math.max(0,(1-qualRate)/(1-BM.qualAlertHigh)));
+
+        // 2. Ticket Médio
+        if(ticket>=BM.ticketGood) sTick=20;
+        else if(ticket>=BM.ticketWarn) sTick=Math.round(8+12*((ticket-BM.ticketWarn)/(BM.ticketGood-BM.ticketWarn)));
+        else if(ticket>0) sTick=Math.round(8*(ticket/BM.ticketWarn));
+        else sTick=0;
+
+        // 3. Net Revenue Total (positive=good, negative=critical)
+        if(netRev>0) sRev=Math.min(20,Math.round(12+8*Math.min(1,netRev/(dep*0.12||1))));
+        else if(netRev===0) sRev=8;
+        else sRev=Math.max(0,Math.round(8*(1+netRev/(dep*0.15||1))));
+
+        // 4. Retenção
+        if(retention>=BM.retGood) sRet=20;
+        else if(retention>=BM.retWarn) sRet=Math.round(6+14*((retention-BM.retWarn)/(BM.retGood-BM.retWarn)));
+        else if(retention>0) sRet=Math.round(6*(retention/BM.retWarn));
+        else sRet=0;
+
+        // 5. ROI
+        if(roi>=BM.roiGood) sRoi=20;
+        else if(roi>=BM.roiWarn) sRoi=Math.round(6+14*((roi-BM.roiWarn)/(BM.roiGood-BM.roiWarn)));
+        else if(roi>0) sRoi=Math.round(6*(roi/BM.roiWarn));
+        else sRoi=0;
+
+        var totalScore = sufficient ? sQual+sTick+sRev+sRet+sRoi : -1;
+        affMetrics.push({
+            id:d.id, name:d.name, ftd:ftd, qftd:qftd, dep:dep, netRev:netRev,
+            comm:d.comm, profit:d.profit, nDays:nDays,
+            qualRate:qualRate, ticket:ticket, retention:retention, roi:roi,
+            sQual:sQual, sTick:sTick, sRev:sRev, sRet:sRet, sRoi:sRoi,
+            score:totalScore, sufficient:sufficient
+        });
     });
 
-    rpts.forEach(function(r){
-        var m = affMap[r.affiliateId]; if(!m) return;
-        var q = typeof r.qftd==='object'?(r.qftd.l1||0):(r.qftd||0);
-        m.ftd += r.ftd||0;
-        m.qftd += q;
-        m.dep  += r.deposits||0;
-        if(!m.depByDay[r.date]) m.depByDay[r.date] = 0;
-        if(!m.ftdByDay[r.date]) m.ftdByDay[r.date] = 0;
-        m.depByDay[r.date] += r.deposits||0;
-        m.ftdByDay[r.date] += r.ftd||0;
-    });
+    affMetrics.sort(function(a,b){ if(!a.sufficient&&b.sufficient)return 1; if(a.sufficient&&!b.sufficient)return -1; return b.score-a.score; });
+    if(!affMetrics.length) return;
 
-    // ── Filter affiliates with activity ───────────────────────────────────
-    var active = Object.values(affMap).filter(function(a){return a.ftd>0;})
-        .sort(function(a,b){ var cA=a.ftd>0?a.qftd/a.ftd:0; var cB=b.ftd>0?b.qftd/b.ftd:0; return cB-cA; });
+    // ── Helpers ──────────────────────────────────────────────────────────
+    function scoreColor(s){ return s>=70?'#10b981':s>=40?'#f59e0b':'#ef4444'; }
+    function scoreLabel(s){ return s>=70?'Saudável':s>=40?'Atenção':'Crítico'; }
+    function scoreBg(s){ return s>=70?'rgba(16,185,129,0.1)':s>=40?'rgba(245,158,11,0.1)':'rgba(239,68,68,0.1)'; }
+    function scoreBorder(s){ return s>=70?'rgba(16,185,129,0.25)':s>=40?'rgba(245,158,11,0.25)':'rgba(239,68,68,0.25)'; }
+    function kpiBar(val, max, color){ var w=Math.min(100,Math.round((val/max)*100)); return '<div style="height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-top:4px"><div style="height:100%;width:'+w+'%;background:'+color+';border-radius:4px;transition:width 0.8s ease"></div></div>'; }
+    function kpiColor(v,max){ return v>=max*0.75?'#10b981':v>=max*0.4?'#f59e0b':'#ef4444'; }
+    var fmt = function(v){ return window.formatCurrency(v); };
 
-    if(!active.length) return;
-
-    // ── Helper: sparkline SVG ─────────────────────────────────────────────
-    function sparkline(values, color, w, h) {
-        if(!values||values.length<2) return '';
-        var max = Math.max.apply(null,values.concat([1]));
-        var pts = values.map(function(v,i){
-            var x = (i/(values.length-1))*(w-4)+2;
-            var y = h-2-(v/max)*(h-4);
-            return x.toFixed(1)+','+y.toFixed(1);
-        }).join(' ');
-        var lastX = ((values.length-1)/(values.length-1))*(w-4)+2;
-        var lastY = h-2-(values[values.length-1]/max)*(h-4);
-        return '<svg width="'+w+'" height="'+h+'" style="overflow:visible">'
-            +'<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>'
-            +'<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="2.5" fill="'+color+'"/>'
-            +'</svg>';
-    }
-
-    // ── Helper: deposit growth trend (slope of last N days) ───────────────
-    function depTrend(depByDay) {
-        var dates = Object.keys(depByDay).sort();
-        if(dates.length < 2) return {pct: 0, label: 'Sem dados', up: null};
-        var half = Math.floor(dates.length/2);
-        var firstHalf = dates.slice(0, half);
-        var secondHalf = dates.slice(half);
-        var avg1 = firstHalf.reduce(function(s,d){return s+depByDay[d];},0)/firstHalf.length;
-        var avg2 = secondHalf.reduce(function(s,d){return s+depByDay[d];},0)/secondHalf.length;
-        if(avg1===0) return {pct: 0, label: 'Dados insuf.', up: null};
-        var pct = Math.round(((avg2-avg1)/avg1)*100);
-        return {pct: Math.abs(pct), label: (pct>=0?'▲ ':'▼ ')+Math.abs(pct)+'%', up: pct>=0};
-    }
-
-    // ── Helper: conversion rate ────────────────────────────────────────────
-    function convRate(ftd, qftd) {
-        if(!ftd) return {pct:0, label:'0%', color:'#6b7280'};
-        var p = Math.round((qftd/ftd)*100);
-        var col = p>=60?'#10b981':p>=30?'#f59e0b':'#ef4444';
-        return {pct:p, label:p+'%', color:col};
-    }
-
-    // ── Build HTML ────────────────────────────────────────────────────────
+    // ── Build panel HTML ─────────────────────────────────────────────────
     var wrap = document.createElement('div');
     wrap.id = pid;
     wrap.style.marginBottom = '40px';
 
-    var header = document.createElement('div');
-    header.style.cssText = 'background:rgba(15,15,20,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:24px;overflow:hidden;';
+    var container = document.createElement('div');
+    container.style.cssText = 'background:rgba(15,15,20,0.7);border:1px solid rgba(255,255,255,0.06);border-radius:24px;overflow:hidden;';
 
-    header.innerHTML = '<div style="background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(168,85,247,0.05));padding:24px 32px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">'
+    // Header
+    var headerHtml = '<div style="padding:24px 32px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">'
         +'<div>'
-        +'<p style="font-size:9px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;color:#ec4899;margin:0">Intelligence 3C</p>'
-        +'<h2 style="font-size:18px;font-weight:900;color:#fff;margin:4px 0 0;letter-spacing:-0.02em">Conversão e Retenção por Afiliado</h2>'
-        +'<p style="font-size:10px;color:#6b7280;margin:4px 0 0;">Taxa FTD→QFTD · Tendência de Depósitos · Sinal de Redepósito</p>'
+        +'<p style="font-size:9px;font-weight:900;letter-spacing:0.2em;text-transform:uppercase;color:#ec4899;margin:0">Diagnóstico 3C</p>'
+        +'<h2 style="font-size:18px;font-weight:900;color:#fff;margin:4px 0 0;letter-spacing:-0.02em">Saúde da Operação por Afiliado</h2>'
+        +'<p style="font-size:10px;color:#6b7280;margin:4px 0 0;">Qualificação · Ticket Médio · Revenue · Retenção · ROI</p>'
         +'</div>'
-        +'<div style="display:flex;gap:20px;text-align:center;">'
-        +'<div><p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0">Métrica 1</p><p style="font-size:11px;font-weight:900;color:#ec4899;margin:2px 0">Conversão</p></div>'
-        +'<div><p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0">Métrica 2</p><p style="font-size:11px;font-weight:900;color:#10b981;margin:2px 0">Crescimento Dep.</p></div>'
+        +'<div style="display:flex;gap:12px;align-items:center;">'
+        +'<div style="display:flex;gap:6px;align-items:center"><div style="width:8px;height:8px;border-radius:50%;background:#10b981"></div><span style="font-size:9px;color:#6b7280;font-weight:700">70-100</span></div>'
+        +'<div style="display:flex;gap:6px;align-items:center"><div style="width:8px;height:8px;border-radius:50%;background:#f59e0b"></div><span style="font-size:9px;color:#6b7280;font-weight:700">40-69</span></div>'
+        +'<div style="display:flex;gap:6px;align-items:center"><div style="width:8px;height:8px;border-radius:50%;background:#ef4444"></div><span style="font-size:9px;color:#6b7280;font-weight:700">0-39</span></div>'
+        +'<button onclick="window.openModal(\'modal-intel-help\')" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#6b7280;font-size:13px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s" onmouseover="this.style.color=\'#ec4899\';this.style.borderColor=\'rgba(236,72,153,0.3)\'" onmouseout="this.style.color=\'#6b7280\';this.style.borderColor=\'rgba(255,255,255,0.1)\'">?</button>'
         +'</div>'
-        +'</div>'
-        +'<div id="intel-grid" style="padding:24px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"></div>';
+        +'</div>';
 
-    wrap.appendChild(header);
-    var grid = header.querySelector('#intel-grid');
+    container.innerHTML = headerHtml + '<div id="intel-grid" style="padding:24px 32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;"></div>';
+    wrap.appendChild(container);
+    var grid = container.querySelector('#intel-grid');
 
-    // Pagination state
-    var _page = 1;
-    var _perPage = 8;
+    // ── Pagination ───────────────────────────────────────────────────────
+    var _page = 1, _perPage = 8;
 
-    function buildCards(affList) {
+    function buildCards(list){
         grid.innerHTML = '';
-        var visible = affList.slice(0, _page * _perPage);
-        var hasMore = affList.length > visible.length;
+        var visible = list.slice(0, _page * _perPage);
+        var hasMore = list.length > visible.length;
 
-        visible.forEach(function(a) {
-        var conv = convRate(a.ftd, a.qftd);
-        var trend = depTrend(a.depByDay);
+        visible.forEach(function(a){
+            var sc = a.score;
+            var col = a.sufficient ? scoreColor(sc) : '#6b7280';
+            var lbl = a.sufficient ? scoreLabel(sc) : 'Insuficiente';
+            var bg = a.sufficient ? scoreBg(sc) : 'rgba(107,114,128,0.1)';
+            var bdr = a.sufficient ? scoreBorder(sc) : 'rgba(107,114,128,0.2)';
 
-        // Sparklines from sorted daily data
-        var sortedDates = Object.keys(a.depByDay).sort();
-        var depValues = sortedDates.map(function(d){return a.depByDay[d];});
-        var ftdValues = sortedDates.map(function(d){return a.ftdByDay[d]||0;});
+            var card = document.createElement('div');
+            card.style.cssText = 'background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:20px;cursor:pointer;transition:all 0.25s ease;';
+            card.dataset.affId = a.id;
 
-        var depSpark = sparkline(depValues, '#10b981', 80, 28);
-        var ftdSpark = sparkline(ftdValues, '#ec4899', 80, 28);
+            // Score ring SVG
+            var ringPct = a.sufficient ? sc : 0;
+            var circ = 2*Math.PI*18;
+            var dashFill = (ringPct/100)*circ;
+            var ringHtml = '<svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26" cy="26" r="18" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/><circle cx="26" cy="26" r="18" fill="none" stroke="'+col+'" stroke-width="3" stroke-linecap="round" stroke-dasharray="'+dashFill.toFixed(1)+' '+circ.toFixed(1)+'" transform="rotate(-90 26 26)" style="transition:stroke-dasharray 1s ease"/><text x="26" y="26" text-anchor="middle" dominant-baseline="central" fill="'+col+'" font-size="13" font-weight="900">'+(a.sufficient?sc:'?')+'</text></svg>';
 
-        var trendColor = trend.up===null?'#6b7280':trend.up?'#10b981':'#ef4444';
-        var trendBg = trend.up===null?'rgba(107,114,128,0.1)':trend.up?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)';
-        var trendBorder = trend.up===null?'rgba(107,114,128,0.2)':trend.up?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.2)';
+            var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'
+                +'<div style="flex:1;min-width:0">'
+                +'<p style="font-size:13px;font-weight:900;color:#fff;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+a.name+'</p>'
+                +'<p style="font-size:9px;font-weight:700;color:#6b7280;margin:3px 0 0;text-transform:uppercase;letter-spacing:0.08em">'+a.ftd+' FTDs · '+a.qftd+' QFTDs · '+a.nDays+' dias</p>'
+                +'</div>'
+                +'<div style="display:flex;align-items:center;gap:8px;margin-left:12px">'
+                +'<span style="font-size:9px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:'+bg+';color:'+col+';border:1px solid '+bdr+'">'+lbl+'</span>'
+                +ringHtml
+                +'</div></div>';
 
-        var avgDep = sortedDates.length > 0
-            ? Math.round(a.dep / sortedDates.length)
-            : 0;
+            if(!a.sufficient){
+                h+='<div style="text-align:center;padding:12px 0;color:#6b7280;font-size:11px;font-weight:600">Mínimo '+BM.minQftd+' QFTDs para diagnóstico confiável (atual: '+a.qftd+')</div>';
+            } else {
+                // KPI rows
+                var kpis = [
+                    {label:'Taxa Qualificação', val:Math.round(a.qualRate*100)+'%', pts:a.sQual, ref:'Benchmark: 35-75%'},
+                    {label:'Ticket Médio', val:fmt(a.ticket), pts:a.sTick, ref:'Benchmark: > R$500'},
+                    {label:'Net Revenue', val:fmt(a.netRev), pts:a.sRev, ref:'Benchmark: positivo (hold 10-15%)'},
+                    {label:'Retenção', val:Math.round(a.retention*100)+'% ('+a.nDays+'/'+periodDays+' dias)', pts:a.sRet, ref:'Benchmark: > 40% (12.4 dias/mês BR)'},
+                    {label:'ROI Operação', val:a.roi>=99?'∞':a.roi.toFixed(1)+'x', pts:a.sRoi, ref:'Benchmark: > 1.5x'}
+                ];
+                kpis.forEach(function(k){
+                    var kc = kpiColor(k.pts, 20);
+                    h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03)">'
+                      +'<div style="flex:1;min-width:0">'
+                      +'<div style="display:flex;justify-content:space-between;align-items:center">'
+                      +'<span style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em">'+k.label+'</span>'
+                      +'<span style="font-size:11px;font-weight:900;color:'+kc+'">'+k.val+'</span>'
+                      +'</div>'
+                      +kpiBar(k.pts, 20, kc)
+                      +'<span style="font-size:7px;color:#4b5563;font-weight:600">'+k.ref+' · '+k.pts+'/20 pts</span>'
+                      +'</div></div>';
+                });
+            }
 
-        var card = document.createElement('div');
-        card.style.cssText = 'background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.06);border-radius:18px;padding:20px;cursor:pointer;transition:all 0.25s ease;';
-        card.dataset.affId = a.id;
-
-        card.innerHTML =
-            // Header row
-            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">'
-            +'<div>'
-            +'<p style="font-size:13px;font-weight:900;color:#fff;margin:0;letter-spacing:-0.01em">'+a.name+'</p>'
-            +'<p style="font-size:9px;font-weight:700;color:#6b7280;margin:3px 0 0;text-transform:uppercase;letter-spacing:0.08em">'+a.ftd+' FTDs · '+a.qftd+' QFTDs · '+sortedDates.length+' dias</p>'
-            +'</div>'
-            +'</div>'
-
-            // Metric 1: Conversion
-            +'<div style="margin-bottom:14px;">'
-            +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
-            +'<p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0;letter-spacing:0.08em">Conversão FTD → QFTD</p>'
-            +'<span style="font-size:16px;font-weight:900;color:'+conv.color+'">'+conv.label+'</span>'
-            +'</div>'
-            // Conversion bar
-            +'<div style="height:6px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;">'
-            +'<div style="height:100%;width:'+Math.min(conv.pct,100)+'%;background:'+conv.color+';border-radius:6px;transition:width 1s ease;"></div>'
-            +'</div>'
-            +'<div style="display:flex;justify-content:space-between;margin-top:4px;">'
-            +'<span style="font-size:8px;color:#4b5563;font-weight:700">'+a.ftd+' FTDs</span>'
-            +'<span style="font-size:8px;color:'+conv.color+';font-weight:700">'+a.qftd+' QFTDs qualificados</span>'
-            +'</div>'
-            +'</div>'
-
-            // Metric 2: Deposit growth
-            +'<div style="border-top:1px solid rgba(255,255,255,0.05);padding-top:14px;">'
-            +'<div style="display:flex;justify-content:space-between;align-items:flex-start;">'
-            +'<div>'
-            +'<p style="font-size:9px;font-weight:700;color:#6b7280;text-transform:uppercase;margin:0;letter-spacing:0.08em">Depósitos por dia</p>'
-            +'<p style="font-size:15px;font-weight:900;color:#10b981;margin:4px 0 2px;">R$'+(avgDep).toLocaleString('pt-BR')+'/dia</p>'
-            +'<p style="font-size:8px;color:#4b5563;font-weight:700">Total: R$'+Math.round(a.dep).toLocaleString('pt-BR')+'</p>'
-            +'</div>'
-            +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">'
-            +'<div style="text-align:right">'
-            +'<p style="font-size:8px;color:#6b7280;margin:0;font-weight:700">Tendência de depósitos</p>'
-            +depSpark
-            +'</div>'
-            +'</div>'
-            +'</div>'
-            +'</div>';
-
-        card.addEventListener('mouseover', function(){ this.style.borderColor='rgba(236,72,153,0.25)'; this.style.transform='translateY(-2px)'; });
-        card.addEventListener('mouseout',  function(){ this.style.borderColor='rgba(255,255,255,0.06)'; this.style.transform='none'; });
-        card.addEventListener('click', function(){ window.openAffiliateProfile(this.dataset.affId); });
-
+            card.innerHTML = h;
+            card.addEventListener('mouseover', function(){ this.style.borderColor=bdr; this.style.transform='translateY(-2px)'; });
+            card.addEventListener('mouseout', function(){ this.style.borderColor='rgba(255,255,255,0.06)'; this.style.transform='none'; });
+            card.addEventListener('click', function(){ window.openAffiliateProfile(this.dataset.affId); });
             grid.appendChild(card);
-        }); // end visible.forEach
+        });
 
-        // "Ver mais" button
-        if (hasMore) {
-            var verMaisWrap = document.createElement('div');
-            verMaisWrap.style.cssText = 'grid-column:1/-1;display:flex;justify-content:center;padding:8px 0 4px;';
-            var btn = document.createElement('button');
-            btn.style.cssText = 'background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2);color:#ec4899;font-size:11px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;padding:10px 32px;border-radius:12px;cursor:pointer;transition:all 0.2s ease;';
-            btn.textContent = 'Ver mais (' + (affList.length - visible.length) + ' restantes)';
-            btn.onmouseover = function(){ this.style.background='rgba(236,72,153,0.15)'; this.style.borderColor='rgba(236,72,153,0.4)'; };
-            btn.onmouseout = function(){ this.style.background='rgba(236,72,153,0.08)'; this.style.borderColor='rgba(236,72,153,0.2)'; };
-            btn.onclick = function(){ _page++; buildCards(affList); };
-            verMaisWrap.appendChild(btn);
-            grid.appendChild(verMaisWrap);
+        if(hasMore){
+            var mw=document.createElement('div');
+            mw.style.cssText='grid-column:1/-1;display:flex;justify-content:center;padding:8px 0 4px;';
+            var btn=document.createElement('button');
+            btn.style.cssText='background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2);color:#ec4899;font-size:11px;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;padding:10px 32px;border-radius:12px;cursor:pointer;transition:all 0.2s ease;';
+            btn.textContent='Ver mais ('+(list.length-visible.length)+' restantes)';
+            btn.onmouseover=function(){this.style.background='rgba(236,72,153,0.15)';};
+            btn.onmouseout=function(){this.style.background='rgba(236,72,153,0.08)';};
+            btn.onclick=function(){_page++;buildCards(list);};
+            mw.appendChild(btn); grid.appendChild(mw);
         }
-    } // end buildCards
+    }
 
-    buildCards(active);
-
+    buildCards(affMetrics);
     var tableCard = document.querySelector('#standard-module .glass-card.rounded-3xl.overflow-hidden');
     if(tableCard) tableCard.parentNode.insertBefore(wrap, tableCard);
 };
@@ -920,7 +977,7 @@ window.renderDashboard=()=>{ const s=document.getElementById('filter-start').val
         document.getElementById('kpi-gross').innerText = 'Bruto 3C: ' + window.formatCurrency(tGross);
         
         data.sort((a,b)=>b.profit-a.profit);
-        window.renderIntelligencePanel(window.dataStore.affiliates || []); if(!data.length){document.getElementById('affiliates-table-body').innerHTML='';document.getElementById('md-empty-state').classList.remove('hidden');return;} document.getElementById('md-empty-state').classList.add('hidden'); let rows=''; data.forEach((d,i)=>{let dt=''; if(window.currentMDEnv!=='Visão Geral'){const m=d.deals[window.currentMDEnv];const isT=window.dataStore.brands[window.currentMDEnv]&&window.dataStore.brands[window.currentMDEnv].type==='tiered'; if(m){if(isT)dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">L1: R$ '+(m.cpa_l1||m.cpa||0)+' / '+(m.rs||0)+'%</td>';else dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">R$ '+(m.cpa||0)+' / '+(m.rs||0)+'%</td>';}else dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Não opera</td>';} let ico=window.currentMDEnv==='Visão Geral'?(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)):'👤'; rows+='<tr class="border-b border-white/5 table-row-hover cursor-pointer" onclick="window.openAffiliateProfile(\''+d.id+'\')"><td class="px-6 py-5 font-bold flex items-center gap-4 whitespace-nowrap"><span class="text-xl">'+ico+'</span> '+d.name+'</td>'+dt+'<td class="px-6 py-5 text-center font-bold text-gray-300">'+d.sFtd+'</td><td class="px-6 py-5 text-center font-bold text-pink-400 text-lg">'+d.sQftd+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sDep)+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sRev)+'</td><td class="px-6 py-5 text-right font-mono font-bold text-red-400">'+window.formatCurrency(d.comm)+'</td><td class="px-6 py-5 text-right font-mono font-black text-emerald-400">'+window.formatCurrency(d.profit)+'</td><td class="px-6 py-5 text-center" onclick="event.stopPropagation()"><button onclick="window.openAffiliateModal(\''+d.id+'\')" class="p-2 text-gray-400 hover:text-white mr-2"><i data-lucide="pencil" class="w-5 h-5"></i></button><button onclick="window.deleteAffiliate(\''+d.id+'\')" class="p-2 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>'; }); document.getElementById('affiliates-table-body').innerHTML=rows; lucide.createIcons(); };
+        window.renderIntelligencePanel(data, reps); if(!data.length){document.getElementById('affiliates-table-body').innerHTML='';document.getElementById('md-empty-state').classList.remove('hidden');return;} document.getElementById('md-empty-state').classList.add('hidden'); let rows=''; data.forEach((d,i)=>{let dt=''; if(window.currentMDEnv!=='Visão Geral'){const m=d.deals[window.currentMDEnv];const isT=window.dataStore.brands[window.currentMDEnv]&&window.dataStore.brands[window.currentMDEnv].type==='tiered'; if(m){if(isT)dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">L1: R$ '+(m.cpa_l1||m.cpa||0)+' / '+(m.rs||0)+'%</td>';else dt='<td class="px-6 py-5 text-center text-gray-400 font-mono text-sm">R$ '+(m.cpa||0)+' / '+(m.rs||0)+'%</td>';}else dt='<td class="px-6 py-5 text-center text-gray-600 italic text-sm">Não opera</td>';} let ico=window.currentMDEnv==='Visão Geral'?(i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)):'👤'; rows+='<tr class="border-b border-white/5 table-row-hover cursor-pointer" onclick="window.openAffiliateProfile(\''+d.id+'\')"><td class="px-6 py-5 font-bold flex items-center gap-4 whitespace-nowrap"><span class="text-xl">'+ico+'</span> '+d.name+'</td>'+dt+'<td class="px-6 py-5 text-center font-bold text-gray-300">'+d.sFtd+'</td><td class="px-6 py-5 text-center font-bold text-pink-400 text-lg">'+d.sQftd+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sDep)+'</td><td class="px-6 py-5 text-right font-mono text-gray-300">'+window.formatCurrency(d.sRev)+'</td><td class="px-6 py-5 text-right font-mono font-bold text-red-400">'+window.formatCurrency(d.comm)+'</td><td class="px-6 py-5 text-right font-mono font-black text-emerald-400">'+window.formatCurrency(d.profit)+'</td><td class="px-6 py-5 text-center" onclick="event.stopPropagation()"><button onclick="window.openAffiliateModal(\''+d.id+'\')" class="p-2 text-gray-400 hover:text-white mr-2"><i data-lucide="pencil" class="w-5 h-5"></i></button><button onclick="window.deleteAffiliate(\''+d.id+'\')" class="p-2 text-gray-500 hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td></tr>'; }); document.getElementById('affiliates-table-body').innerHTML=rows; lucide.createIcons(); };
 
         window.renderAffiliatesCRM=()=>{ const s=document.getElementById('search-affiliate').value.toLowerCase(),list=window.dataStore.affiliates.filter(a=>a.name.toLowerCase().includes(s)); if(!list.length){document.getElementById('crm-cards-grid').innerHTML='';document.getElementById('crm-empty-state').classList.remove('hidden');return;} document.getElementById('crm-empty-state').classList.add('hidden'); let g=''; list.forEach(aff=>{aff.deals=aff.deals||{};
             const getAffLevel=(q)=>{if(q>=100)return{label:'OURO',cls:'level-gold',icon:'🥇'};if(q>=30)return{label:'PRATA',cls:'level-silver',icon:'🥈'};return{label:'BRONZE',cls:'level-bronze',icon:'🥉'};};
