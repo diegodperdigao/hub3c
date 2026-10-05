@@ -1031,7 +1031,18 @@ window.renderDashboard=()=>{ const s=document.getElementById('filter-start').val
                 try { const local=JSON.parse(localStorage.getItem('igaming3c_data_v15')||'{}'); if(local.affiliates) { window.dataStore.affiliates=local.affiliates; window.dataStore.dailyReports=local.dailyReports||[]; } } catch(e) {}
             }
             const brandSet=new Set();
-            ids.forEach(id=>{const aff=window.dataStore.affiliates.find(a=>a.id===id);if(!aff)return;aff.deals=aff.deals||{};window.getBrandList().forEach(b=>{if(aff.deals[b]&&(aff.deals[b].cpa>0||aff.deals[b].cpa_l1>0||aff.deals[b].rs>0))brandSet.add(b);});});
+            ids.forEach(id=>{
+                const aff=window.dataStore.affiliates.find(a=>a.id===id);if(!aff)return;
+                aff.deals=aff.deals||{};
+                // 1) Brands with configured deals (any CPA level or RS)
+                window.getBrandList().forEach(b=>{
+                    const d=aff.deals[b];
+                    if(d&&((d.cpa||0)>0||(d.cpa_l1||0)>0||(d.cpa_l2||0)>0||(d.cpa_l3||0)>0||(d.rs||0)>0))
+                        brandSet.add(b);
+                });
+                // 2) Brands with existing reports (even without deal, so user sees them)
+                (window.dataStore.dailyReports||[]).forEach(r=>{if(r.affiliateId===id&&r.brand)brandSet.add(r.brand);});
+            });
             let h='';brandSet.forEach(b=>{h+='<label class="flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 bg-black/40"><input type="checkbox" value="'+b+'" class="closure-brand-cb w-4 h-4 accent-emerald-500" checked><span class="text-xs font-bold text-gray-300 uppercase tracking-widest">'+b+'</span></label>';});
             document.getElementById('close-brands-container').innerHTML=h||'<span class="text-xs text-gray-500 italic">Sem deals para os afiliados selecionados.</span>';
         };
